@@ -55,7 +55,7 @@ public class TestLOSamples {
 
         
        // Get the Application Key
-       API_KEY = CleAPI.GetAPIKey();
+       API_KEY = CleLiveObjectsAPI.GetAPIKey();
        System.out.println("Clé API : " + API_KEY);
         		
        // Création de NB_DEVICES
@@ -82,7 +82,7 @@ public class TestLOSamples {
        Thread t;
        
        // Get the Application Key
-       API_KEY = CleAPI.GetAPIKey();
+       API_KEY = CleLiveObjectsAPI.GetAPIKey();
        System.out.println("Clé API : " + API_KEY);
        
 	   t = new Thread(new RunOABAppTraffic(DEVICE_URN_PREFIX+"APPOAB00", 2000, 5000, B_PUBLISH));

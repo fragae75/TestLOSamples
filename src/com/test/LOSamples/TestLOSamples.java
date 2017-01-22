@@ -95,7 +95,7 @@ public class TestLOSamples {
 	public static void main(String[] args) {
 
 
-//    	SimuleDevices();
+    	SimuleDevices();
     	SimuleOABApp();
 	}
 	

@@ -94,9 +94,10 @@ public class TestLOSamples {
 	
 	public static void main(String[] args) {
 
-
+		//Simuler un parc de devices
     	SimuleDevices();
-    	SimuleOABApp();
+    	// Simuler l'appli Android OAB
+//    	SimuleOABApp();
 	}
 	
 

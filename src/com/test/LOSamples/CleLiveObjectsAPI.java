@@ -8,13 +8,14 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+/*
+ * Récupère une clé d'API depuis le fichier cle.txt
+ * 
+ */
 public class CleLiveObjectsAPI  {
 	static String sAPIKey = "";
 	
-	/*
-	 * Récupère une clé d'API depuis le fichier cle.txt
-	 * 
-	 */
+
 	public static void GetAPIKeyFromFile(){
 		FileInputStream fis;
 	    FileChannel fc;

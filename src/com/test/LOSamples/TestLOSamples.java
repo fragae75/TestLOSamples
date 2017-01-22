@@ -81,7 +81,7 @@ public class TestLOSamples {
 	{
        Thread t;
        
-       // Get the Application Key
+       // Get the Application Key (cle.txt)
        API_KEY = CleLiveObjectsAPI.GetAPIKey();
        System.out.println("Clé API : " + API_KEY);
        

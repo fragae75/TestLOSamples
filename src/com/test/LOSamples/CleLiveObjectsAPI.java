@@ -11,6 +11,10 @@ import java.nio.channels.FileChannel;
 public class CleLiveObjectsAPI  {
 	static String sAPIKey = "";
 	
+	/*
+	 * Récupère une clé d'API depuis le fichier cle.txt
+	 * 
+	 */
 	public static void GetAPIKeyFromFile(){
 		FileInputStream fis;
 	    FileChannel fc;

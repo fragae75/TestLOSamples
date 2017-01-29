@@ -53,7 +53,7 @@ public class RunGenerateTrafic implements Runnable {
         
 		// décaler le lancement du thresd de 0 à 4 secondes
 		try {
-			Thread.sleep(2000+rand.nextLong()%2000);
+			Thread.sleep(5000+rand.nextLong()%5000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

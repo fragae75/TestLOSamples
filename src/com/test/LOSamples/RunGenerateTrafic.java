@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
+import javax.swing.JTextArea;
+
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -19,12 +21,16 @@ public class RunGenerateTrafic implements Runnable {
 	private long lTempoEnvoi;
 	private int iNbEchantillons;
 	private boolean bPublish;
+	private JTextArea textPane;
 	
-	public RunGenerateTrafic(String sDeviceUrn, int iNbEchantillons, long lTempoEnvoi, boolean bPublish){
+	public RunGenerateTrafic(String sDeviceUrn, int iNbEchantillons, long lTempoEnvoi, boolean bPublish, JTextArea textPane){
 		this.sDeviceUrn = sDeviceUrn;
 		this.lTempoEnvoi = lTempoEnvoi;
 		this.iNbEchantillons = iNbEchantillons;
 		this.bPublish = bPublish;
+		this.textPane = textPane;
+		this.textPane.setText("ok !!! \n");
+		TestLOSamples.fenetreTestLOSamples.textPane.append(" - Simulate Pub msg: \n");
 	}
 
 	public void run() {
@@ -45,19 +51,28 @@ public class RunGenerateTrafic implements Runnable {
         // String for encoding to JSON
         String sContent;
         
+		// décaler le lancement du thresd de 0 à 4 secondes
+		try {
+			Thread.sleep(2000+rand.nextLong()%2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
         try {
         	MqttClient sampleClient = new MqttClient(TestLOSamples.SERVER, sDeviceUrn, new MemoryPersistence());
             MqttConnectOptions connOpts = new MqttConnectOptions();
             if (bPublish)
             {
 	            connOpts.setUserName("json+device"); // selecting mode "Device"
-	            connOpts.setPassword(TestLOSamples.API_KEY.toCharArray()); // passing API key value as password
+	            connOpts.setPassword(TestLOSamples.sAPIKey.toCharArray()); // passing API key value as password
 	            connOpts.setCleanSession(true);
 	
 	            // Connection
 	            System.out.println("Connecting to broker: " + TestLOSamples.SERVER);
+        		textPane.append("Connecting to broker: " + TestLOSamples.SERVER + "\n");
 	            sampleClient.connect(connOpts);
 	            System.out.println("Connected");
+        		textPane.append("Connected" + "\n");
             }
             
             for (i=0; i<iNbEchantillons; i++)
@@ -65,7 +80,7 @@ public class RunGenerateTrafic implements Runnable {
             	// engineOn à 66%
             	bEngineOn = rand.nextBoolean() | rand.nextBoolean() ;
             	// streamId
-                data.s = TestLOSamples.STREAM_ID;
+                data.s = TestLOSamples.sStreamID;
                 // value: JSON object...
                 data.v = new HashMap<String, Object>();
                 // Engine off => speed ~ 0
@@ -102,12 +117,17 @@ public class RunGenerateTrafic implements Runnable {
                 // encoding to JSON
                 // {"s":"test","m":"Sample02","v":{"Speed":0,"DoorOpen":true,"engineOn":false,"DoorOpenDuration":1,"Hygrometry":55,"tempC":19.19},"t":["sample.01"],"loc":[45.759723,4.84223]}
                 sContent = new Gson().toJson(data);
-                
+
+
+        		// On met le curseur à la fin de la requête précédente
+        		textPane.setCaretPosition(textPane.getDocument().getLength());
+        		
                 if (bPublish)
                 {
 		            // Publish data
                     System.out.print(String.valueOf(i));
                     System.out.println(" - Publishing message: " + sDeviceUrn + sContent);
+            		textPane.append(String.valueOf(i) + " - Pub msg: " + sDeviceUrn + sContent + "\n");
 		            MqttMessage message = new MqttMessage(sContent.getBytes());
 		            message.setQos(0);
 		            sampleClient.publish("dev/data", message);
@@ -117,6 +137,8 @@ public class RunGenerateTrafic implements Runnable {
                 {
                     System.out.print(String.valueOf(i));
                     System.out.println(" - Simulate Publishing message: " + sDeviceUrn + sContent);
+            		textPane.append(String.valueOf(i) + " - Simulate Pub msg: " + sDeviceUrn + sContent + "\n");
+            		TestLOSamples.fenetreTestLOSamples.textPane.append(String.valueOf(i) + " - Simulate Pub msg: " + sDeviceUrn + sContent + "\n");
                 }
                 
                 // Temporisation entre 2 envois

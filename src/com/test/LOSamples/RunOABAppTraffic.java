@@ -62,7 +62,7 @@ public class RunOABAppTraffic  implements Runnable {
             if (bPublish)
             {
 	            connOpts.setUserName("json+device"); // selecting mode "Device"
-	            connOpts.setPassword(TestLOSamples.API_KEY.toCharArray()); // passing API key value as password
+	            connOpts.setPassword(TestLOSamples.sAPIKey.toCharArray()); // passing API key value as password
 	            connOpts.setCleanSession(true);
 	
 	            // Connection

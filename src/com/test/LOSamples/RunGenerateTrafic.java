@@ -51,7 +51,7 @@ public class RunGenerateTrafic implements Runnable {
         // String for encoding to JSON
         String sContent;
         
-		// décaler le lancement du thresd de 0 à 4 secondes
+		// décaler le lancement du thresd de 0 à 10 secondes
 		try {
 			Thread.sleep(5000+rand.nextLong()%5000);
 		} catch (InterruptedException e) {

@@ -18,15 +18,14 @@ public class TestLOSamples {
 	
 
 	final static String SERVER = "tcp://liveobjects.orange-business.com:1883";
-//	final static String DEVICE_URN = "urn:lo:nsid:sensor:TESTFLGXXXXn";
-	final static String DEVICE_URN_PREFIX = "urn:lo:nsid:sensor:TESTFLG";
+	final static String DEVICE_URN_PREFIX = "urn:lo:nsid:sensor:TESTFLG"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";
 
 	final static String DATA_MODEL = "Sample02";
 	final static String DATA_TAG = "Sample.02";
 	public static String sStreamID = "StreamSample02";
 
 	final static int TEMPO_ENVOIS = 10000;
-    final static int NB_ECHANTILLONS = 100;
+    final static int NB_ECHANTILLONS = 110;
     final static int NB_DEVICES = 100;
 	
 	static TestLOFenetre fenetreTestLOSamples;
@@ -35,7 +34,7 @@ public class TestLOSamples {
 	static String sServer = SERVER;
 	static String sDeviceUrnPrefix = DEVICE_URN_PREFIX;
 	static long lTempoEnvoi = TEMPO_ENVOIS;
-    static long lNbEchantillons = NB_ECHANTILLONS;
+    static long lNbDataPerDevice= NB_ECHANTILLONS;
     static int iNbDevices = NB_DEVICES;
      
 	public static double arrondi(double d, int digit)
@@ -75,7 +74,6 @@ public class TestLOSamples {
 		System.out.println("Clé API : " + sAPIKey);
        
 		fenetreTestLOSamples = new TestLOFenetre();
-		TestLOSamples.fenetreTestLOSamples.textPane.append("Main \n");
 	}
 	
 

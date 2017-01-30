@@ -93,14 +93,6 @@ public class TestLOFenetre extends JFrame {
 	    jpServer.add(jtfServer);
 	    jtfServer.setText(TestLOSamples.sServer);
 
-	    
-/*		private JLabel jlbDeviceUrnPrefix = new JLabel("Device URN prefix : ");
-		private static JTextField jtfDeviceUrnPrefix = new JTextField();
-		private JLabel jlbNbDevices = new JLabel("Nb Devices to simulate : ");
-		private static JTextField jtfNbDevices = new JTextField();
-		private JLabel jlbNbDataPerDevice = new JLabel("Nb Data per Device : ");
-		private static JTextField jtfNbDataPerDevice = new JTextField();
-*/
 	    // Device Urn Prefix
 	    JPanel jpDeviceUrnPrefix = new JPanel();
 	    jpDeviceUrnPrefix.setLayout(new BoxLayout(jpDeviceUrnPrefix, BoxLayout.LINE_AXIS));
@@ -116,17 +108,17 @@ public class TestLOFenetre extends JFrame {
 	    jpNbDevices.add(Box.createRigidArea(new Dimension(30, 0)));
 	    jpNbDevices.add(jlbNbDevices);
 	    jtfNbDevices.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfNbDevices.getMinimumSize().height));
-	    jpServer.add(jtfNbDevices);
+	    jpNbDevices.add(jtfNbDevices);
 	    jtfNbDevices.setText(String.valueOf(TestLOSamples.iNbDevices));
 
-	    // Server
+	    // Nb Data Per device
 	    JPanel jpNbDataPerDevice = new JPanel();
 	    jpNbDataPerDevice.setLayout(new BoxLayout(jpNbDataPerDevice, BoxLayout.LINE_AXIS));
 	    jpNbDataPerDevice.add(Box.createRigidArea(new Dimension(30, 0)));
 	    jpNbDataPerDevice.add(jlbNbDataPerDevice);
 	    jtfNbDataPerDevice.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfNbDataPerDevice.getMinimumSize().height));
 	    jpNbDataPerDevice.add(jtfNbDataPerDevice);
-	    jtfNbDataPerDevice.setText(String.valueOf(TestLOSamples.lNbEchantillons));
+	    jtfNbDataPerDevice.setText(String.valueOf(TestLOSamples.lNbDataPerDevice));
 
 	    
 	    JPanel jpButtons = new JPanel();

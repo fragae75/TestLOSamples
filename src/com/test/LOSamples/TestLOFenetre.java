@@ -30,6 +30,14 @@ public class TestLOFenetre extends JFrame {
 	private static JTextField jtfKey = new JTextField();
 	private JLabel jlbStreamID = new JLabel("StreamID : ");
 	private static JTextField jtfStreamID = new JTextField();
+	private JLabel jlbServer = new JLabel("Server : ");
+	private static JTextField jtfServer = new JTextField();
+	private JLabel jlbDeviceUrnPrefix = new JLabel("Device URN prefix : ");
+	private static JTextField jtfDeviceUrnPrefix = new JTextField();
+	private JLabel jlbNbDevices = new JLabel("Nb Devices to simulate : ");
+	private static JTextField jtfNbDevices = new JTextField();
+	private JLabel jlbNbDataPerDevice = new JLabel("Nb Data per Device : ");
+	private static JTextField jtfNbDataPerDevice = new JTextField();
     public JButton boutonPubTerminaux =  new JButton("Publish Terminaux");
     public JButton boutonPubOABApp =  new JButton("Publish OAB App");
 
@@ -76,6 +84,51 @@ public class TestLOFenetre extends JFrame {
 	    jpStreamID.add(jtfStreamID);
 	    jtfStreamID.setText(TestLOSamples.sStreamID);
 
+	    // Server
+	    JPanel jpServer = new JPanel();
+	    jpServer.setLayout(new BoxLayout(jpServer, BoxLayout.LINE_AXIS));
+	    jpServer.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpServer.add(jlbServer);
+	    jtfServer.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfServer.getMinimumSize().height));
+	    jpServer.add(jtfServer);
+	    jtfServer.setText(TestLOSamples.sServer);
+
+	    
+/*		private JLabel jlbDeviceUrnPrefix = new JLabel("Device URN prefix : ");
+		private static JTextField jtfDeviceUrnPrefix = new JTextField();
+		private JLabel jlbNbDevices = new JLabel("Nb Devices to simulate : ");
+		private static JTextField jtfNbDevices = new JTextField();
+		private JLabel jlbNbDataPerDevice = new JLabel("Nb Data per Device : ");
+		private static JTextField jtfNbDataPerDevice = new JTextField();
+*/
+	    // Device Urn Prefix
+	    JPanel jpDeviceUrnPrefix = new JPanel();
+	    jpDeviceUrnPrefix.setLayout(new BoxLayout(jpDeviceUrnPrefix, BoxLayout.LINE_AXIS));
+	    jpDeviceUrnPrefix.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpDeviceUrnPrefix.add(jlbDeviceUrnPrefix);
+	    jtfDeviceUrnPrefix.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfDeviceUrnPrefix.getMinimumSize().height));
+	    jpDeviceUrnPrefix.add(jtfDeviceUrnPrefix);
+	    jtfDeviceUrnPrefix.setText(TestLOSamples.sDeviceUrnPrefix);
+
+	    // NbDevices
+	    JPanel jpNbDevices = new JPanel();
+	    jpNbDevices.setLayout(new BoxLayout(jpNbDevices, BoxLayout.LINE_AXIS));
+	    jpNbDevices.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpNbDevices.add(jlbNbDevices);
+	    jtfNbDevices.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfNbDevices.getMinimumSize().height));
+	    jpServer.add(jtfNbDevices);
+	    jtfNbDevices.setText(String.valueOf(TestLOSamples.iNbDevices));
+
+	    // Server
+	    JPanel jpNbDataPerDevice = new JPanel();
+	    jpNbDataPerDevice.setLayout(new BoxLayout(jpNbDataPerDevice, BoxLayout.LINE_AXIS));
+	    jpNbDataPerDevice.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpNbDataPerDevice.add(jlbNbDataPerDevice);
+	    jtfNbDataPerDevice.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfNbDataPerDevice.getMinimumSize().height));
+	    jpNbDataPerDevice.add(jtfNbDataPerDevice);
+	    jtfNbDataPerDevice.setText(String.valueOf(TestLOSamples.lNbEchantillons));
+
+	    
 	    JPanel jpButtons = new JPanel();
 	    boutonPubTerminaux.addActionListener(new BoutonListenerPubTerminaux()); 
 	    boutonPubOABApp.addActionListener(new BoutonListenerPubOABApp()); 
@@ -97,11 +150,15 @@ public class TestLOFenetre extends JFrame {
 	    panConfig.add(jpKey);
 	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panConfig.add(jpStreamID);
-/*	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
-	    panConfig.add(jp3);
 	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
-	    panConfig.add(jp4);
-*/
+	    panConfig.add(jpServer);
+	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panConfig.add(jpDeviceUrnPrefix);
+	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panConfig.add(jpNbDevices);
+	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panConfig.add(jpNbDataPerDevice);
+
 	    // Ajout des onglets 
 	    onglet.add("Resultat", panFenetre);
 	    onglet.add("Configuration", panConfig);
@@ -110,9 +167,6 @@ public class TestLOFenetre extends JFrame {
 
 	    this.setContentPane(onglet);
 	    this.setVisible(true);
-	    
-		textPane.append("ok !!! \n");
-
 	}	
 
 	
@@ -137,10 +191,6 @@ public class TestLOFenetre extends JFrame {
        String sURNDevice;
 
         
-       // Get the Application Key
-//       sAPIKey = CleLiveObjectsAPI.GetAPIKey();
-//       System.out.println("Clé API : " + sAPIKey);
-        		
        // Création de NB_DEVICES
        for (i=0; i<TestLOSamples.NB_DEVICES; i++){
     	   sURNDevice = String.format("%S%05d", TestLOSamples.DEVICE_URN_PREFIX, i);
@@ -148,15 +198,6 @@ public class TestLOFenetre extends JFrame {
     	   t[i].start();
 
  	       System.out.println("Thread : " + i);
-    	   // 0 to 2 sec delay between the device creations
-    	   /*
-    	   try {
-    		   Thread.sleep(1000+rand.nextLong()%1000);
-    	   } catch (InterruptedException e) {
-    		   // TODO Auto-generated catch block
-    		   e.printStackTrace();
-    	   }
-    	   */
        }
 	}
 	

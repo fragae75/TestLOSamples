@@ -16,9 +16,6 @@ import java.util.Random;
 
 public class TestLOSamples {
 	
-	static TestLOFenetre fenetreTestLOSamples;
-    static boolean bPublish = false; 			// false => simulation sur la console
-	static String sAPIKey = ""; 				// A récupérer dans la classe CleAPI
 
 	final static String SERVER = "tcp://liveobjects.orange-business.com:1883";
 //	final static String DEVICE_URN = "urn:lo:nsid:sensor:TESTFLGXXXXn";
@@ -32,6 +29,14 @@ public class TestLOSamples {
     final static int NB_ECHANTILLONS = 100;
     final static int NB_DEVICES = 100;
 	
+	static TestLOFenetre fenetreTestLOSamples;
+    static boolean bPublish = false; 					// false => simulation sur la console
+	static String sAPIKey = "Empty => cle.txt"; 		// A récupérer dans la classe CleAPI
+	static String sServer = SERVER;
+	static String sDeviceUrnPrefix = DEVICE_URN_PREFIX;
+	static long lTempoEnvoi = TEMPO_ENVOIS;
+    static long lNbEchantillons = NB_ECHANTILLONS;
+    static int iNbDevices = NB_DEVICES;
      
 	public static double arrondi(double d, int digit)
 	{
@@ -65,14 +70,11 @@ public class TestLOSamples {
 	
 	public static void main(String[] args) {
 
-       sAPIKey = CleLiveObjectsAPI.GetAPIKey();
-       System.out.println("Clé API : " + sAPIKey);
+       // Récupération clé d'API
+		sAPIKey = CleLiveObjectsAPI.GetAPIKey();
+		System.out.println("Clé API : " + sAPIKey);
        
-       fenetreTestLOSamples = new TestLOFenetre();
-		//Simuler un parc de devices
-//    	SimuleDevices();
-    	// Simuler l'appli Android OAB
-//    	SimuleOABApp();
+		fenetreTestLOSamples = new TestLOFenetre();
 		TestLOSamples.fenetreTestLOSamples.textPane.append("Main \n");
 	}
 	

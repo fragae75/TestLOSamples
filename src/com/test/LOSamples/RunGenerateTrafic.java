@@ -29,8 +29,6 @@ public class RunGenerateTrafic implements Runnable {
 		this.iNbEchantillons = iNbEchantillons;
 		this.bPublish = bPublish;
 		this.textPane = textPane;
-		this.textPane.setText("ok !!! \n");
-		TestLOSamples.fenetreTestLOSamples.textPane.append(" - Simulate Pub msg: \n");
 	}
 
 	public void run() {

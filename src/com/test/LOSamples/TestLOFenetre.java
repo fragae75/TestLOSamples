@@ -41,7 +41,7 @@ public class TestLOFenetre extends JFrame {
 	private JLabel jlblTempoEnvoi = new JLabel("Tempo B/W 2 messages/device : ");
 	private static JTextField jtflTempoEnvoi = new JTextField();
     public JButton boutonPubTerminaux =  new JButton("Publish Terminaux");
-    public JButton boutonPubOABApp =  new JButton("Publish OAB App");
+    public JButton boutonPubOABApp =  new JButton("Publish OAB App (1 terminal)");
 
 	private JCheckBox jckSimulation = new JCheckBox("Simulation");
 

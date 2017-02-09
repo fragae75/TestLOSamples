@@ -27,6 +27,7 @@ public class TestLOSamples {
 	final static int TEMPO_ENVOIS = 10000;
     final static int NB_ECHANTILLONS = 110;
     final static int NB_DEVICES = 100;
+    final static int NB_MAX_DEVICES = 1000;
 	
 	static TestLOFenetre fenetreTestLOSamples;
     static boolean bPublish = false; 					// false => simulation sur la console
@@ -35,7 +36,7 @@ public class TestLOSamples {
 	static String sDeviceUrnPrefix = DEVICE_URN_PREFIX;
 	static long lTempoEnvoi = TEMPO_ENVOIS;
     static long lNbDataPerDevice= NB_ECHANTILLONS;
-    static int iNbDevices = NB_DEVICES;
+    static int nbDevices = NB_DEVICES;
      
 	public static double arrondi(double d, int digit)
 	{
@@ -49,21 +50,6 @@ public class TestLOSamples {
 	}
 
 	
-	/*
-	 * Simule l'application de démo OAB
-	 */
-	public static void SimuleOABApp()
-	{
-       Thread t;
-       
-       // Get the Application Key (cle.txt)
-       sAPIKey = CleLiveObjectsAPI.GetAPIKey();
-       System.out.println("Clé API : " + sAPIKey);
-       
-	   t = new Thread(new RunOABAppTraffic(DEVICE_URN_PREFIX+"APPOAB00", 2000, 5000, bPublish));
-	   t.start();
-		
-	}
 
 	
 	

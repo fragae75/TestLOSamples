@@ -19,16 +19,17 @@ public class RunGenerateTrafic implements Runnable {
 
 	private String sDeviceUrn;
 	private long lTempoEnvoi;
-	private int iNbEchantillons;
+	private long lNbEchantillons;
 	private boolean bPublish;
 	private JTextArea textPane;
 	
-	public RunGenerateTrafic(String sDeviceUrn, int iNbEchantillons, long lTempoEnvoi, boolean bPublish, JTextArea textPane){
+	public RunGenerateTrafic(String sDeviceUrn, long lNbEchantillons, long lTempoEnvoi, boolean bPublish, JTextArea textPane){
 		this.sDeviceUrn = sDeviceUrn;
 		this.lTempoEnvoi = lTempoEnvoi;
-		this.iNbEchantillons = iNbEchantillons;
+		this.lNbEchantillons = lNbEchantillons;
 		this.bPublish = bPublish;
 		this.textPane = textPane;
+		
 	}
 
 	public void run() {
@@ -49,9 +50,9 @@ public class RunGenerateTrafic implements Runnable {
         // String for encoding to JSON
         String sContent;
         
-		// décaler le lancement du thresd de 0 à 10 secondes
+		// décaler le lancement du thread de 0 à 2 secondes
 		try {
-			Thread.sleep(5000+rand.nextLong()%5000);
+			Thread.sleep(1000+rand.nextLong()%1000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
@@ -73,7 +74,7 @@ public class RunGenerateTrafic implements Runnable {
         		textPane.append("Connected" + "\n");
             }
             
-            for (i=0; i<iNbEchantillons; i++)
+            for (i=0; i<lNbEchantillons; i++)
             {
             	// engineOn à 66%
             	bEngineOn = rand.nextBoolean() | rand.nextBoolean() ;
@@ -104,8 +105,8 @@ public class RunGenerateTrafic implements Runnable {
                 data.v.put("tempC", TestLOSamples.arrondi(20+(double)(rand.nextInt()%300)/100, 2));
                 data.v.put("engineOn", bEngineOn);
                 // location (lat/lon)
-                dLocNext[0] += (dLocStop[0] - dLocStart[0])/iNbEchantillons;
-                dLocNext[1] += (dLocStop[1] - dLocStart[1])/iNbEchantillons;
+                dLocNext[0] += (dLocStop[0] - dLocStart[0])/lNbEchantillons;
+                dLocNext[1] += (dLocStop[1] - dLocStart[1])/lNbEchantillons;
                 data.loc = dLocNext;
 //                data.loc = new Double[] { 45.759723, 4.84223 };
                 // model
@@ -136,7 +137,6 @@ public class RunGenerateTrafic implements Runnable {
                     System.out.print(String.valueOf(i));
                     System.out.println(" - Simulate Publishing message: " + sDeviceUrn + sContent);
             		textPane.append(String.valueOf(i) + " - Simulate Pub msg: " + sDeviceUrn + sContent + "\n");
-            		TestLOSamples.fenetreTestLOSamples.textPane.append(String.valueOf(i) + " - Simulate Pub msg: " + sDeviceUrn + sContent + "\n");
                 }
                 
                 // Temporisation entre 2 envois

@@ -38,23 +38,86 @@ public class TestLOFenetre extends JFrame {
 	private static JTextField jtfNbDevices = new JTextField();
 	private JLabel jlbNbDataPerDevice = new JLabel("Nb Data per Device : ");
 	private static JTextField jtfNbDataPerDevice = new JTextField();
+	private JLabel jlblTempoEnvoi = new JLabel("Tempo B/W 2 messages/device : ");
+	private static JTextField jtflTempoEnvoi = new JTextField();
     public JButton boutonPubTerminaux =  new JButton("Publish Terminaux");
     public JButton boutonPubOABApp =  new JButton("Publish OAB App");
 
 	private JCheckBox jckSimulation = new JCheckBox("Simulation");
 
 	/*
+	 * 
+	 * 
 	 * Mettre à jour les données de configuration
+	 * 
+	 * 
 	 */
-	static void GatherConfigValues()
+	static boolean GatherConfigValues()
 	{
-//		TestLOSamples.sGetDataLinkBase = jtfReqBase.getText();
+		int i;
+		long l;
+		boolean bGood = true;
+		
+		//		TestLOSamples.sGetDataLinkBase = jtfReqBase.getText();
 		TestLOSamples.sAPIKey = jtfKey.getText();
 		TestLOSamples.sStreamID = jtfStreamID.getText();
+		// Nb Devices
+		try {
+		    i = Integer.parseInt(jtfNbDevices.getText());
+		    if (i>0 && i<TestLOSamples.NB_MAX_DEVICES)
+		    	TestLOSamples.nbDevices = 	i;
+		    else{
+			    jtfNbDevices.setText(String.valueOf(TestLOSamples.nbDevices));
+		    	bGood = false;
+		    }
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		    jtfNbDevices.setText(String.valueOf(TestLOSamples.nbDevices));
+	    	bGood = false;
+		}
+
+		// Nb Data per device
+		try {
+		    l = Long.parseLong(jtfNbDataPerDevice.getText());
+		    if (l>0)
+		    	TestLOSamples.lNbDataPerDevice = l;		
+		    else{
+		    	jtfNbDataPerDevice.setText(String.valueOf(TestLOSamples.lNbDataPerDevice));
+		    	bGood = false;
+		    }
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+	    	jtfNbDataPerDevice.setText(String.valueOf(TestLOSamples.lNbDataPerDevice));
+	    	bGood = false;
+		}
+		
+		// Tempo Envoi
+		try {
+		    l = Long.parseLong(jtflTempoEnvoi.getText());
+			if (l>0)
+				TestLOSamples.lTempoEnvoi = l;
+		    else{
+				jtflTempoEnvoi.setText(String.valueOf(TestLOSamples.lTempoEnvoi));
+		    	bGood = false;
+		    }
+
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			jtflTempoEnvoi.setText(String.valueOf(TestLOSamples.lTempoEnvoi));
+	    	bGood = false;
+		}		
+
+		return bGood;
 	}
 	
+	
+	/*
+	 * 
+	 * La fenetre
+	 * 
+	 */
 	public TestLOFenetre(){
-		this.setTitle("Tests HTTP Live Objects");
+		this.setTitle("Generateur traffic Live Objects");
 		this.setSize(500, 500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
@@ -109,7 +172,7 @@ public class TestLOFenetre extends JFrame {
 	    jpNbDevices.add(jlbNbDevices);
 	    jtfNbDevices.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfNbDevices.getMinimumSize().height));
 	    jpNbDevices.add(jtfNbDevices);
-	    jtfNbDevices.setText(String.valueOf(TestLOSamples.iNbDevices));
+	    jtfNbDevices.setText(String.valueOf(TestLOSamples.nbDevices));
 
 	    // Nb Data Per device
 	    JPanel jpNbDataPerDevice = new JPanel();
@@ -120,7 +183,17 @@ public class TestLOFenetre extends JFrame {
 	    jpNbDataPerDevice.add(jtfNbDataPerDevice);
 	    jtfNbDataPerDevice.setText(String.valueOf(TestLOSamples.lNbDataPerDevice));
 
+	    // Tempo entre 2 envois
+	    JPanel jplTempoEnvoi = new JPanel();
+	    jplTempoEnvoi.setLayout(new BoxLayout(jplTempoEnvoi, BoxLayout.LINE_AXIS));
+	    jplTempoEnvoi.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jplTempoEnvoi.add(jlblTempoEnvoi);
+	    jtflTempoEnvoi.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtflTempoEnvoi.getMinimumSize().height));
+	    jplTempoEnvoi.add(jtflTempoEnvoi);
+	    jtflTempoEnvoi.setText(String.valueOf(TestLOSamples.lTempoEnvoi));
+
 	    
+	    // Ajout des 2 boutons du bas
 	    JPanel jpButtons = new JPanel();
 	    boutonPubTerminaux.addActionListener(new BoutonListenerPubTerminaux()); 
 	    boutonPubOABApp.addActionListener(new BoutonListenerPubOABApp()); 
@@ -128,15 +201,13 @@ public class TestLOFenetre extends JFrame {
 	    jpButtons.add(boutonPubTerminaux);
 	    jpButtons.add(boutonPubOABApp);
 
-
 	    //Panneau Résultat
 	    panFenetre.setLayout(new BoxLayout(panFenetre, BoxLayout.PAGE_AXIS));
 	    panFenetre.add(scroll);
-	    panFenetre.add(jpButtons);
 	    
 	    //Panneau Config
 	    panConfig.setLayout(new BoxLayout(panConfig, BoxLayout.PAGE_AXIS));
-	    panConfig.add(Box.createRigidArea(new Dimension(0, 10)));
+	    panConfig.add(Box.createRigidArea(new Dimension(0, 20)));
 	    panConfig.add(jpCBSimul);
 	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panConfig.add(jpKey);
@@ -150,6 +221,10 @@ public class TestLOFenetre extends JFrame {
 	    panConfig.add(jpNbDevices);
 	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panConfig.add(jpNbDataPerDevice);
+	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panConfig.add(jplTempoEnvoi);
+	    panConfig.add(Box.createRigidArea(new Dimension(0, 20)));
+	    panConfig.add(jpButtons);
 
 	    // Ajout des onglets 
 	    onglet.add("Resultat", panFenetre);
@@ -179,21 +254,37 @@ public class TestLOFenetre extends JFrame {
 	{
        Random rand = new Random();
        int i;
-       Thread t[] = new Thread[TestLOSamples.NB_DEVICES];
+       Thread t[] = new Thread[TestLOSamples.NB_MAX_DEVICES];
        String sURNDevice;
 
         
        // Création de NB_DEVICES
-       for (i=0; i<TestLOSamples.NB_DEVICES; i++){
+       for (i=0; i<TestLOSamples.nbDevices; i++){
     	   sURNDevice = String.format("%S%05d", TestLOSamples.DEVICE_URN_PREFIX, i);
-    	   t[i] = new Thread(new RunGenerateTrafic(sURNDevice, TestLOSamples.NB_ECHANTILLONS, TestLOSamples.TEMPO_ENVOIS, TestLOSamples.bPublish, TestLOSamples.fenetreTestLOSamples.textPane));
+    	   t[i] = new Thread(new RunGenerateTrafic(	sURNDevice, 
+    			   									TestLOSamples.lNbDataPerDevice, 
+    			   									TestLOSamples.lTempoEnvoi, 
+    			   									TestLOSamples.bPublish, 
+    			   									TestLOSamples.fenetreTestLOSamples.textPane));
     	   t[i].start();
 
  	       System.out.println("Thread : " + i);
        }
 	}
 	
-	
+	/*
+	 * Simule l'application de démo OAB
+	 */
+	public static void SimuleOABApp()
+	{
+       Thread t;
+       
+      
+	   t = new Thread(new RunOABAppTraffic(TestLOSamples.DEVICE_URN_PREFIX+"APPOAB00", 2000, 5000, TestLOSamples.bPublish));
+	   t.start();
+		
+	}
+
 	/*
 	 * Bouton lancement publication Terminaux
 	 */
@@ -201,8 +292,8 @@ public class TestLOFenetre extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			GatherConfigValues();
-			SimuleDevices();
+			if (GatherConfigValues())
+				SimuleDevices();
 	    }
 	  }
 	
@@ -214,9 +305,9 @@ public class TestLOFenetre extends JFrame {
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			
-			GatherConfigValues();
 	    	// Simuler l'appli Android OAB
-			TestLOSamples.SimuleOABApp();
+			if (GatherConfigValues())
+				SimuleOABApp();
 	    }
 	  }
 }

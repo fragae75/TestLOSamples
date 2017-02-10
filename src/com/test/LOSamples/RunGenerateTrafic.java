@@ -23,7 +23,11 @@ public class RunGenerateTrafic implements Runnable {
 	private boolean bPublish;
 	private JTextArea textPane;
 	
-	public RunGenerateTrafic(String sDeviceUrn, long lNbEchantillons, long lTempoEnvoi, boolean bPublish, JTextArea textPane){
+	public RunGenerateTrafic(	String sDeviceUrn, 
+								long lNbEchantillons, 
+								long lTempoEnvoi, 
+								boolean bPublish, 
+								JTextArea textPane){
 		this.sDeviceUrn = sDeviceUrn;
 		this.lTempoEnvoi = lTempoEnvoi;
 		this.lNbEchantillons = lNbEchantillons;

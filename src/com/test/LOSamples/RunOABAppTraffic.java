@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Random;
 
+import javax.swing.JTextArea;
+
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
@@ -29,14 +31,20 @@ public class RunOABAppTraffic  implements Runnable {
 	private String sDataModel = "ModelOABDemoApp00";
 	private String sDataTag = "OABDemoApp.00";
 	private long lTempoEnvoi;
-	private int iNbEchantillons;
+	private long lNbEchantillons;
 	private boolean bPublish;
+	private JTextArea textPane;
 	
-	public RunOABAppTraffic (String sDeviceUrn, int iNbEchantillons, long lTempoEnvoi, boolean bPublish){
+	public RunOABAppTraffic (	String sDeviceUrn, 
+								long lNbEchantillons, 
+								long lTempoEnvoi, 
+								boolean bPublish, 
+								JTextArea textPane){
 		this.sDeviceUrn = sDeviceUrn;
 		this.lTempoEnvoi = lTempoEnvoi;
-		this.iNbEchantillons = iNbEchantillons;
+		this.lNbEchantillons = lNbEchantillons;
 		this.bPublish = bPublish;
+		this.textPane = textPane;
 	}
 
 	public void run() {
@@ -67,11 +75,13 @@ public class RunOABAppTraffic  implements Runnable {
 	
 	            // Connection
 	            System.out.println("Connecting to broker: " + TestLOSamples.SERVER);
+        		textPane.append("Connecting to broker: " + TestLOSamples.SERVER + "\n");
 	            sampleClient.connect(connOpts);
 	            System.out.println("Connected");
+        		textPane.append("Connected" + "\n");
             }
             
-            for (i=0; i<iNbEchantillons; i++)
+            for (i=0; i<lNbEchantillons; i++)
             {
             	// streamId
                 data.s = sStreamId;
@@ -84,8 +94,8 @@ public class RunOABAppTraffic  implements Runnable {
         		// Rev/min : 0 - 9999
             	data.v.put("revmin", rand.nextInt(9999));
                 // location (lat/lon)
-                dLocNext[0] += (dLocStop[0] - dLocStart[0])/iNbEchantillons;
-                dLocNext[1] += (dLocStop[1] - dLocStart[1])/iNbEchantillons;
+                dLocNext[0] += (dLocStop[0] - dLocStart[0])/lNbEchantillons;
+                dLocNext[1] += (dLocStop[1] - dLocStart[1])/lNbEchantillons;
                 data.loc = dLocNext;
                 // model
                 data.m = sDataModel;
@@ -95,11 +105,15 @@ public class RunOABAppTraffic  implements Runnable {
                 // {"s":"test","m":"Sample02","v":{"Speed":0,"DoorOpen":true,"engineOn":false,"DoorOpenDuration":1,"Hygrometry":55,"tempC":19.19},"t":["sample.01"],"loc":[45.759723,4.84223]}
                 sContent = new Gson().toJson(data);
                 
-                if (bPublish)
+        		// On met le curseur à la fin de la requête précédente
+        		textPane.setCaretPosition(textPane.getDocument().getLength());
+        		
+                 if (bPublish)
                 {
 		            // Publish data
                     System.out.print(String.valueOf(i));
                     System.out.println(" - Publishing message: " + sDeviceUrn + sContent);
+            		textPane.append(String.valueOf(i) + " - Pub msg: " + sDeviceUrn + sContent + "\n");
 		            MqttMessage message = new MqttMessage(sContent.getBytes());
 		            message.setQos(0);
 		            sampleClient.publish("dev/data", message);
@@ -109,6 +123,7 @@ public class RunOABAppTraffic  implements Runnable {
                 {
                     System.out.print(String.valueOf(i));
                     System.out.println(" - Simulate Publishing message: " + sDeviceUrn + sContent);
+            		textPane.append(String.valueOf(i) + " - Simulate Pub msg: " + sDeviceUrn + sContent + "\n");
                 }
                 
                 // Temporisation entre 2 envois

@@ -43,7 +43,7 @@ public class TestLOFenetre extends JFrame {
     public JButton boutonPubTerminaux =  new JButton("Publish Terminaux");
     public JButton boutonPubOABApp =  new JButton("Publish OAB App (1 terminal)");
 
-	private JCheckBox jckSimulation = new JCheckBox("Simulation");
+	private static JCheckBox jckSimulation = new JCheckBox("Simulation");
 
 	/*
 	 * 
@@ -59,6 +59,7 @@ public class TestLOFenetre extends JFrame {
 		boolean bGood = true;
 		
 		//		TestLOSamples.sGetDataLinkBase = jtfReqBase.getText();
+	    TestLOSamples.bPublish = !jckSimulation.isSelected();
 		TestLOSamples.sAPIKey = jtfKey.getText();
 		TestLOSamples.sStreamID = jtfStreamID.getText();
 		// Nb Devices
@@ -280,7 +281,11 @@ public class TestLOFenetre extends JFrame {
        Thread t;
        
       
-	   t = new Thread(new RunOABAppTraffic(TestLOSamples.DEVICE_URN_PREFIX+"APPOAB00", 2000, 5000, TestLOSamples.bPublish));
+	   t = new Thread(new RunOABAppTraffic(	TestLOSamples.DEVICE_URN_PREFIX+"APPOAB00", 
+			   								TestLOSamples.lNbDataPerDevice, 
+			   								TestLOSamples.lTempoEnvoi, 
+			   								TestLOSamples.bPublish,
+			   								TestLOSamples.fenetreTestLOSamples.textPane));
 	   t.start();
 		
 	}

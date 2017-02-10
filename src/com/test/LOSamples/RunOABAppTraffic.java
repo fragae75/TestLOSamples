@@ -38,12 +38,18 @@ public class RunOABAppTraffic  implements Runnable {
 	public RunOABAppTraffic (	String sDeviceUrn, 
 								long lNbEchantillons, 
 								long lTempoEnvoi, 
-								boolean bPublish, 
+								boolean bPublish,
+								String sStreamIDOAB,
+								String sDataModelOAB,
+								String sDataTagOAB,
 								JTextArea textPane){
 		this.sDeviceUrn = sDeviceUrn;
 		this.lTempoEnvoi = lTempoEnvoi;
 		this.lNbEchantillons = lNbEchantillons;
 		this.bPublish = bPublish;
+		this.sStreamId = sStreamIDOAB;
+		this.sDataModel = sDataModelOAB;
+		this.sDataTag = sDataTagOAB;
 		this.textPane = textPane;
 	}
 

@@ -45,7 +45,10 @@ public class TestLOSamples {
 	static long lTempoEnvoiOAB = TEMPO_ENVOIS;
     static long lNbDataPerDeviceOAB = NB_ECHANTILLONS;
     static int nbDevicesOAB = NB_DEVICES_OAB;
-     
+
+    static String sFifoName = "myFifo";
+    static QueueTypes queueType = QueueTypes.PUBSUB;
+    
 	public static double arrondi(double d, int digit)
 	{
 		double val = d;
@@ -57,7 +60,11 @@ public class TestLOSamples {
 		return val;
 	}
 
-	
+	public enum QueueTypes{
+		PUBSUB,
+		FIFO,
+		ROUTER;
+	}
 
 	
 	

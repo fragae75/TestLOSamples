@@ -9,15 +9,21 @@ import java.util.Random;
 import javax.swing.JTabbedPane;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+
+import com.test.LOSamples.TestLOSamples.QueueTypes;
+
 
 
 public class TestLOFenetre extends JFrame {
@@ -28,6 +34,7 @@ public class TestLOFenetre extends JFrame {
 	private JPanel panConfig = new JPanel();
 	private JPanel panMultiTerminal = new JPanel();
 	private JPanel panOABApp = new JPanel();
+	private JPanel panSubscribe = new JPanel();
 	// Config
 	private static JCheckBox jckSimulation = new JCheckBox("Simulation");
 	private JLabel jlbKey = new JLabel("Key : ");
@@ -56,6 +63,16 @@ public class TestLOFenetre extends JFrame {
 	private JLabel jlblTempoEnvoiOAB = new JLabel("Tempo B/W 2 messages/device : ");
 	private static JTextField jtflTempoEnvoiOAB = new JTextField();
     public JButton boutonPubOABApp =  new JButton("Publish OAB App");
+    // Subscribe
+	private JLabel jlbTitleFifo = new JLabel("Subscribe Fifo : ");
+	private static JTextField jtffifoName = new JTextField();
+	public static JTextArea textPaneSubscribe = new JTextArea();
+	private JScrollPane scrollSubscribe = new JScrollPane(textPaneSubscribe);
+	private JRadioButton jrbPubSub = new JRadioButton("Pubsub");
+	private JRadioButton jrbFifo = new JRadioButton("Fifo");
+	private JRadioButton jrbRouter = new JRadioButton("Router");
+	private ButtonGroup rbGroupSubscribe = new ButtonGroup();
+	public JButton boutonSubscribe =  new JButton("Subscribe");
 
 
 	/*
@@ -65,7 +82,7 @@ public class TestLOFenetre extends JFrame {
 	 * 
 	 * 
 	 */
-	static boolean GatherConfigValues()
+	static boolean gatherConfigValues()
 	{
 		int i;
 		long l;
@@ -177,7 +194,12 @@ public class TestLOFenetre extends JFrame {
 			jtflTempoEnvoiOAB.setText(String.valueOf(TestLOSamples.lTempoEnvoiOAB));
 	    	bGood = false;
 		}		
-		
+
+		/*
+		 * Subscribe
+		 */
+		TestLOSamples.sFifoName = jtffifoName.getText();
+
 		return bGood;
 	}
 	
@@ -300,7 +322,7 @@ public class TestLOFenetre extends JFrame {
 	    JPanel jpNbDevicesOAB = new JPanel();
 	    jpNbDevicesOAB.setLayout(new BoxLayout(jpNbDevicesOAB, BoxLayout.LINE_AXIS));
 	    jpNbDevicesOAB.add(Box.createRigidArea(new Dimension(30, 0)));
-	    jpNbDevicesOAB.add(jlbNbDevices);
+	    jpNbDevicesOAB.add(jlbNbDevicesOAB);
 	    jtfNbDevicesOAB.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfNbDevicesOAB.getMinimumSize().height));
 	    jpNbDevicesOAB.add(jtfNbDevicesOAB);
 	    jtfNbDevicesOAB.setText(String.valueOf(TestLOSamples.nbDevicesOAB));
@@ -309,7 +331,7 @@ public class TestLOFenetre extends JFrame {
 	    JPanel jpNbDataPerDeviceOAB = new JPanel();
 	    jpNbDataPerDeviceOAB.setLayout(new BoxLayout(jpNbDataPerDeviceOAB, BoxLayout.LINE_AXIS));
 	    jpNbDataPerDeviceOAB.add(Box.createRigidArea(new Dimension(30, 0)));
-	    jpNbDataPerDeviceOAB.add(jlbNbDataPerDevice);
+	    jpNbDataPerDeviceOAB.add(jlbNbDataPerDeviceOAB);
 	    jtfNbDataPerDeviceOAB.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfNbDataPerDeviceOAB.getMinimumSize().height));
 	    jpNbDataPerDeviceOAB.add(jtfNbDataPerDeviceOAB);
 	    jtfNbDataPerDeviceOAB.setText(String.valueOf(TestLOSamples.lNbDataPerDeviceOAB));
@@ -330,6 +352,49 @@ public class TestLOFenetre extends JFrame {
 	    jpButtonOAB.add(boutonPubOABApp);
 	    
 	    
+	    /*
+	     * 
+	     * Panel Subscribe
+	     * 
+	     */
+	    
+
+	    // Saisie de la Fifo
+	    JPanel jplFifo = new JPanel();
+	    jplFifo.setLayout(new BoxLayout(jplFifo, BoxLayout.LINE_AXIS));
+	    jplFifo.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jplFifo.add(jlbTitleFifo);
+	    jtffifoName.setMaximumSize(new Dimension(100, jtffifoName.getMinimumSize().height));
+	    jplFifo.add(jtffifoName);
+	    jtffifoName.setText(String.valueOf(TestLOSamples.sFifoName));
+
+	    // radio bouton
+	    JPanel jpRBType = new JPanel();
+	    jrbPubSub.setSelected(true);
+	    jrbPubSub.addActionListener(new radioTypeActionListener());
+	    jrbFifo.addActionListener(new radioTypeActionListener());
+	    jrbRouter.addActionListener(new radioTypeActionListener());
+	    rbGroupSubscribe.add(jrbPubSub);
+	    rbGroupSubscribe.add(jrbFifo);
+	    rbGroupSubscribe.add(jrbRouter);
+	    jpRBType.setLayout(new BoxLayout(jpRBType, BoxLayout.LINE_AXIS));
+	    jpRBType.add(jrbPubSub);
+	    jpRBType.add(jrbFifo);
+	    jpRBType.add(jrbRouter);
+	    
+	    
+	    // Ajout du bouton d'action
+	    JPanel jpButtonSubscribe = new JPanel();
+	    boutonSubscribe.addActionListener(new BoutonListenerSubscribe()); 
+	    jpButtonSubscribe.setLayout(new BoxLayout(jpButtonSubscribe, BoxLayout.LINE_AXIS));
+	    jpButtonSubscribe.add(boutonSubscribe);
+
+	    
+	    /*
+	     * 
+	     * Construction de la fenetre
+	     * 
+	     */
 	    //Panneau Résultat
 	    panOutput.setLayout(new BoxLayout(panOutput, BoxLayout.PAGE_AXIS));
 	    panOutput.add(scroll);
@@ -371,11 +436,22 @@ public class TestLOFenetre extends JFrame {
 	    panOABApp.add(Box.createRigidArea(new Dimension(0, 20)));
 	    panOABApp.add(jpButtonOAB);
 
+	    // Panneau Subscribe
+	    panSubscribe.setLayout(new BoxLayout(panSubscribe, BoxLayout.PAGE_AXIS));
+	    panSubscribe.add(Box.createRigidArea(new Dimension(0, 20)));
+	    panSubscribe.add(jpRBType);
+	    panSubscribe.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panSubscribe.add(jplFifo);
+	    panSubscribe.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panSubscribe.add(jpButtonSubscribe);
+	    panSubscribe.add(scrollSubscribe);
+	    
 	    // Ajout des onglets 
 	    onglet.add("Result", panOutput);
 	    onglet.add("Configuration", panConfig);
 	    onglet.add("Multi Terminals", panMultiTerminal);
 	    onglet.add("OAB App", panOABApp);
+	    onglet.add("Subscribe", panSubscribe);
 	    //On passe ensuite les onglets au content pane
 		this.getContentPane().add(onglet, BorderLayout.CENTER);
 
@@ -393,13 +469,23 @@ public class TestLOFenetre extends JFrame {
 	      TestLOSamples.bPublish = jckSimulation.isSelected();
 	    }
 	}
+	/*
+	 * Radio type de Queue
+	 */
+	class radioTypeActionListener implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+		      System.out.println("RB Type Queue (pubsub/Fifo/Router) : " + jrbPubSub.isSelected() + "/" + jrbFifo.isSelected() + "/" + jrbRouter.isSelected());
+		      if (jrbPubSub.isSelected()) TestLOSamples.queueType = QueueTypes.PUBSUB;
+		      if (jrbFifo.isSelected()) TestLOSamples.queueType = QueueTypes.FIFO;
+		      if (jrbRouter.isSelected()) TestLOSamples.queueType = QueueTypes.ROUTER;
+		}
+	}
 
 	/*
 	 * Simule un groupe de devices fictifs
 	 */
-	public static void SimuleDevices()
+	public static void simuleDevices()
 	{
-       Random rand = new Random();
        int i;
        Thread t[] = new Thread[TestLOSamples.NB_MAX_DEVICES];
        String sURNDevice;
@@ -422,7 +508,7 @@ public class TestLOFenetre extends JFrame {
 	/*
 	 * Simule l'application de démo OAB
 	 */
-	public static void SimuleOABApp()
+	public static void simuleOABApp()
 	{
 
        Random rand = new Random();
@@ -448,7 +534,18 @@ public class TestLOFenetre extends JFrame {
        }
 	   
 	}
+	
+	public static void doSubscribeElements()
+	{
+		Thread t;
+		RunConsumeQueue consumeQueue = new RunConsumeQueue(TestLOSamples.sFifoName, TestLOSamples.queueType, TestLOSamples.fenetreTestLOSamples.textPane, textPaneSubscribe);
 
+		t = new Thread(consumeQueue);
+		t.start();
+        System.out.println("Thread : consume Queue");
+	}
+
+		
 	/*
 	 * Bouton lancement publication Terminaux
 	 */
@@ -456,8 +553,8 @@ public class TestLOFenetre extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
-			if (GatherConfigValues())
-				SimuleDevices();
+			if (gatherConfigValues())
+				simuleDevices();
 	    }
 	  }
 	
@@ -470,8 +567,22 @@ public class TestLOFenetre extends JFrame {
 		public void actionPerformed(ActionEvent arg0) {
 			
 	    	// Simuler l'appli Android OAB
-			if (GatherConfigValues())
-				SimuleOABApp();
+			if (gatherConfigValues())
+				simuleOABApp();
+	    }
+	  }
+
+	/*
+	 * Bouton souscription
+	 */
+	class BoutonListenerSubscribe implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+	    	// Simuler l'appli Android OAB
+			if (gatherConfigValues())
+				doSubscribeElements();
 	    }
 	  }
 }

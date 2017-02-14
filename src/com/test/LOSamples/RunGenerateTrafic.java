@@ -133,9 +133,8 @@ public class RunGenerateTrafic implements Runnable {
             		textPane.append(String.valueOf(i) + " - Pub msg: " + sDeviceUrn + sContent + "\n");
 		            MqttMessage message = new MqttMessage(sContent.getBytes());
 		            message.setQos(0);
-//		            sampleClient.publish("dev/fifo/monAppli", message);
 		            sampleClient.publish("dev/data", message);
-		            System.out.println("Message published fifo");
+		            System.out.println("Message published dev/data");
                 }
                 else
                 {

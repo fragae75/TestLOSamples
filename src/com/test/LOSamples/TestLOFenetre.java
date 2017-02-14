@@ -28,15 +28,19 @@ import com.test.LOSamples.TestLOSamples.QueueTypes;
 
 public class TestLOFenetre extends JFrame {
 	private JTabbedPane onglet = new JTabbedPane();
-	public JTextArea textPane = new JTextArea();
-	private JScrollPane scroll = new JScrollPane(textPane);
+	private JLabel jlbSend = new JLabel("Send");
+	public JTextArea textPaneSend = new JTextArea();
+	private JScrollPane scrollSend = new JScrollPane(textPaneSend);
+	private JLabel jlbReceive = new JLabel("Receive");
+	public JTextArea textPaneReceive = new JTextArea();
+	private JScrollPane scrollReceive = new JScrollPane(textPaneReceive);
 	private JPanel panOutput = new JPanel();
 	private JPanel panConfig = new JPanel();
 	private JPanel panMultiTerminal = new JPanel();
 	private JPanel panOABApp = new JPanel();
 	private JPanel panSubscribe = new JPanel();
 	// Config
-	private static JCheckBox jckSimulation = new JCheckBox("Simulation");
+	private static JCheckBox jckSimulation = new JCheckBox("Simulation (just logs)");
 	private JLabel jlbKey = new JLabel("Key : ");
 	private static JTextField jtfKey = new JTextField();
 	private JLabel jlbServer = new JLabel("Server : ");
@@ -395,8 +399,12 @@ public class TestLOFenetre extends JFrame {
 	     */
 	    //Panneau Résultat
 	    panOutput.setLayout(new BoxLayout(panOutput, BoxLayout.PAGE_AXIS));
-	    panOutput.add(scroll);
-	    
+	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panOutput.add(jlbSend, BorderLayout.WEST);
+	    panOutput.add(scrollSend);
+	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panOutput.add(jlbReceive, BorderLayout.WEST);
+	    panOutput.add(scrollReceive);
 	    //Panneau Config
 	    panConfig.setLayout(new BoxLayout(panConfig, BoxLayout.PAGE_AXIS));
 	    panConfig.add(Box.createRigidArea(new Dimension(0, 20)));
@@ -445,11 +453,11 @@ public class TestLOFenetre extends JFrame {
 	    panSubscribe.add(scrollSubscribe);
 	    
 	    // Ajout des onglets 
-	    onglet.add("Result", panOutput);
 	    onglet.add("Configuration", panConfig);
 	    onglet.add("Multi Terminals", panMultiTerminal);
 	    onglet.add("OAB App", panOABApp);
 	    onglet.add("Subscribe", panSubscribe);
+	    onglet.add("Result", panOutput);
 	    //On passe ensuite les onglets au content pane
 		this.getContentPane().add(onglet, BorderLayout.CENTER);
 
@@ -509,7 +517,7 @@ public class TestLOFenetre extends JFrame {
     			   									TestLOSamples.lNbDataPerDevice, 
     			   									TestLOSamples.lTempoEnvoi, 
     			   									TestLOSamples.bPublish, 
-    			   									TestLOSamples.fenetreTestLOSamples.textPane));
+    			   									TestLOSamples.fenetreTestLOSamples.textPaneSend));
     	   t[i].start();
 
  	       System.out.println("Thread : " + i);
@@ -538,18 +546,22 @@ public class TestLOFenetre extends JFrame {
     			   									TestLOSamples.sStreamIDOAB,
     			   									TestLOSamples.sDataModelOAB,
     			   									TestLOSamples.sDataTagOAB,
-    			   									TestLOSamples.fenetreTestLOSamples.textPane));
+    			   									TestLOSamples.fenetreTestLOSamples.textPaneSend));
     	   t[i].start();
 
  	       System.out.println("Thread : " + i);
        }
 	   
 	}
-	
+	/*
+	 * 
+	 * doSubscribeElements()
+	 * 
+	 */
 	public static void doSubscribeElements()
 	{
 		Thread t;
-		RunConsumeQueue consumeQueue = new RunConsumeQueue(TestLOSamples.sQueueName, TestLOSamples.queueType, TestLOSamples.fenetreTestLOSamples.textPane, textPaneSubscribe);
+		RunConsumeQueue consumeQueue = new RunConsumeQueue(TestLOSamples.sQueueName, TestLOSamples.queueType, TestLOSamples.fenetreTestLOSamples.textPaneReceive, textPaneSubscribe);
 
 		t = new Thread(consumeQueue);
 		t.start();

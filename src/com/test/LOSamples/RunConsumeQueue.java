@@ -95,7 +95,7 @@ public class RunConsumeQueue implements Runnable {
 	        // Subscribe to commands
 	        System.out.println("Subscribing to queue " + sQueueName);
             mqttClient.subscribe(sQueueName);
-	        System.out.println("... subscribed.");
+	        System.out.println(sQueueName + "... subscribed.");
     		textPaneSubscribe.setCaretPosition(textPaneSubscribe.getDocument().getLength());
     		textPaneSubscribe.append("Subscribe to Queue : " + sQueueName + "\n");
 	

@@ -1,3 +1,11 @@
+/*
+ * 
+ * 
+ * The thread simulates a specific device (AppOAB) and generates MQTT device trafic
+ * 
+ * 
+ * 
+ */
 package com.test.LOSamples;
 
 

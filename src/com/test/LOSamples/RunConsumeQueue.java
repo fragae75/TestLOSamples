@@ -10,10 +10,12 @@ import java.util.UUID;
 import javax.swing.JTextArea;
 
 /**
- * Application connects to LO and consumes messages from a FIFO queue.
- *
- * You MUST first create a FIFO called "~data" in your LO account.
- *
+ * 
+ * 
+ * the thread connects to LO in bridge mode and consumes messages from a queue.
+ * - if Fifo : You MUST first create the FIFO in your LO account and bind it from a route, ex : ~event.v1.data.new.#
+ * - if pubsub : 
+ * 
  */
 public class RunConsumeQueue implements Runnable {
 

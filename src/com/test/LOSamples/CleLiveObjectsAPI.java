@@ -1,3 +1,10 @@
+/*
+ * 
+ * Get the API Key on cle.txt 
+ * 
+ * 
+ */
+
 
 package com.test.LOSamples;
 

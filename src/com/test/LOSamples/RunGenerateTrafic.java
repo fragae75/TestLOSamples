@@ -1,3 +1,12 @@
+/*
+ * 
+ * 
+ * The thread simulates a device (terminal) and generates MQTT device trafic
+ * 
+ * 
+ * 
+ */
+
 package com.test.LOSamples;
 
 import java.util.Arrays;

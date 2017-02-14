@@ -65,7 +65,7 @@ public class TestLOFenetre extends JFrame {
     public JButton boutonPubOABApp =  new JButton("Publish OAB App");
     // Subscribe
 	private JLabel jlbTitleFifo = new JLabel("Subscribe Fifo : ");
-	private static JTextField jtffifoName = new JTextField();
+	private static JTextField jtfQueueName = new JTextField();
 	public static JTextArea textPaneSubscribe = new JTextArea();
 	private JScrollPane scrollSubscribe = new JScrollPane(textPaneSubscribe);
 	private JRadioButton jrbPubSub = new JRadioButton("Pubsub");
@@ -198,7 +198,7 @@ public class TestLOFenetre extends JFrame {
 		/*
 		 * Subscribe
 		 */
-		TestLOSamples.sFifoName = jtffifoName.getText();
+		TestLOSamples.sQueueName = jtfQueueName.getText();
 
 		return bGood;
 	}
@@ -357,22 +357,20 @@ public class TestLOFenetre extends JFrame {
 	     * Panel Subscribe
 	     * 
 	     */
-	    
-
 	    // Saisie de la Fifo
 	    JPanel jplFifo = new JPanel();
 	    jplFifo.setLayout(new BoxLayout(jplFifo, BoxLayout.LINE_AXIS));
 	    jplFifo.add(Box.createRigidArea(new Dimension(30, 0)));
 	    jplFifo.add(jlbTitleFifo);
-	    jtffifoName.setMaximumSize(new Dimension(100, jtffifoName.getMinimumSize().height));
-	    jplFifo.add(jtffifoName);
-	    jtffifoName.setText(String.valueOf(TestLOSamples.sFifoName));
+	    jtfQueueName.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfQueueName.getMinimumSize().height));
+	    jplFifo.add(jtfQueueName);
+	    jtfQueueName.setText(String.valueOf(TestLOSamples.sQueueName));
 
 	    // radio bouton
 	    JPanel jpRBType = new JPanel();
-	    jrbPubSub.setSelected(true);
 	    jrbPubSub.addActionListener(new radioTypeActionListener());
 	    jrbFifo.addActionListener(new radioTypeActionListener());
+	    jrbFifo.setSelected(true);
 	    jrbRouter.addActionListener(new radioTypeActionListener());
 	    rbGroupSubscribe.add(jrbPubSub);
 	    rbGroupSubscribe.add(jrbFifo);
@@ -475,9 +473,22 @@ public class TestLOFenetre extends JFrame {
 	class radioTypeActionListener implements ActionListener{
 		public void actionPerformed(ActionEvent e) {
 		      System.out.println("RB Type Queue (pubsub/Fifo/Router) : " + jrbPubSub.isSelected() + "/" + jrbFifo.isSelected() + "/" + jrbRouter.isSelected());
-		      if (jrbPubSub.isSelected()) TestLOSamples.queueType = QueueTypes.PUBSUB;
-		      if (jrbFifo.isSelected()) TestLOSamples.queueType = QueueTypes.FIFO;
-		      if (jrbRouter.isSelected()) TestLOSamples.queueType = QueueTypes.ROUTER;
+		      if (jrbPubSub.isSelected()) 
+		      {
+		    	  TestLOSamples.queueType = QueueTypes.PUBSUB;
+		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_PUBSUB;
+		      }
+		      if (jrbFifo.isSelected()) 
+		      {
+		    	  TestLOSamples.queueType = QueueTypes.FIFO;
+		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_FIFO;
+		      }
+		      if (jrbRouter.isSelected()) 
+		      {
+		    	  TestLOSamples.queueType = QueueTypes.ROUTER;
+		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_ROUTER;
+		      }
+	    	  jtfQueueName.setText(TestLOSamples.sQueueName);
 		}
 	}
 
@@ -538,7 +549,7 @@ public class TestLOFenetre extends JFrame {
 	public static void doSubscribeElements()
 	{
 		Thread t;
-		RunConsumeQueue consumeQueue = new RunConsumeQueue(TestLOSamples.sFifoName, TestLOSamples.queueType, TestLOSamples.fenetreTestLOSamples.textPane, textPaneSubscribe);
+		RunConsumeQueue consumeQueue = new RunConsumeQueue(TestLOSamples.sQueueName, TestLOSamples.queueType, TestLOSamples.fenetreTestLOSamples.textPane, textPaneSubscribe);
 
 		t = new Thread(consumeQueue);
 		t.start();

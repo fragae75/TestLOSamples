@@ -21,7 +21,7 @@ public class RunConsumeQueue implements Runnable {
 	private String sQueueName;
 	private JTextArea textPaneSubscribe;
 	private QueueTypes queueType;
-    final String ROUTING_KEY_FILTER = "~event/v1/data/new/#";
+//   final String ROUTING_KEY_FILTER = "~event/v1/data/new/#";
 	
 	public RunConsumeQueue(	String sTopicName, 
 						QueueTypes queueType,
@@ -37,7 +37,7 @@ public class RunConsumeQueue implements Runnable {
 				this.sQueueName = "fifo/" + sTopicName;
 			break;
 			case ROUTER:
-				this.sQueueName = "router/" + ROUTING_KEY_FILTER;
+				this.sQueueName = "router/" + sTopicName;
 			break;
 		}
 		
@@ -86,7 +86,7 @@ public class RunConsumeQueue implements Runnable {
 	        connOpts.setUserName("json+bridge"); // selecting mode "Bridge"
 	        connOpts.setPassword(TestLOSamples.sAPIKey.toCharArray()); // passing API key value as password
 	        connOpts.setCleanSession(true);
-	
+
 	        // Connection
 	        System.out.printf("Connecting to broker: %s ...%n", TestLOSamples.SERVER);
 	        mqttClient.connect(connOpts);
@@ -94,8 +94,6 @@ public class RunConsumeQueue implements Runnable {
 	
 	        // Subscribe to commands
 	        System.out.println("Subscribing to queue " + sQueueName);
-//	        mqttClient.subscribe("fifo/~data");
-//	        mqttClient.subscribe("pubsub/data");
             mqttClient.subscribe(sQueueName);
 	        System.out.println("... subscribed.");
     		textPaneSubscribe.setCaretPosition(textPaneSubscribe.getDocument().getLength());

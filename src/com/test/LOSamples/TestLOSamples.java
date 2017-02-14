@@ -34,6 +34,10 @@ public class TestLOSamples {
     final static int NB_DEVICES_OAB = 1;
     final static int NB_MAX_DEVICES = 1000;
 	
+    final static String DEFAULT_FIFO = "flgFifo";
+    final static String DEFAULT_PUBSUB = "data";
+    final static String DEFAULT_ROUTER = "~event/v1/data/new/#";
+    
 	static TestLOFenetre fenetreTestLOSamples;
     static boolean bPublish = false; 					// false => simulation sur la console
 	static String sAPIKey = "Empty => cle.txt"; 		// A récupérer dans la classe CleAPI
@@ -46,8 +50,8 @@ public class TestLOSamples {
     static long lNbDataPerDeviceOAB = NB_ECHANTILLONS;
     static int nbDevicesOAB = NB_DEVICES_OAB;
 
-    static String sFifoName = "myFifo";
-    static QueueTypes queueType = QueueTypes.PUBSUB;
+    static String sQueueName = DEFAULT_FIFO;
+    static QueueTypes queueType = QueueTypes.FIFO;
     
 	public static double arrondi(double d, int digit)
 	{

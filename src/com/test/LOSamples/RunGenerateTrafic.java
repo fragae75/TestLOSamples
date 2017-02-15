@@ -9,8 +9,11 @@
 
 package com.test.LOSamples;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Random;
 
 import javax.swing.JTextArea;
@@ -27,17 +30,20 @@ import com.google.gson.Gson;
 public class RunGenerateTrafic implements Runnable {
 
 	private String sDeviceUrn;
+	private String sTopic;
 	private long lTempoEnvoi;
 	private long lNbEchantillons;
 	private boolean bPublish;
 	private JTextArea textPane;
 	
-	public RunGenerateTrafic(	String sDeviceUrn, 
+	public RunGenerateTrafic(	String sDeviceUrn,
+								String sTopic,
 								long lNbEchantillons, 
 								long lTempoEnvoi, 
 								boolean bPublish, 
 								JTextArea textPane){
 		this.sDeviceUrn = sDeviceUrn;
+		this.sTopic = sTopic;
 		this.lTempoEnvoi = lTempoEnvoi;
 		this.lNbEchantillons = lNbEchantillons;
 		this.bPublish = bPublish;
@@ -133,23 +139,25 @@ public class RunGenerateTrafic implements Runnable {
 
         		// On met le curseur à la fin de la requête précédente
         		textPane.setCaretPosition(textPane.getDocument().getLength());
+    	    	LocalDateTime now = LocalDateTime.now();
+    	    	String sTime = now.format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS ", Locale.FRENCH));
         		
                 if (bPublish)
                 {
 		            // Publish data
                     System.out.print(String.valueOf(i));
-                    System.out.println(" - Publishing message: " + sDeviceUrn + sContent);
-            		textPane.append(String.valueOf(i) + " - Pub msg: " + sDeviceUrn + sContent + "\n");
+                    System.out.println(" - Publishing message: " + sDeviceUrn + " - " + sTopic + " - " + sContent);
+            		textPane.append(sTime + String.valueOf(i) + " - Pub msg: " + sDeviceUrn + " - " + sTopic + " - " + sContent + "\n");
 		            MqttMessage message = new MqttMessage(sContent.getBytes());
 		            message.setQos(0);
-		            sampleClient.publish("dev/data", message);
-		            System.out.println("Message published dev/data");
+		            sampleClient.publish(sTopic, message);
+		            System.out.println("Message published "+ sTopic);
                 }
                 else
                 {
                     System.out.print(String.valueOf(i));
                     System.out.println(" - Simulate Publishing message: " + sDeviceUrn + sContent);
-            		textPane.append(String.valueOf(i) + " - Simulate Pub msg: " + sDeviceUrn + sContent + "\n");
+            		textPane.append(sTime + String.valueOf(i) + " - Simulate Pub msg: " + sDeviceUrn + sContent + "\n");
                 }
                 
                 // Temporisation entre 2 envois

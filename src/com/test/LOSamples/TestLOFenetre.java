@@ -56,6 +56,8 @@ public class TestLOFenetre extends JFrame {
 	// Multi Devices
 	private JLabel jlbStreamID = new JLabel("StreamID : ");
 	private static JTextField jtfStreamID = new JTextField();
+	private JLabel jlbTopic = new JLabel("Topic : ");
+	private static JTextField jtfTopic = new JTextField();
 	private JLabel jlbDeviceUrnPrefix = new JLabel("Device URN prefix : ");
 	private static JTextField jtfDeviceUrnPrefix = new JTextField();
 	private JLabel jlbNbDevices = new JLabel("Nb Devices to simulate : ");
@@ -112,6 +114,7 @@ public class TestLOFenetre extends JFrame {
 		 * 
 		 */
 		TestLOSamples.sStreamID = jtfStreamID.getText();
+		TestLOSamples.sDeviceTopic = jtfTopic.getText();
 		// Nb Devices
 		try {
 		    i = Integer.parseInt(jtfNbDevices.getText());
@@ -273,6 +276,15 @@ public class TestLOFenetre extends JFrame {
 	    jpStreamID.add(jtfStreamID);
 	    jtfStreamID.setText(TestLOSamples.sStreamID);
 
+	    // Topic 
+	    JPanel jpTopic = new JPanel();
+	    jpTopic.setLayout(new BoxLayout(jpTopic, BoxLayout.LINE_AXIS));
+		jpTopic.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpTopic.add(jlbTopic);
+	    jtfTopic.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfTopic.getMinimumSize().height));
+	    jpTopic.add(jtfTopic);
+	    jtfTopic.setText(TestLOSamples.DEFAULT_DEVICE_TOPIC);
+
 	    // Device Urn Prefix
 	    JPanel jpDeviceUrnPrefix = new JPanel();
 	    jpDeviceUrnPrefix.setLayout(new BoxLayout(jpDeviceUrnPrefix, BoxLayout.LINE_AXIS));
@@ -427,6 +439,8 @@ public class TestLOFenetre extends JFrame {
 	    panMultiTerminal.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panMultiTerminal.add(jpStreamID);
 	    panMultiTerminal.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panMultiTerminal.add(jpTopic);
+	    panMultiTerminal.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panMultiTerminal.add(jpDeviceUrnPrefix);
 	    panMultiTerminal.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panMultiTerminal.add(jpNbDevices);
@@ -522,6 +536,7 @@ public class TestLOFenetre extends JFrame {
        for (i=0; i<TestLOSamples.nbDevices; i++){
     	   sURNDevice = String.format("%S%05d", TestLOSamples.DEVICE_URN_PREFIX, i);
     	   t[i] = new Thread(new RunGenerateTrafic(	sURNDevice, 
+    			   									TestLOSamples.sDeviceTopic,
     			   									TestLOSamples.lNbDataPerDevice, 
     			   									TestLOSamples.lTempoEnvoi, 
     			   									TestLOSamples.bPublish, 

@@ -9,8 +9,11 @@
 package com.test.LOSamples;
 
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Random;
 
 import javax.swing.JTextArea;
@@ -81,6 +84,9 @@ public class RunOABAppTraffic  implements Runnable {
         try {
         	MqttClient sampleClient = new MqttClient(TestLOSamples.SERVER, sDeviceUrn, new MemoryPersistence());
             MqttConnectOptions connOpts = new MqttConnectOptions();
+	    	LocalDateTime now = LocalDateTime.now();
+	    	String sTime = now.format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS ", Locale.FRENCH));
+	    	
             if (bPublish)
             {
 	            connOpts.setUserName("json+device"); // selecting mode "Device"
@@ -127,7 +133,7 @@ public class RunOABAppTraffic  implements Runnable {
 		            // Publish data
                     System.out.print(String.valueOf(i));
                     System.out.println(" - Publishing message: " + sDeviceUrn + sContent);
-            		textPane.append(String.valueOf(i) + " - Pub msg: " + sDeviceUrn + sContent + "\n");
+            		textPane.append(sTime + String.valueOf(i) + " - Pub msg: " + sDeviceUrn + sContent + "\n");
 		            MqttMessage message = new MqttMessage(sContent.getBytes());
 		            message.setQos(0);
 		            sampleClient.publish("dev/data", message);
@@ -137,7 +143,7 @@ public class RunOABAppTraffic  implements Runnable {
                 {
                     System.out.print(String.valueOf(i));
                     System.out.println(" - Simulate Publishing message: " + sDeviceUrn + sContent);
-            		textPane.append(String.valueOf(i) + " - Simulate Pub msg: " + sDeviceUrn + sContent + "\n");
+            		textPane.append(sTime + String.valueOf(i) + " - Simulate Pub msg: " + sDeviceUrn + sContent + "\n");
                 }
                 
                 // Temporisation entre 2 envois

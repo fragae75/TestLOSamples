@@ -5,6 +5,9 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import com.test.LOSamples.TestLOSamples.QueueTypes;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.UUID;
 
 import javax.swing.JTextArea;
@@ -63,9 +66,12 @@ public class RunConsumeQueue implements Runnable {
         }
 
         public void messageArrived(String s, MqttMessage mqttMessage) throws Exception {
+	    	LocalDateTime now = LocalDateTime.now();
+	    	String sTime = now.format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS ", Locale.FRENCH));
+	    	
             System.out.println("Received message from queue - " + sQueueName + mqttMessage);
     		textPane.setCaretPosition(textPane.getDocument().getLength());
-    		textPane.append("Queue " + sQueueName + " : " + mqttMessage + "\n");
+    		textPane.append(sTime + " Queue " + sQueueName + " : " + mqttMessage + "\n");
         }
 
         public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
@@ -79,6 +85,9 @@ public class RunConsumeQueue implements Runnable {
 	
 	    MqttClient mqttClient = null;
 	    try {
+	    	LocalDateTime now = LocalDateTime.now();
+	    	String sTime = now.format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS ", Locale.FRENCH));
+
 	        mqttClient = new MqttClient(TestLOSamples.SERVER, APP_ID, new MemoryPersistence());
 	
 	        // register callback (to handle received commands
@@ -99,7 +108,7 @@ public class RunConsumeQueue implements Runnable {
             mqttClient.subscribe(sQueueName);
 	        System.out.println(sQueueName + "... subscribed.");
     		textPaneSubscribe.setCaretPosition(textPaneSubscribe.getDocument().getLength());
-    		textPaneSubscribe.append("Subscribe to Queue : " + sQueueName + "\n");
+    		textPaneSubscribe.append(sTime + " Subscribe to Queue : " + sQueueName + "\n");
 	
 	        synchronized (mqttClient) {
 	            try {

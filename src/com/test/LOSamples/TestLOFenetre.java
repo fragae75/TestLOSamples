@@ -48,12 +48,13 @@ public class TestLOFenetre extends JFrame {
 	private JPanel panOABApp = new JPanel();
 	private JPanel panSubscribe = new JPanel();
 	// Config
-	private static JCheckBox jckSimulation = new JCheckBox("Simulation (just logs)");
+	private static JCheckBox jcbSimulation = new JCheckBox("Simulation (just logs)");
 	private JLabel jlbKey = new JLabel("Key : ");
 	private static JTextField jtfKey = new JTextField();
 	private JLabel jlbServer = new JLabel("Server : ");
 	private static JTextField jtfServer = new JTextField();
 	// Multi Devices
+	private static JCheckBox jcbDeviceMode = new JCheckBox("Device Mode");
 	private JLabel jlbStreamID = new JLabel("StreamID : ");
 	private static JTextField jtfStreamID = new JTextField();
 	private JLabel jlbTopic = new JLabel("Topic : ");
@@ -106,7 +107,7 @@ public class TestLOFenetre extends JFrame {
 		 * Config
 		 */
 		//		TestLOSamples.sGetDataLinkBase = jtfReqBase.getText();
-	    TestLOSamples.bPublish = !jckSimulation.isSelected();
+	    TestLOSamples.bPublish = !jcbSimulation.isSelected();
 		TestLOSamples.sAPIKey = jtfKey.getText();
 		
 		/*
@@ -239,9 +240,9 @@ public class TestLOFenetre extends JFrame {
 	    // Checkbox Simulation
 	    JPanel jpCBSimul = new JPanel();
 	    jpCBSimul.setLayout(new BoxLayout(jpCBSimul, BoxLayout.LINE_AXIS));
-	    jckSimulation.addActionListener(new CheckSimulationActionListener());
-	    jckSimulation.setSelected(!TestLOSamples.bPublish); 
-	    jpCBSimul.add(jckSimulation);
+	    jcbSimulation.addActionListener(new CheckSimulationActionListener());
+	    jcbSimulation.setSelected(!TestLOSamples.bPublish); 
+	    jpCBSimul.add(jcbSimulation);
 	    		
 	    // API Key
 	    JPanel jpKey = new JPanel();
@@ -267,6 +268,10 @@ public class TestLOFenetre extends JFrame {
 		 * 
 		 * 
 		 */
+	    
+	    jcbDeviceMode.addActionListener(new CheckDeviceModeActionListener());
+	    jcbDeviceMode.setSelected(TestLOSamples.bDeviceMode); 
+	    
 	    // Stream ID
 	    JPanel jpStreamID = new JPanel();
 	    jpStreamID.setLayout(new BoxLayout(jpStreamID, BoxLayout.LINE_AXIS));
@@ -437,6 +442,8 @@ public class TestLOFenetre extends JFrame {
 	    // Panneau Multi Terminals
 	    panMultiTerminal.setLayout(new BoxLayout(panMultiTerminal, BoxLayout.PAGE_AXIS));
 	    panMultiTerminal.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panMultiTerminal.add(jcbDeviceMode, BorderLayout.LINE_START);
+	    panMultiTerminal.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panMultiTerminal.add(jpStreamID);
 	    panMultiTerminal.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panMultiTerminal.add(jpTopic);
@@ -488,39 +495,6 @@ public class TestLOFenetre extends JFrame {
 	}	
 
 	
-	/*
-	 * Checkbox Simulation
-	 */
-	class CheckSimulationActionListener implements ActionListener{
-	    public void actionPerformed(ActionEvent e) {
-	      System.out.println("source : " + ((JCheckBox)e.getSource()).getText() + " - état : " + ((JCheckBox)e.getSource()).isSelected());
-	      TestLOSamples.bPublish = jckSimulation.isSelected();
-	    }
-	}
-	/*
-	 * Radio type de Queue
-	 */
-	class radioTypeActionListener implements ActionListener{
-		public void actionPerformed(ActionEvent e) {
-		      System.out.println("RB Type Queue (pubsub/Fifo/Router) : " + jrbPubSub.isSelected() + "/" + jrbFifo.isSelected() + "/" + jrbRouter.isSelected());
-		      if (jrbPubSub.isSelected()) 
-		      {
-		    	  TestLOSamples.queueType = QueueTypes.PUBSUB;
-		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_PUBSUB;
-		      }
-		      if (jrbFifo.isSelected()) 
-		      {
-		    	  TestLOSamples.queueType = QueueTypes.FIFO;
-		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_FIFO;
-		      }
-		      if (jrbRouter.isSelected()) 
-		      {
-		    	  TestLOSamples.queueType = QueueTypes.ROUTER;
-		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_ROUTER;
-		      }
-	    	  jtfQueueName.setText(TestLOSamples.sQueueName);
-		}
-	}
 
 	/*
 	 * Simule un groupe de devices fictifs
@@ -539,6 +513,7 @@ public class TestLOFenetre extends JFrame {
     			   									TestLOSamples.sDeviceTopic,
     			   									TestLOSamples.lNbDataPerDevice, 
     			   									TestLOSamples.lTempoEnvoi, 
+    			   									TestLOSamples.bDeviceMode,
     			   									TestLOSamples.bPublish, 
     			   									TestLOSamples.fenetreTestLOSamples.textPaneSend));
     	   t[i].start();
@@ -592,6 +567,48 @@ public class TestLOFenetre extends JFrame {
 	}
 
 		
+	/*
+	 * Checkbox Simulation
+	 */
+	class CheckSimulationActionListener implements ActionListener{
+	    public void actionPerformed(ActionEvent e) {
+	      System.out.println("source : " + ((JCheckBox)e.getSource()).getText() + " - état : " + ((JCheckBox)e.getSource()).isSelected());
+	      TestLOSamples.bPublish = jcbSimulation.isSelected();
+	    }
+	}
+	/*
+	 * Checkbox Device Mode
+	 */
+	class CheckDeviceModeActionListener implements ActionListener{
+	    public void actionPerformed(ActionEvent e) {
+	      System.out.println("Device Mode : " + ((JCheckBox)e.getSource()).getText() + " - état : " + ((JCheckBox)e.getSource()).isSelected());
+	      TestLOSamples.bDeviceMode = jcbDeviceMode.isSelected();
+	    }
+	}
+	/*
+	 * Radio type de Queue
+	 */
+	class radioTypeActionListener implements ActionListener{
+		public void actionPerformed(ActionEvent e) {
+		      System.out.println("RB Type Queue (pubsub/Fifo/Router) : " + jrbPubSub.isSelected() + "/" + jrbFifo.isSelected() + "/" + jrbRouter.isSelected());
+		      if (jrbPubSub.isSelected()) 
+		      {
+		    	  TestLOSamples.queueType = QueueTypes.PUBSUB;
+		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_PUBSUB;
+		      }
+		      if (jrbFifo.isSelected()) 
+		      {
+		    	  TestLOSamples.queueType = QueueTypes.FIFO;
+		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_FIFO;
+		      }
+		      if (jrbRouter.isSelected()) 
+		      {
+		    	  TestLOSamples.queueType = QueueTypes.ROUTER;
+		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_ROUTER;
+		      }
+	    	  jtfQueueName.setText(TestLOSamples.sQueueName);
+		}
+	}
 	/*
 	 * Bouton lancement publication Terminaux
 	 */

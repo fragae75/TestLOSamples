@@ -34,18 +34,21 @@ public class RunGenerateTrafic implements Runnable {
 	private long lTempoEnvoi;
 	private long lNbEchantillons;
 	private boolean bPublish;
+	private boolean bDeviceMode;
 	private JTextArea textPane;
 	
 	public RunGenerateTrafic(	String sDeviceUrn,
 								String sTopic,
 								long lNbEchantillons, 
 								long lTempoEnvoi, 
+								boolean bDeviceMode,
 								boolean bPublish, 
 								JTextArea textPane){
 		this.sDeviceUrn = sDeviceUrn;
 		this.sTopic = sTopic;
 		this.lTempoEnvoi = lTempoEnvoi;
 		this.lNbEchantillons = lNbEchantillons;
+		this.bDeviceMode = bDeviceMode;
 		this.bPublish = bPublish;
 		this.textPane = textPane;
 		
@@ -80,14 +83,19 @@ public class RunGenerateTrafic implements Runnable {
         	MqttClient sampleClient = new MqttClient(TestLOSamples.SERVER, sDeviceUrn, new MemoryPersistence());
             MqttConnectOptions connOpts = new MqttConnectOptions();
             if (bPublish)
-            {
-	            connOpts.setUserName("json+device"); // selecting mode "Device"
+            {            	
+            	if (bDeviceMode)
+            		connOpts.setUserName("json+device"); // selecting mode "Device"
+            	else
+            		connOpts.setUserName("json+bridge"); // selecting mode "Device"
+            	
 	            connOpts.setPassword(TestLOSamples.sAPIKey.toCharArray()); // passing API key value as password
 	            connOpts.setCleanSession(true);
+	            connOpts.setKeepAliveInterval(TestLOSamples.MQTT_KEEP_ALIVE);
 	
 	            // Connection
-	            System.out.println("Connecting to broker: " + TestLOSamples.SERVER);
-        		textPane.append("Connecting to broker: " + TestLOSamples.SERVER + "\n");
+	            System.out.println("Connecting to broker: " + TestLOSamples.SERVER + " Device mode = " + bDeviceMode);
+        		textPane.append("Connecting to broker: " + TestLOSamples.SERVER + " Device mode = " + bDeviceMode + "\n");
 	            sampleClient.connect(connOpts);
 	            System.out.println("Connected");
         		textPane.append("Connected" + "\n");

@@ -92,6 +92,7 @@ public class RunOABAppTraffic  implements Runnable {
 	            connOpts.setUserName("json+device"); // selecting mode "Device"
 	            connOpts.setPassword(TestLOSamples.sAPIKey.toCharArray()); // passing API key value as password
 	            connOpts.setCleanSession(true);
+	            connOpts.setKeepAliveInterval(TestLOSamples.MQTT_KEEP_ALIVE);
 	
 	            // Connection
 	            System.out.println("Connecting to broker: " + TestLOSamples.SERVER);

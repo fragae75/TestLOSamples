@@ -27,7 +27,7 @@ public class TestLOSamples {
 	final static String SERVER = "tcp://liveobjects.orange-business.com:1883";
 	final static String DEVICE_URN_PREFIX = "urn:lo:nsid:sensor:TESTFLG"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";
 	final static String DEVICE_URN_PREFIX_OAB = "urn:lo:nsid:sensor:TESTFLGAPPOAB"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";
-
+ 
 	final static String DEFAULT_DEVICE_TOPIC = "dev/data";
 	final static String DATA_MODEL = "Sample02";
 	final static String DATA_TAG = "Sample.02";
@@ -36,9 +36,11 @@ public class TestLOSamples {
 	public static String sDataModelOAB = "ModelOABDemoApp00";
 	public static String sDataTagOAB = "OABDemoApp.00";
 
+	final static int MQTT_KEEP_ALIVE = 28;
+	
 	final static int TEMPO_ENVOIS = 1000;
-    final static int NB_ECHANTILLONS = 110;
-    final static int NB_DEVICES = 100;
+    final static int NB_ECHANTILLONS = 5;
+    final static int NB_DEVICES = 2;
     final static int NB_DEVICES_OAB = 1;
     final static int NB_MAX_DEVICES = 1000;
 	
@@ -52,6 +54,7 @@ public class TestLOSamples {
 	static String sServer = SERVER;
 	static String sDeviceUrnPrefix = DEVICE_URN_PREFIX;
 	static String sDeviceTopic = DEFAULT_DEVICE_TOPIC;
+	static boolean bDeviceMode = true;
 	static long lTempoEnvoi = TEMPO_ENVOIS;
     static long lNbDataPerDevice= NB_ECHANTILLONS;
     static int nbDevices = NB_DEVICES;

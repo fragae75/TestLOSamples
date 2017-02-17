@@ -97,7 +97,8 @@ public class RunConsumeQueue implements Runnable {
 	        connOpts.setUserName("json+bridge"); // selecting mode "Bridge"
 	        connOpts.setPassword(TestLOSamples.sAPIKey.toCharArray()); // passing API key value as password
 	        connOpts.setCleanSession(true);
-
+            connOpts.setKeepAliveInterval(TestLOSamples.MQTT_KEEP_ALIVE);
+ 
 	        // Connection
 	        System.out.printf("Connecting to broker: %s ...%n", TestLOSamples.SERVER);
 	        mqttClient.connect(connOpts);

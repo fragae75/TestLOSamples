@@ -5,9 +5,9 @@
  * 
  * 
  */
-
+  
 package com.test.LOSamples;
-
+ 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -32,8 +32,8 @@ import javax.swing.JTextField;
 
 import com.test.LOSamples.TestLOSamples.QueueTypes;
 
-
-
+   
+ 
 public class TestLOFenetre extends JFrame {
 	private JTabbedPane onglet = new JTabbedPane();
 	private JLabel jlbSend = new JLabel("Send");

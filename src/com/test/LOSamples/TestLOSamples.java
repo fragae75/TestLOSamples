@@ -27,7 +27,7 @@ public class TestLOSamples {
 	final static String SERVER = "tcp://liveobjects.orange-business.com:1883";
 	final static String DEVICE_URN_PREFIX = "urn:lo:nsid:sensor:TESTFLG"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";
 	final static String DEVICE_URN_PREFIX_OAB = "urn:lo:nsid:sensor:TESTFLGAPPOAB"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";
-
+ 
 	final static String DEFAULT_DEVICE_TOPIC = "dev/data";
 	final static String DATA_MODEL = "Sample02";
 	final static String DATA_TAG = "Sample.02";

@@ -115,7 +115,7 @@ public class RunGenerateTrafic implements Runnable {
                 	data.v.put("Speed", rand.nextInt(130));
                 	data.v.put("DoorOpen", false);
             		data.v.put("DoorOpenDuration", 0);
-                }
+                } 
                 else
                 {
                 	data.v.put("Speed", 0);

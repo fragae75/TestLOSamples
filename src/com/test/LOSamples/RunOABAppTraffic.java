@@ -80,7 +80,7 @@ public class RunOABAppTraffic  implements Runnable {
     
         // String for encoding to JSON
         String sContent;
-        
+         
         try {
         	MqttClient sampleClient = new MqttClient(TestLOSamples.SERVER, sDeviceUrn, new MemoryPersistence());
             MqttConnectOptions connOpts = new MqttConnectOptions();

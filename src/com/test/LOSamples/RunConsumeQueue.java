@@ -3,6 +3,8 @@ package com.test.LOSamples;
 import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.test.LOSamples.TestLOSamples.QueueTypes;
 
 import java.time.LocalDateTime;
@@ -26,7 +28,7 @@ public class RunConsumeQueue implements Runnable {
 	private String sQueueName;
 	private JTextArea textPaneSubscribe;
 	private QueueTypes queueType;
-//   final String ROUTING_KEY_FILTER = "~event/v1/data/new/#";
+    private MqttClient mqttClient = null;
 	
 	public RunConsumeQueue(	String sTopicName, 
 						QueueTypes queueType,
@@ -44,9 +46,29 @@ public class RunConsumeQueue implements Runnable {
 			case ROUTER:
 				this.sQueueName = "router/" + sTopicName;
 			break;
+			case LORA_ROUTER:
+				this.sQueueName = "router/" + sTopicName;
+			break;
+			case LORA_FIFO:
+				this.sQueueName = "fifo/" + sTopicName;
+			break;
 		}
 		
 		this.textPaneSubscribe = textPaneSubscribe;
+	}
+	
+	public void finalize(){
+		
+        System.out.println(sQueueName + " - Finalize");
+        // close client
+        if (mqttClient != null && mqttClient.isConnected()) {
+            try {
+                mqttClient.disconnect();
+	            System.out.println(sQueueName + " - Queue Disconnected");
+            } catch (MqttException e) {
+                e.printStackTrace();
+            }
+        }
 	}
 	
     /**
@@ -55,13 +77,14 @@ public class RunConsumeQueue implements Runnable {
      */
     public class SimpleMqttCallback implements MqttCallback {
         private MqttClient mqttClient;
+        private Gson gson = new Gson();
 
         public SimpleMqttCallback(MqttClient mqttClient) {
             this.mqttClient = mqttClient;
         }
 
         public void connectionLost(Throwable throwable) {
-            System.out.println("Connection lost");
+            System.out.println(sQueueName +" : Event Connection lost");
             mqttClient.notifyAll();
         }
 
@@ -69,9 +92,18 @@ public class RunConsumeQueue implements Runnable {
 	    	LocalDateTime now = LocalDateTime.now();
 	    	String sTime = now.format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS ", Locale.FRENCH));
 	    	
-            System.out.println("Received message from queue - " + sQueueName + mqttMessage);
+            System.out.println("Received message from queue - " + sQueueName + " : " + mqttMessage);
     		textPane.setCaretPosition(textPane.getDocument().getLength());
     		textPane.append(sTime + " Queue " + sQueueName + " : " + mqttMessage + "\n");
+    		
+            // Decoding the LoRa message
+	        if (queueType == QueueTypes.LORA_ROUTER || queueType == QueueTypes.LORA_FIFO)
+	        {
+	            JsonObject mqttPayload = gson.fromJson(new String(mqttMessage.getPayload()), JsonObject.class);
+	            String liveObjectsPayload = mqttPayload.get("payload").getAsString();
+	            LoraData loraData = gson.fromJson(liveObjectsPayload, LoraData.class);
+	            System.out.println("Decoded LoRa message - " + loraData);
+	        }
         }
 
         public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {
@@ -83,7 +115,7 @@ public class RunConsumeQueue implements Runnable {
 	public void run() {
 	    String APP_ID = "app:" + UUID.randomUUID().toString();
 	
-	    MqttClient mqttClient = null;
+//	    MqttClient mqttClient = null;
 	    try {
 	    	LocalDateTime now = LocalDateTime.now();
 	    	String sTime = now.format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS ", Locale.FRENCH));
@@ -95,7 +127,17 @@ public class RunConsumeQueue implements Runnable {
 	
 	        MqttConnectOptions connOpts = new MqttConnectOptions();
 	        connOpts.setUserName("json+bridge"); // selecting mode "Bridge"
-	        connOpts.setPassword(TestLOSamples.sAPIKey.toCharArray()); // passing API key value as password
+	        // Can be 2 different keys between regular LO device vs Lora device
+	        if (queueType == QueueTypes.LORA_ROUTER || queueType == QueueTypes.LORA_FIFO)
+	        {
+		        System.out.println("LORA API Key");
+	        	connOpts.setPassword(TestLOSamples.sAPILoraKey.toCharArray()); // passing API key value as password
+	        }
+	        else
+	        {
+		        System.out.println("LiveObjects API Key");
+	        	connOpts.setPassword(TestLOSamples.sAPIKey.toCharArray()); // passing API key value as password
+	        }
 	        connOpts.setCleanSession(true);
             connOpts.setKeepAliveInterval(TestLOSamples.MQTT_KEEP_ALIVE);
  
@@ -128,6 +170,7 @@ public class RunConsumeQueue implements Runnable {
 	        if (mqttClient != null && mqttClient.isConnected()) {
 	            try {
 	                mqttClient.disconnect();
+		            System.out.println(sQueueName + " - Queue Disconnected");
 	            } catch (MqttException e) {
 	                e.printStackTrace();
 	            }

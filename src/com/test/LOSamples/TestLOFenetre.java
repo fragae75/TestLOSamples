@@ -51,6 +51,8 @@ public class TestLOFenetre extends JFrame {
 	private static JCheckBox jcbSimulation = new JCheckBox("Simulation (just logs)");
 	private JLabel jlbKey = new JLabel("Key : ");
 	private static JTextField jtfKey = new JTextField();
+	private JLabel jlbLoraKey = new JLabel("Lora Key : ");
+	private static JTextField jtfLoraKey = new JTextField();
 	private JLabel jlbServer = new JLabel("Server : ");
 	private static JTextField jtfServer = new JTextField();
 	// Multi Devices
@@ -86,6 +88,8 @@ public class TestLOFenetre extends JFrame {
 	private JRadioButton jrbPubSub = new JRadioButton("Pubsub");
 	private JRadioButton jrbFifo = new JRadioButton("Fifo");
 	private JRadioButton jrbRouter = new JRadioButton("Router");
+	private JRadioButton jrbLoraRouter = new JRadioButton("Lora Router");
+	private JRadioButton jrbLoraFifo = new JRadioButton("Lora Fifo");
 	private ButtonGroup rbGroupSubscribe = new ButtonGroup();
 	public JButton boutonSubscribe =  new JButton("Subscribe");
 
@@ -109,6 +113,7 @@ public class TestLOFenetre extends JFrame {
 		//		TestLOSamples.sGetDataLinkBase = jtfReqBase.getText();
 	    TestLOSamples.bPublish = !jcbSimulation.isSelected();
 		TestLOSamples.sAPIKey = jtfKey.getText();
+		TestLOSamples.sAPILoraKey = jtfLoraKey.getText();
 		
 		/*
 		 * Multi terminals
@@ -252,6 +257,15 @@ public class TestLOFenetre extends JFrame {
 	    jtfKey.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfKey.getMinimumSize().height));
 	    jpKey.add(jtfKey);
 	    jtfKey.setText(TestLOSamples.sAPIKey);
+
+	    // API Lora Key
+	    JPanel jpLoraKey = new JPanel();
+	    jpLoraKey.setLayout(new BoxLayout(jpLoraKey, BoxLayout.LINE_AXIS));
+		jpLoraKey.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpLoraKey.add(jlbLoraKey);
+	    jtfLoraKey.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfLoraKey.getMinimumSize().height));
+	    jpLoraKey.add(jtfLoraKey);
+	    jtfLoraKey.setText(TestLOSamples.sAPILoraKey);
 
 	    // Server
 	    JPanel jpServer = new JPanel();
@@ -401,13 +415,19 @@ public class TestLOFenetre extends JFrame {
 	    jrbFifo.addActionListener(new radioTypeActionListener());
 	    jrbFifo.setSelected(true);
 	    jrbRouter.addActionListener(new radioTypeActionListener());
+	    jrbLoraRouter.addActionListener(new radioTypeActionListener());
+	    jrbLoraFifo.addActionListener(new radioTypeActionListener());
 	    rbGroupSubscribe.add(jrbPubSub);
 	    rbGroupSubscribe.add(jrbFifo);
 	    rbGroupSubscribe.add(jrbRouter);
+	    rbGroupSubscribe.add(jrbLoraRouter);
+	    rbGroupSubscribe.add(jrbLoraFifo);
 	    jpRBType.setLayout(new BoxLayout(jpRBType, BoxLayout.LINE_AXIS));
 	    jpRBType.add(jrbPubSub);
 	    jpRBType.add(jrbFifo);
 	    jpRBType.add(jrbRouter);
+	    jpRBType.add(jrbLoraRouter);
+	    jpRBType.add(jrbLoraFifo);
 	    
 	    
 	    // Ajout du bouton d'action
@@ -436,6 +456,8 @@ public class TestLOFenetre extends JFrame {
 	    panConfig.add(jpCBSimul);
 	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panConfig.add(jpKey);
+	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panConfig.add(jpLoraKey);
 	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panConfig.add(jpServer);
 	    
@@ -605,6 +627,16 @@ public class TestLOFenetre extends JFrame {
 		      {
 		    	  TestLOSamples.queueType = QueueTypes.ROUTER;
 		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_ROUTER;
+		      }
+		      if (jrbLoraRouter.isSelected()) 
+		      {
+		    	  TestLOSamples.queueType = QueueTypes.LORA_ROUTER;
+		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_LORA_ROUTER;
+		      }
+		      if (jrbLoraFifo.isSelected()) 
+		      {
+		    	  TestLOSamples.queueType = QueueTypes.LORA_FIFO;
+		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_LORA_FIFO;
 		      }
 	    	  jtfQueueName.setText(TestLOSamples.sQueueName);
 		}

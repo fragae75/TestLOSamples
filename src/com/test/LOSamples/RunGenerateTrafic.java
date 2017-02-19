@@ -181,7 +181,7 @@ public class RunGenerateTrafic implements Runnable {
             {
             	// Disconnection
 	            sampleClient.disconnect();
-	            System.out.println("Disconnected");
+	            System.out.println(sDeviceUrn + " - Disconnected");
             }
             //System.exit(0);
             

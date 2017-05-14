@@ -104,6 +104,7 @@ public class RunConsumeQueue implements Runnable {
 //	            LoraData loraData = gson.fromJson(liveObjectsPayload, LoraData.class);
 //	            System.out.println("Decoded LoRa message - " + loraData);
 	        }
+
         }
 
         public void deliveryComplete(IMqttDeliveryToken iMqttDeliveryToken) {

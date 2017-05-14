@@ -100,9 +100,9 @@ public class RunConsumeQueue implements Runnable {
 	        if (queueType == QueueTypes.LORA_ROUTER || queueType == QueueTypes.LORA_FIFO)
 	        {
 	            JsonObject mqttPayload = gson.fromJson(new String(mqttMessage.getPayload()), JsonObject.class);
-	            String liveObjectsPayload = mqttPayload.get("payload").getAsString();
-	            LoraData loraData = gson.fromJson(liveObjectsPayload, LoraData.class);
-	            System.out.println("Decoded LoRa message - " + loraData);
+//	            String liveObjectsPayload = mqttPayload.get("payload").getAsString();
+//	            LoraData loraData = gson.fromJson(liveObjectsPayload, LoraData.class);
+//	            System.out.println("Decoded LoRa message - " + loraData);
 	        }
         }
 

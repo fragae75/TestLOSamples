@@ -32,7 +32,6 @@ import javax.swing.JTextField;
 
 import com.test.LOSamples.TestLOSamples.QueueTypes;
 
-   
  
 public class TestLOFenetre extends JFrame {
 	private JTabbedPane onglet = new JTabbedPane();

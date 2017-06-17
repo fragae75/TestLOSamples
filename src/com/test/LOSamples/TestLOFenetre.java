@@ -12,6 +12,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.Random;
 
 import javax.swing.JTabbedPane;
@@ -20,6 +22,7 @@ import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -80,7 +83,7 @@ public class TestLOFenetre extends JFrame {
 	private static JTextField jtflTempoEnvoiOAB = new JTextField();
     public JButton boutonPubOABApp =  new JButton("Publish OAB App");
     // Subscribe
-	private JLabel jlbTitleFifo = new JLabel("Subscribe Fifo : ");
+	private JLabel jlbTitleFifo = new JLabel("Subscribe to : ");
 	private static JTextField jtfQueueName = new JTextField();
 	public static JTextArea textPaneSubscribe = new JTextArea();
 	private JScrollPane scrollSubscribe = new JScrollPane(textPaneSubscribe);
@@ -91,7 +94,8 @@ public class TestLOFenetre extends JFrame {
 	private JRadioButton jrbLoraFifo = new JRadioButton("Lora Fifo");
 	private ButtonGroup rbGroupSubscribe = new ButtonGroup();
 	public JButton boutonSubscribe =  new JButton("Subscribe");
-
+	private JComboBox jcbRouters = new JComboBox(TestLOSamples.LISTE_ROUTERS);
+	  
 
 	/*
 	 * 
@@ -399,7 +403,7 @@ public class TestLOFenetre extends JFrame {
 	     * Panel Subscribe
 	     * 
 	     */
-	    // Saisie de la Fifo
+	    // Saisie de la route/Fifo
 	    JPanel jplFifo = new JPanel();
 	    jplFifo.setLayout(new BoxLayout(jplFifo, BoxLayout.LINE_AXIS));
 	    jplFifo.add(Box.createRigidArea(new Dimension(30, 0)));
@@ -408,6 +412,18 @@ public class TestLOFenetre extends JFrame {
 	    jplFifo.add(jtfQueueName);
 	    jtfQueueName.setText(String.valueOf(TestLOSamples.sQueueName));
 
+	    // combo routes
+	    JPanel jpcbRouters = new JPanel();
+	    jcbRouters.addActionListener(new ActionListenerCBRouters());
+	    jpcbRouters.setLayout(new BoxLayout(jpcbRouters, BoxLayout.LINE_AXIS));
+	    jcbRouters.setMaximumSize(jcbRouters.getPreferredSize());
+	    jpcbRouters.add(jcbRouters);
+//	    Dimension d = jcbRouters.getPreferredSize();
+//	    jcbRouters.setPreferredSize(new Dimension(100, (int) d.getHeight()));
+//	    jcbRouters.setMaximumSize(d);
+//	    jpcbRouters.setSize(new Dimension(100, 20));
+//	    jcbRouters.setPrototypeDisplayValue("text here");
+	    
 	    // radio bouton
 	    JPanel jpRBType = new JPanel();
 	    jrbPubSub.addActionListener(new radioTypeActionListener());
@@ -496,6 +512,8 @@ public class TestLOFenetre extends JFrame {
 	    panSubscribe.setLayout(new BoxLayout(panSubscribe, BoxLayout.PAGE_AXIS));
 	    panSubscribe.add(Box.createRigidArea(new Dimension(0, 20)));
 	    panSubscribe.add(jpRBType);
+	    panSubscribe.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panSubscribe.add(jpcbRouters);
 	    panSubscribe.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panSubscribe.add(jplFifo);
 	    panSubscribe.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -625,7 +643,8 @@ public class TestLOFenetre extends JFrame {
 		      if (jrbRouter.isSelected()) 
 		      {
 		    	  TestLOSamples.queueType = QueueTypes.ROUTER;
-		    	  TestLOSamples.sQueueName = TestLOSamples.DEFAULT_ROUTER;
+		    	  jtfQueueName.setText(String.valueOf(jcbRouters.getSelectedItem()));
+		    	  TestLOSamples.sQueueName = String.valueOf(jcbRouters.getSelectedItem());
 		      }
 		      if (jrbLoraRouter.isSelected()) 
 		      {
@@ -640,6 +659,21 @@ public class TestLOFenetre extends JFrame {
 	    	  jtfQueueName.setText(TestLOSamples.sQueueName);
 		}
 	}
+
+	/*
+	 * Combo Routers
+	 * 
+	 */
+	class ActionListenerCBRouters implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		    System.out.println("ActionListener : action sur " + jcbRouters.getSelectedItem());
+		    jtfQueueName.setText(String.valueOf(jcbRouters.getSelectedItem()));
+//		    jrbRouter.setSelected(true);
+		    jrbRouter.doClick();
+		}
+	}
+
 	/*
 	 * Bouton lancement publication Terminaux
 	 */

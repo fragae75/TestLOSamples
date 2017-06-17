@@ -56,7 +56,17 @@ public class TestLOSamples {
     // For a specific device
     // final String ROUTING_KEY_FILTER = "router/~event/v1/data/new/urn/lora/0123456789ABCDEF/#";
     final static String DEFAULT_LORA_FIFO = "flglorafifo";
-    
+    final static String[] LISTE_ROUTERS = {
+    		DEFAULT_ROUTER, 
+    		"~event/v1/data/eventprocessing/fired", 
+    		"~event/v1/data/new/urn/msisdn",
+    		"~event/v1/log/new/mqtt"};
+//    		"~event/v2/assets/{ns}/{id}/connected",
+//    		"~event/v2/assets/{ns}/{id}/disconnected",
+//    		"~event/v2/assets/{ns}/{id}/currentParams",
+//    		"~event/v0/assets/{ns}/{id}/currentResources"};
+    final static String[] LISTE_LORA_ROUTERS = {DEFAULT_LORA_ROUTER};
+
 	static TestLOFenetre fenetreTestLOSamples;
     static boolean bPublish = false; 					// false => simulation sur la console
 	static String sAPIKey = "Empty => cle.txt"; 		// A récupérer dans la classe CleAPI

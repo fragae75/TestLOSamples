@@ -27,13 +27,17 @@ public class TestLOSamples {
 	final static String SERVER = "tcp://liveobjects.orange-business.com:1883";
 	final static String DEVICE_URN_PREFIX = "urn:lo:nsid:sensor:TESTFLG"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";
 	final static String DEVICE_URN_PREFIX_OAB = "urn:lo:nsid:sensor:TESTFLGAPPOAB"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";
+	final static String DEVICE_URN_PREFIX_PUSH_AIRPARIF = "TESTFLG-PUSHAirParif"; 
 
 	final static String API_KEY_FILE = "cle.txt";
 	final static String API_LORA_KEY_FILE = "cleLora.txt";
 	
 	final static String DEFAULT_DEVICE_TOPIC = "dev/data";
+	final static String DEFAULT_DEVICE_TOPIC_PUSH = "dev/data";
 	final static String DATA_MODEL = "Sample02";
+	final static String DATA_MODEL_PUSH = "SampleAirParif01";
 	final static String DATA_TAG = "Sample.02";
+	final static String DATA_TAG_PUSH = "SampleAirParif.01";
 	public static String sStreamID = "StreamSample02";
 	public static String sStreamIDOAB = "android357329073120059";
 	public static String sDataModelOAB = "ModelOABDemoApp00";
@@ -67,6 +71,9 @@ public class TestLOSamples {
 //    		"~event/v0/assets/{ns}/{id}/currentResources"};
     final static String[] LISTE_LORA_ROUTERS = {DEFAULT_LORA_ROUTER};
 
+    final static int PUSH_MIN_PERIOD_VALUE = 100;
+    final static int PUSH_PERIOD_VALUE = 1000;
+    
 	static TestLOFenetre fenetreTestLOSamples;
     static boolean bPublish = false; 					// false => simulation sur la console
 	static String sAPIKey = "Empty => cle.txt"; 		// A récupérer dans la classe CleAPI
@@ -84,6 +91,14 @@ public class TestLOSamples {
 
     static String sQueueName = DEFAULT_FIFO;
     static QueueTypes queueType = QueueTypes.FIFO;
+    
+    // Push AirParif values
+	static boolean bDeviceModePush = true;
+	static String sDeviceTopicPush = DEFAULT_DEVICE_TOPIC_PUSH;
+	public static String sStreamIDPush = "StreamPushAirParif";
+	static String sDeviceUrnPrefixPush = DEVICE_URN_PREFIX_PUSH_AIRPARIF;
+    static String sCSVFilePush = "20160601_20170616-PA04C_auto.csv";
+    static long lTempoPush = PUSH_PERIOD_VALUE;
     
 	public static double arrondi(double d, int digit)
 	{

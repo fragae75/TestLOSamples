@@ -49,6 +49,7 @@ public class TestLOFenetre extends JFrame {
 	private JPanel panMultiTerminal = new JPanel();
 	private JPanel panOABApp = new JPanel();
 	private JPanel panSubscribe = new JPanel();
+	private JPanel panPushData = new JPanel();
 	// Config
 	private static JCheckBox jcbSimulation = new JCheckBox("Simulation (just logs)");
 	private JLabel jlbKey = new JLabel("Key : ");
@@ -95,7 +96,20 @@ public class TestLOFenetre extends JFrame {
 	private ButtonGroup rbGroupSubscribe = new ButtonGroup();
 	public JButton boutonSubscribe =  new JButton("Subscribe");
 	private JComboBox jcbRouters = new JComboBox(TestLOSamples.LISTE_ROUTERS);
-	  
+	// Push AirParif values
+	private static JCheckBox jcbDeviceModePush = new JCheckBox("Device Mode");
+	private JLabel jlbStreamIDPush = new JLabel("StreamID : ");
+	private static JTextField jtfStreamIDPush = new JTextField();
+	private JLabel jlbTopicPush = new JLabel("Topic : ");
+	private static JTextField jtfTopicPush = new JTextField();
+	private JLabel jlbDeviceUrnPrefixPush = new JLabel("Device URN prefix : ");
+	private static JTextField jtfDeviceUrnPrefixPush = new JTextField();
+	private JLabel jlbCSVFileToOpen = new JLabel("CSV File to open : ");
+	private static JTextField jtfCSVFile = new JTextField(TestLOSamples.sCSVFilePush);
+	private JLabel jlbPushPeriod = new JLabel("Push value period (ms) : ");
+	private static JTextField jtfPushPeriodValue = new JTextField(Long.toString(TestLOSamples.lTempoPush));
+	public JButton boutonPush =  new JButton("Push !");
+	
 
 	/*
 	 * 
@@ -124,6 +138,8 @@ public class TestLOFenetre extends JFrame {
 		 */
 		TestLOSamples.sStreamID = jtfStreamID.getText();
 		TestLOSamples.sDeviceTopic = jtfTopic.getText();
+		TestLOSamples.sDeviceUrnPrefix = jtfDeviceUrnPrefix.getText();
+
 		// Nb Devices
 		try {
 		    i = Integer.parseInt(jtfNbDevices.getText());
@@ -224,6 +240,31 @@ public class TestLOFenetre extends JFrame {
 		 */
 		TestLOSamples.sQueueName = jtfQueueName.getText();
 
+	
+		/*
+		 * Push values
+		 * 
+		 */
+		TestLOSamples.sStreamIDPush = jtfStreamIDPush.getText();
+		TestLOSamples.sDeviceTopicPush = jtfTopicPush.getText();
+		TestLOSamples.sDeviceUrnPrefixPush = jtfDeviceUrnPrefixPush.getText();
+		// Tempo Envoi : min of PUSH_MIN_PERIOD_VALUE
+		try {
+		    l = Long.parseLong(jtfPushPeriodValue.getText());
+			if (l > TestLOSamples.PUSH_MIN_PERIOD_VALUE)
+				TestLOSamples.lTempoPush = l;
+		    else{
+		    	TestLOSamples.lTempoPush = TestLOSamples.PUSH_MIN_PERIOD_VALUE;
+		    	jtfPushPeriodValue.setText(String.valueOf(TestLOSamples.lTempoPush));
+		    	bGood = false;
+		    }
+
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+			jtfPushPeriodValue.setText(String.valueOf(TestLOSamples.PUSH_MIN_PERIOD_VALUE));
+	    	bGood = false;
+		}		
+		
 		return bGood;
 	}
 	
@@ -235,7 +276,7 @@ public class TestLOFenetre extends JFrame {
 	 */
 	public TestLOFenetre(){
 		this.setTitle("Generateur traffic Live Objects");
-		this.setSize(500, 500);
+		this.setSize(600, 500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 
@@ -285,7 +326,7 @@ public class TestLOFenetre extends JFrame {
 		 * 
 		 * 
 		 */
-	    
+	    // Device mode
 	    jcbDeviceMode.addActionListener(new CheckDeviceModeActionListener());
 	    jcbDeviceMode.setSelected(TestLOSamples.bDeviceMode); 
 	    
@@ -418,11 +459,6 @@ public class TestLOFenetre extends JFrame {
 	    jpcbRouters.setLayout(new BoxLayout(jpcbRouters, BoxLayout.LINE_AXIS));
 	    jcbRouters.setMaximumSize(jcbRouters.getPreferredSize());
 	    jpcbRouters.add(jcbRouters);
-//	    Dimension d = jcbRouters.getPreferredSize();
-//	    jcbRouters.setPreferredSize(new Dimension(100, (int) d.getHeight()));
-//	    jcbRouters.setMaximumSize(d);
-//	    jpcbRouters.setSize(new Dimension(100, 20));
-//	    jcbRouters.setPrototypeDisplayValue("text here");
 	    
 	    // radio bouton
 	    JPanel jpRBType = new JPanel();
@@ -444,13 +480,68 @@ public class TestLOFenetre extends JFrame {
 	    jpRBType.add(jrbLoraRouter);
 	    jpRBType.add(jrbLoraFifo);
 	    
-	    
 	    // Ajout du bouton d'action
 	    JPanel jpButtonSubscribe = new JPanel();
 	    boutonSubscribe.addActionListener(new BoutonListenerSubscribe()); 
 	    jpButtonSubscribe.setLayout(new BoxLayout(jpButtonSubscribe, BoxLayout.LINE_AXIS));
 	    jpButtonSubscribe.add(boutonSubscribe);
 
+	    /*
+	     * 
+	     * Panel Push Data
+	     * 
+	     * 
+	     */
+	    // Device mode
+	    jcbDeviceModePush.addActionListener(new CheckDeviceModePushActionListener());
+	    jcbDeviceModePush.setSelected(TestLOSamples.bDeviceModePush); 
+
+	    // Stream ID
+	    JPanel jpStreamIDPush = new JPanel();
+	    jpStreamIDPush.setLayout(new BoxLayout(jpStreamIDPush, BoxLayout.LINE_AXIS));
+		jpStreamIDPush.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpStreamIDPush.add(jlbStreamIDPush);
+	    jtfStreamIDPush.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfStreamIDPush.getMinimumSize().height));
+	    jpStreamIDPush.add(jtfStreamIDPush);
+	    jtfStreamIDPush.setText(TestLOSamples.sStreamIDPush);
+
+	    // Topic 
+	    JPanel jpTopicPush = new JPanel();
+	    jpTopicPush.setLayout(new BoxLayout(jpTopicPush, BoxLayout.LINE_AXIS));
+		jpTopicPush.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpTopicPush.add(jlbTopicPush);
+	    jtfTopicPush.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfTopicPush.getMinimumSize().height));
+	    jpTopicPush.add(jtfTopicPush);
+	    jtfTopicPush.setText(TestLOSamples.DEFAULT_DEVICE_TOPIC_PUSH);
+
+	    // Device Urn Prefix
+	    JPanel jpDeviceUrnPrefixPush = new JPanel();
+	    jpDeviceUrnPrefixPush.setLayout(new BoxLayout(jpDeviceUrnPrefixPush, BoxLayout.LINE_AXIS));
+	    jpDeviceUrnPrefixPush.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpDeviceUrnPrefixPush.add(jlbDeviceUrnPrefixPush);
+	    jtfDeviceUrnPrefixPush.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfDeviceUrnPrefixPush.getMinimumSize().height));
+	    jpDeviceUrnPrefixPush.add(jtfDeviceUrnPrefixPush);
+	    jtfDeviceUrnPrefixPush.setText(TestLOSamples.sDeviceUrnPrefixPush);
+
+	    
+	    JPanel jpCSVFile = new JPanel();
+	    jpCSVFile.setLayout(new BoxLayout(jpCSVFile, BoxLayout.LINE_AXIS));
+	    jpCSVFile.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpCSVFile.add(jlbCSVFileToOpen);
+	    jpCSVFile.add(jtfCSVFile);
+	    jtfCSVFile.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfCSVFile.getMinimumSize().height));
+	    
+	    JPanel jpPushPeriod = new JPanel();
+	    jpPushPeriod.setLayout(new BoxLayout(jpPushPeriod, BoxLayout.LINE_AXIS));
+	    jpPushPeriod.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpPushPeriod.add(jlbPushPeriod);
+	    jpPushPeriod.add(jtfPushPeriodValue);
+	    jtfPushPeriodValue.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfPushPeriodValue.getMinimumSize().height));
+	    JPanel jpButtonPush = new JPanel();
+	    boutonPush.addActionListener(new BoutonListenerPush()); 
+	    jpButtonPush.setLayout(new BoxLayout(jpButtonPush, BoxLayout.LINE_AXIS));
+	    jpButtonPush.add(boutonPush);
+	    
 	    
 	    /*
 	     * 
@@ -459,10 +550,10 @@ public class TestLOFenetre extends JFrame {
 	     */
 	    //Panneau Résultat
 	    panOutput.setLayout(new BoxLayout(panOutput, BoxLayout.PAGE_AXIS));
-	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panOutput.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panOutput.add(jlbSend, BorderLayout.WEST);
 	    panOutput.add(scrollSend);
-	    panConfig.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panOutput.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panOutput.add(jlbReceive, BorderLayout.WEST);
 	    panOutput.add(scrollReceive);
 	    //Panneau Config
@@ -520,12 +611,31 @@ public class TestLOFenetre extends JFrame {
 	    panSubscribe.add(jpButtonSubscribe);
 	    panSubscribe.add(scrollSubscribe);
 	    
+	    // Paneau Push Data
+	    panPushData.setLayout(new BoxLayout(panPushData, BoxLayout.PAGE_AXIS));
+	    panPushData.add(Box.createRigidArea(new Dimension(0, 20)));
+	    panPushData.add(jcbDeviceModePush, BorderLayout.LINE_START);
+	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panPushData.add(jpStreamIDPush);
+	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panPushData.add(jpTopicPush);
+	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panPushData.add(jpDeviceUrnPrefixPush);
+	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panPushData.add(jpCSVFile);
+	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panPushData.add(jpPushPeriod);
+	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panPushData.add(jpButtonPush);
+	    
 	    // Ajout des onglets 
 	    onglet.add("Configuration", panConfig);
 	    onglet.add("Multi Terminals", panMultiTerminal);
 	    onglet.add("OAB App", panOABApp);
 	    onglet.add("Subscribe", panSubscribe);
+	    onglet.add("Push Air Parif", panPushData);
 	    onglet.add("Result", panOutput);
+	    
 	    //On passe ensuite les onglets au content pane
 		this.getContentPane().add(onglet, BorderLayout.CENTER);
 
@@ -598,13 +708,38 @@ public class TestLOFenetre extends JFrame {
 	public static void doSubscribeElements()
 	{
 		Thread t;
-		RunConsumeQueue consumeQueue = new RunConsumeQueue(TestLOSamples.sQueueName, TestLOSamples.queueType, TestLOSamples.fenetreTestLOSamples.textPaneReceive, textPaneSubscribe);
+		RunConsumeQueue consumeQueue = new RunConsumeQueue(
+				TestLOSamples.sQueueName, 
+				TestLOSamples.queueType, 
+				TestLOSamples.fenetreTestLOSamples.textPaneReceive, 
+				textPaneSubscribe);
 
 		t = new Thread(consumeQueue);
 		t.start();
         System.out.println("Thread : consume Queue");
 	}
 
+	/*
+	 * 
+	 * doPushValues()
+	 * 
+	 */
+	public static void doPushValues()
+	{
+		Thread t;
+		RunPushValues pushValues = new RunPushValues(TestLOSamples.sCSVFilePush, 
+													TestLOSamples.lTempoPush, 
+													TestLOSamples.sStreamIDPush,
+													TestLOSamples.sDeviceTopicPush,
+													TestLOSamples.sDeviceUrnPrefixPush,
+    			   									TestLOSamples.bDeviceModePush,
+    			   									TestLOSamples.bPublish, 
+													TestLOSamples.fenetreTestLOSamples.textPaneReceive);
+
+		t = new Thread(pushValues);
+		t.start();
+        System.out.println("Thread : PushValues");
+	}
 		
 	/*
 	 * Checkbox Simulation
@@ -622,6 +757,12 @@ public class TestLOFenetre extends JFrame {
 	    public void actionPerformed(ActionEvent e) {
 	      System.out.println("Device Mode : " + ((JCheckBox)e.getSource()).getText() + " - état : " + ((JCheckBox)e.getSource()).isSelected());
 	      TestLOSamples.bDeviceMode = jcbDeviceMode.isSelected();
+	    }
+	}
+	class CheckDeviceModePushActionListener implements ActionListener{
+	    public void actionPerformed(ActionEvent e) {
+	      System.out.println("Device Mode Push : " + ((JCheckBox)e.getSource()).getText() + " - état : " + ((JCheckBox)e.getSource()).isSelected());
+	      TestLOSamples.bDeviceModePush = jcbDeviceModePush.isSelected();
 	    }
 	}
 	/*
@@ -711,6 +852,20 @@ public class TestLOFenetre extends JFrame {
 	    	// Simuler l'appli Android OAB
 			if (gatherConfigValues())
 				doSubscribeElements();
+	    }
+	  }
+
+	/*
+	 * Bouton push
+	 */
+	class BoutonListenerPush implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+	    	// Simuler l'appli Android OAB
+			if (gatherConfigValues())
+				doPushValues();
 	    }
 	  }
 }

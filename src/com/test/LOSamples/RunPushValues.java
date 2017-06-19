@@ -7,9 +7,13 @@ import com.opencsv.CSVReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -29,6 +33,7 @@ public class RunPushValues implements Runnable {
 	private String sDeviceUrnPrefixPush;
 	private boolean bPublishPush;
 	private boolean bDeviceModePush;
+	private String sTown;
 	private JTextArea textPane;
 	
 
@@ -38,7 +43,8 @@ public class RunPushValues implements Runnable {
 							String sDeviceTopicPush,
 							String sDeviceUrnPrefixPush, 
 							boolean bDeviceModePush,
-							boolean bPublish, 
+							boolean bPublish,
+							String sTown,
 							JTextArea textPaneReceive)
 	{
 		this.sCSVFilePush = sCSVFilePush;
@@ -48,9 +54,21 @@ public class RunPushValues implements Runnable {
 		this.sDeviceUrnPrefixPush = sDeviceUrnPrefixPush;
 		this.bDeviceModePush = bDeviceModePush;
 		this.bPublishPush = bPublish;
+		this.sTown = sTown;
 		this.textPane = textPaneReceive;
 	}
 
+	public static boolean isValidDate(String sDate) {
+	    boolean bValid = false;
+
+	    try {
+		    bValid = sDate.charAt(2)=='/' & sDate.charAt(5)=='/';
+	    } catch (Exception ignore) {}
+
+	    return bValid;
+	}
+	
+	
 	public void run() {
 		
 		
@@ -59,12 +77,9 @@ public class RunPushValues implements Runnable {
         
         // String for encoding to JSON
         String sContent;
-        
 
-		CSVReader reader=null;
+		CSVReader reader = null;
 
-
-		
         try {
         	MqttClient sampleClient = new MqttClient(TestLOSamples.SERVER, sDeviceUrnPrefixPush, new MemoryPersistence());
             MqttConnectOptions connOpts = new MqttConnectOptions();
@@ -91,11 +106,6 @@ public class RunPushValues implements Runnable {
     			reader = new CSVReader(new FileReader(sCSVFilePush), ';');
     			String [] nextLine;
     			try {
-    				// Skip 2 first lines
-    				nextLine = reader.readNext();
-    				if (nextLine != null)
-    					nextLine = reader.readNext();
-   					
     				// Start parsing values
     				while ((nextLine = reader.readNext()) != null) {
     	            	// streamId
@@ -103,12 +113,33 @@ public class RunPushValues implements Runnable {
     	                // value: JSON object...
     	                data.v = new HashMap<String, Object>();
     					
-    	                for (String sField: nextLine) {
+    	                String sDate = nextLine[0];
+    	                
+    	                if (isValidDate(sDate) && nextLine.length == 7)
+    	                {
+        	                String [] sNumbers = sDate.split("/");
+    	                	String sHour = nextLine[1];
+    	                	
+    	                	String sFormatedDate = String.format("%s-%s-%s %02d:00:00", sNumbers[2], sNumbers[1], sNumbers[0], Integer.parseInt(sHour));
 
-// Remplir les champs !!!
-// Date ???
-    	                	System.out.print(sField + " ");
-    					
+    	                	/*
+    	                	Timestamp timestamp = Timestamp.valueOf(sFormatedDate); 
+    	                	Instant instant = timestamp.toInstant();
+    	                	String myTimestamp = instant.toString();
+    	                	data.ts = instant.toString() ;
+    	                	Timestamp timestamp = Timestamp.valueOf("2014-01-01 00:00:00"); 
+    	                	Timestamp timestamp = new Timestamp(1388552400); 
+
+    	                	*/
+    	                	data.v.put("Town", sTown);
+    	                	data.v.put("PM25", nextLine[2]);
+    	                	data.v.put("PM10", nextLine[3]);
+    	                	data.v.put("O3", nextLine[4]);
+    	                	data.v.put("N02", nextLine[5]);
+    	                	data.v.put("CO", nextLine[6]);
+    	                	
+//    	                	data.ts = sFormatedDate;
+    	                	
 	    	                // model
 	    	                data.m = TestLOSamples.DATA_MODEL_PUSH;
 	    	                // tags
@@ -138,11 +169,21 @@ public class RunPushValues implements Runnable {
 	    	                    System.out.println(" - Simulate Publishing message: " + sDeviceUrnPrefixPush  + sContent);
 	    	            		textPane.append(sTime + " - Simulate Pub msg: " + sDeviceUrnPrefixPush  + sContent + "\n");
 	    	                }
-    	                } // for 
+	    	                
+	    	                // Temporisation entre 2 envois
+	    	                try {
+	    						Thread.sleep(lTempoPush);
+	    					} catch (InterruptedException e) {
+	    						// TODO Auto-generated catch block
+	    						e.printStackTrace();
+	    					}
+
+    	                } // if
     	                
     					System.out.println("");
     	                
-    				}
+    				} // While
+    				
     			} catch (IOException e) {
     				// TODO Auto-generated catch block
     				e.printStackTrace();

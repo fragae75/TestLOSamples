@@ -99,6 +99,7 @@ public class TestLOSamples {
 	static String sDeviceUrnPrefixPush = DEVICE_URN_PREFIX_PUSH_AIRPARIF;
     static String sCSVFilePush = "20160601_20170616-PA04C_auto.csv";
     static long lTempoPush = PUSH_PERIOD_VALUE;
+    static String sTown = "Paris Centre";
     
 	public static double arrondi(double d, int digit)
 	{

@@ -108,6 +108,8 @@ public class TestLOFenetre extends JFrame {
 	private static JTextField jtfCSVFile = new JTextField(TestLOSamples.sCSVFilePush);
 	private JLabel jlbPushPeriod = new JLabel("Push value period (ms) : ");
 	private static JTextField jtfPushPeriodValue = new JTextField(Long.toString(TestLOSamples.lTempoPush));
+	private JLabel jlbTown = new JLabel("Town : ");
+	private static JTextField jtfTown = new JTextField(TestLOSamples.sTown);
 	public JButton boutonPush =  new JButton("Push !");
 	
 
@@ -263,7 +265,8 @@ public class TestLOFenetre extends JFrame {
 			e.printStackTrace();
 			jtfPushPeriodValue.setText(String.valueOf(TestLOSamples.PUSH_MIN_PERIOD_VALUE));
 	    	bGood = false;
-		}		
+		}
+		TestLOSamples.sTown = jtfTown.getText();
 		
 		return bGood;
 	}
@@ -542,6 +545,12 @@ public class TestLOFenetre extends JFrame {
 	    jpButtonPush.setLayout(new BoxLayout(jpButtonPush, BoxLayout.LINE_AXIS));
 	    jpButtonPush.add(boutonPush);
 	    
+	    JPanel jpTown = new JPanel();
+	    jpTown.setLayout(new BoxLayout(jpTown, BoxLayout.LINE_AXIS));
+	    jpTown.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpTown.add(jlbTown);
+	    jpTown.add(jtfTown);
+	    jtfTown.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfTown.getMinimumSize().height));
 	    
 	    /*
 	     * 
@@ -625,6 +634,8 @@ public class TestLOFenetre extends JFrame {
 	    panPushData.add(jpCSVFile);
 	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panPushData.add(jpPushPeriod);
+	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panPushData.add(jpTown);
 	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panPushData.add(jpButtonPush);
 	    
@@ -734,6 +745,7 @@ public class TestLOFenetre extends JFrame {
 													TestLOSamples.sDeviceUrnPrefixPush,
     			   									TestLOSamples.bDeviceModePush,
     			   									TestLOSamples.bPublish, 
+    			   									TestLOSamples.sTown,
 													TestLOSamples.fenetreTestLOSamples.textPaneReceive);
 
 		t = new Thread(pushValues);

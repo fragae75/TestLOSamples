@@ -122,23 +122,45 @@ public class RunPushValues implements Runnable {
     	                	
     	                	String sFormatedDate = String.format("%s-%s-%s %02d:00:00", sNumbers[2], sNumbers[1], sNumbers[0], Integer.parseInt(sHour));
 
-    	                	/*
+//    	                	data.ts = sFormatedDate;
+    	                	
     	                	Timestamp timestamp = Timestamp.valueOf(sFormatedDate); 
     	                	Instant instant = timestamp.toInstant();
     	                	String myTimestamp = instant.toString();
     	                	data.ts = instant.toString() ;
+    	                	
+    	                	/*
     	                	Timestamp timestamp = Timestamp.valueOf("2014-01-01 00:00:00"); 
     	                	Timestamp timestamp = new Timestamp(1388552400); 
 
     	                	*/
     	                	data.v.put("Town", sTown);
-    	                	data.v.put("PM25", nextLine[2]);
-    	                	data.v.put("PM10", nextLine[3]);
-    	                	data.v.put("O3", nextLine[4]);
-    	                	data.v.put("N02", nextLine[5]);
-    	                	data.v.put("CO", nextLine[6]);
+    	                	try{
+    	                		data.v.put("PM25", Integer.valueOf(nextLine[2]));
+        	    			} catch (NumberFormatException e) {
+    	                		data.v.put("PM25", 0);
+        	    			}
+    	                	try{
+        	                	data.v.put("PM10", Integer.valueOf(nextLine[3]));
+	    	    			} catch (NumberFormatException e) {
+	    	                	data.v.put("PM10", 0);
+	    	    			}
+    	                	try{
+        	                	data.v.put("O3", Integer.valueOf(nextLine[4]));
+	    	    			} catch (NumberFormatException e) {
+	    	                	data.v.put("O3", 0);
+	    	    			}
+    	                	try{
+        	                	data.v.put("N02", Integer.valueOf(nextLine[5]));
+	    	    			} catch (NumberFormatException e) {
+	    	                	data.v.put("N02", 0);
+	    	    			}
+    	                	try{
+        	                	data.v.put("CO", Integer.valueOf(nextLine[6]));
+	    	    			} catch (NumberFormatException e) {
+	    	                	data.v.put("CO", 0);
+	    	    			}
     	                	
-//    	                	data.ts = sFormatedDate;
     	                	
 	    	                // model
 	    	                data.m = TestLOSamples.DATA_MODEL_PUSH;

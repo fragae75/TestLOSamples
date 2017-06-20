@@ -122,11 +122,14 @@ public class RunPushValues implements Runnable {
     	                	
     	                	String sFormatedDate = String.format("%s-%s-%s %02d:00:00", sNumbers[2], sNumbers[1], sNumbers[0], Integer.parseInt(sHour));
 
-    	                	/*
+//    	                	data.ts = sFormatedDate;
+    	                	
     	                	Timestamp timestamp = Timestamp.valueOf(sFormatedDate); 
     	                	Instant instant = timestamp.toInstant();
     	                	String myTimestamp = instant.toString();
     	                	data.ts = instant.toString() ;
+    	                	
+    	                	/*
     	                	Timestamp timestamp = Timestamp.valueOf("2014-01-01 00:00:00"); 
     	                	Timestamp timestamp = new Timestamp(1388552400); 
 
@@ -138,7 +141,6 @@ public class RunPushValues implements Runnable {
     	                	data.v.put("N02", nextLine[5]);
     	                	data.v.put("CO", nextLine[6]);
     	                	
-//    	                	data.ts = sFormatedDate;
     	                	
 	    	                // model
 	    	                data.m = TestLOSamples.DATA_MODEL_PUSH;

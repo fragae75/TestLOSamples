@@ -91,7 +91,7 @@ public class TestLOSamples {
 	final static String DATA_MODEL_PUSH = "SampleAirParif03";
 	final static String DATA_TAG_PUSH = "SampleAirParif.03";
     final static int PUSH_MIN_PERIOD_VALUE = 100;
-    final static int PUSH_PERIOD_VALUE = 1000;
+    final static int PUSH_PERIOD_VALUE = 1000; 
     
 	static boolean bDeviceModePush = true;
 	static String sDeviceTopicPush = DEFAULT_DEVICE_TOPIC_PUSH;

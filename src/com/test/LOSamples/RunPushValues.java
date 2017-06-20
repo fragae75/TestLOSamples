@@ -159,7 +159,7 @@ public class RunPushValues implements Runnable {
         	                	data.v.put("CO", Integer.valueOf(nextLine[6]));
 	    	    			} catch (NumberFormatException e) {
 	    	                	data.v.put("CO", 0);
-	    	    			}
+	    	    			} 
     	                	
     	                	
 	    	                // model

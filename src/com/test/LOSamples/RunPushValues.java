@@ -135,11 +135,31 @@ public class RunPushValues implements Runnable {
 
     	                	*/
     	                	data.v.put("Town", sTown);
-    	                	data.v.put("PM25", nextLine[2]);
-    	                	data.v.put("PM10", nextLine[3]);
-    	                	data.v.put("O3", nextLine[4]);
-    	                	data.v.put("N02", nextLine[5]);
-    	                	data.v.put("CO", nextLine[6]);
+    	                	try{
+    	                		data.v.put("PM25", Integer.valueOf(nextLine[2]));
+        	    			} catch (NumberFormatException e) {
+    	                		data.v.put("PM25", 0);
+        	    			}
+    	                	try{
+        	                	data.v.put("PM10", Integer.valueOf(nextLine[3]));
+	    	    			} catch (NumberFormatException e) {
+	    	                	data.v.put("PM10", 0);
+	    	    			}
+    	                	try{
+        	                	data.v.put("O3", Integer.valueOf(nextLine[4]));
+	    	    			} catch (NumberFormatException e) {
+	    	                	data.v.put("O3", 0);
+	    	    			}
+    	                	try{
+        	                	data.v.put("N02", Integer.valueOf(nextLine[5]));
+	    	    			} catch (NumberFormatException e) {
+	    	                	data.v.put("N02", 0);
+	    	    			}
+    	                	try{
+        	                	data.v.put("CO", Integer.valueOf(nextLine[6]));
+	    	    			} catch (NumberFormatException e) {
+	    	                	data.v.put("CO", 0);
+	    	    			} 
     	                	
     	                	
 	    	                // model

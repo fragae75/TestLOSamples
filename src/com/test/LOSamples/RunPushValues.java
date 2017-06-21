@@ -25,6 +25,11 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import com.google.gson.Gson;
 
+/**
+ * 
+ * @author flg
+ * thread for pushing Airparif pollution data
+ */
 public class RunPushValues implements Runnable {
 	private String sCSVFilePush;
 	private long lTempoPush;
@@ -36,12 +41,23 @@ public class RunPushValues implements Runnable {
 	private String sTown;
 	private JTextArea textPane;
 	
-
+	/**
+	 * 
+	 * @param sCSVFilePush : CSV file
+	 * @param lTempoPush : tempo (ms) to not overload the platform
+	 * @param sStreamIDPush : stream ID
+	 * @param sDeviceTopicPush : topic => dev/data
+	 * @param sDeviceUrnPush : device urn
+	 * @param bDeviceModePush : device/bridge mode
+	 * @param bPublish : really publish or simulate
+	 * @param sTown : location measurement
+	 * @param textPaneReceive : windows edit panel
+	 */
 	public RunPushValues (	String sCSVFilePush, 
 							long lTempoPush, 
 							String sStreamIDPush, 
 							String sDeviceTopicPush,
-							String sDeviceUrnPrefixPush, 
+							String sDeviceUrnPush, 
 							boolean bDeviceModePush,
 							boolean bPublish,
 							String sTown,
@@ -51,13 +67,19 @@ public class RunPushValues implements Runnable {
 		this.lTempoPush = lTempoPush;
 		this.sStreamIDPush = sStreamIDPush;
 		this.sDeviceTopicPush = sDeviceTopicPush;
-		this.sDeviceUrnPrefixPush = sDeviceUrnPrefixPush;
+		this.sDeviceUrnPrefixPush = sDeviceUrnPush;
 		this.bDeviceModePush = bDeviceModePush;
 		this.bPublishPush = bPublish;
 		this.sTown = sTown;
 		this.textPane = textPaneReceive;
 	}
 
+	/*
+	 * 
+	 * Only check the 2 1st '/' of a date
+	 * This will skip the 2 first CSV lines
+	 * 
+	 */
 	public static boolean isValidDate(String sDate) {
 	    boolean bValid = false;
 
@@ -68,7 +90,11 @@ public class RunPushValues implements Runnable {
 	    return bValid;
 	}
 	
-	
+	/**
+	 * 
+	 * (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
 	public void run() {
 		
 		
@@ -78,11 +104,17 @@ public class RunPushValues implements Runnable {
         // String for encoding to JSON
         String sContent;
 
-		CSVReader reader = null;
+        /**
+         * CSV Parser
+         */
+        CSVReader reader = null;
 
         try {
+        	// Paho MQTT client
         	MqttClient sampleClient = new MqttClient(TestLOSamples.SERVER, sDeviceUrnPrefixPush, new MemoryPersistence());
             MqttConnectOptions connOpts = new MqttConnectOptions();
+            
+            // no simulation : really publish ! => connect the MQTT client
             if (bPublishPush)
             {            	
             	if (bDeviceModePush)

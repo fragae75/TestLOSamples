@@ -249,7 +249,7 @@ public class TestLOFenetre extends JFrame {
 		 */
 		TestLOSamples.sStreamIDPush = jtfStreamIDPush.getText();
 		TestLOSamples.sDeviceTopicPush = jtfTopicPush.getText();
-		TestLOSamples.sDeviceUrnPrefixPush = jtfDeviceUrnPrefixPush.getText();
+		TestLOSamples.sDeviceUrnPush = jtfDeviceUrnPrefixPush.getText();
 		// Tempo Envoi : min of PUSH_MIN_PERIOD_VALUE
 		try {
 		    l = Long.parseLong(jtfPushPeriodValue.getText());
@@ -524,7 +524,7 @@ public class TestLOFenetre extends JFrame {
 	    jpDeviceUrnPrefixPush.add(jlbDeviceUrnPrefixPush);
 	    jtfDeviceUrnPrefixPush.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfDeviceUrnPrefixPush.getMinimumSize().height));
 	    jpDeviceUrnPrefixPush.add(jtfDeviceUrnPrefixPush);
-	    jtfDeviceUrnPrefixPush.setText(TestLOSamples.sDeviceUrnPrefixPush);
+	    jtfDeviceUrnPrefixPush.setText(TestLOSamples.sDeviceUrnPush);
 
 	    
 	    JPanel jpCSVFile = new JPanel();
@@ -742,7 +742,7 @@ public class TestLOFenetre extends JFrame {
 													TestLOSamples.lTempoPush, 
 													TestLOSamples.sStreamIDPush,
 													TestLOSamples.sDeviceTopicPush,
-													TestLOSamples.sDeviceUrnPrefixPush,
+													TestLOSamples.sDeviceUrnPush,
     			   									TestLOSamples.bDeviceModePush,
     			   									TestLOSamples.bPublish, 
     			   									TestLOSamples.sTown,

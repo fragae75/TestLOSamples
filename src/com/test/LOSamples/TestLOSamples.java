@@ -27,7 +27,7 @@ public class TestLOSamples {
 	final static String SERVER = "tcp://liveobjects.orange-business.com:1883";
 	final static String DEVICE_URN_PREFIX = "urn:lo:nsid:sensor:TESTFLG"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";
 	final static String DEVICE_URN_PREFIX_OAB = "urn:lo:nsid:sensor:TESTFLGAPPOAB"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";
-	final static String DEVICE_URN_PREFIX_PUSH_AIRPARIF = "TESTFLG-PUSHAirParif"; 
+	final static String DEVICE_URN_PUSH_AIRPARIF = "TESTFLG-PUSHAirParif"; 
 
 	final static String API_KEY_FILE = "cle.txt";
 	final static String API_LORA_KEY_FILE = "cleLora.txt";
@@ -96,7 +96,7 @@ public class TestLOSamples {
 	static boolean bDeviceModePush = true;
 	static String sDeviceTopicPush = DEFAULT_DEVICE_TOPIC_PUSH;
 	public static String sStreamIDPush = "StreamPushAirParif";
-	static String sDeviceUrnPrefixPush = DEVICE_URN_PREFIX_PUSH_AIRPARIF;
+	static String sDeviceUrnPush = DEVICE_URN_PUSH_AIRPARIF;
     static String sCSVFilePush = "20160601_20170616-PA04C_auto.csv";
     static long lTempoPush = PUSH_PERIOD_VALUE;
     static String sTown = "Paris Centre";

@@ -1,8 +1,6 @@
-/*
- * 
+/**
  * 
  * The thread simulates a device (terminal) and generates MQTT device trafic
- * 
  * 
  * 
  */
@@ -54,6 +52,12 @@ public class RunGenerateTrafic implements Runnable {
 		
 	}
 
+	/**
+	 * 
+	 * Simulates a container with very basic data : engine on/off, door open on/off, speed, temperature (20°C +/- 3
+	 * , hygrometry (50 +/- 20)
+	 * 
+	 */
 	public void run() {
 		  
         Random rand = new Random();

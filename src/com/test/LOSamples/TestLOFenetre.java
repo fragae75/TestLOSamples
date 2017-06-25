@@ -1,10 +1,3 @@
-/*
- * 
- * Build the GUI/launch the threads
- * 
- * 
- * 
- */
   
 package com.test.LOSamples;
  
@@ -35,7 +28,20 @@ import javax.swing.JTextField;
 
 import com.test.LOSamples.TestLOSamples.QueueTypes;
 
- 
+/**
+ *  
+ * @author Franck
+ * 
+ * Build the GUI/launch the threads
+ * 6 tabbed panes : 
+ * - Config
+ * - Multi terminals : generate traffic of xx MQTT terminals
+ * - OABApp : same as Multi terminals with other values 
+ * - Push Airparif : push time stamped values of airparif csv files
+ * - Subscribe : subscribe to a route or a fifo
+ * - result : what's generated & what's received on subscriptions
+ *
+ */
 public class TestLOFenetre extends JFrame {
 	private JTabbedPane onglet = new JTabbedPane();
 	private JLabel jlbSend = new JLabel("Send");
@@ -113,12 +119,9 @@ public class TestLOFenetre extends JFrame {
 	public JButton boutonPush =  new JButton("Push !");
 	
 
-	/*
-	 * 
-	 * 
-	 * Mettre à jour les données de configuration
-	 * 
-	 * 
+	/**
+	 * Updates all the values from the GUI
+	 * @return
 	 */
 	static boolean gatherConfigValues()
 	{
@@ -272,10 +275,8 @@ public class TestLOFenetre extends JFrame {
 	}
 	
 	
-	/*
-	 * 
-	 * La fenetre
-	 * 
+	/**
+	 * build the window elements
 	 */
 	public TestLOFenetre(){
 		this.setTitle("Generateur traffic Live Objects");
@@ -643,8 +644,8 @@ public class TestLOFenetre extends JFrame {
 	    onglet.add("Configuration", panConfig);
 	    onglet.add("Multi Terminals", panMultiTerminal);
 	    onglet.add("OAB App", panOABApp);
-	    onglet.add("Subscribe", panSubscribe);
 	    onglet.add("Push Air Parif", panPushData);
+	    onglet.add("Subscribe", panSubscribe);
 	    onglet.add("Result", panOutput);
 	    
 	    //On passe ensuite les onglets au content pane
@@ -656,8 +657,10 @@ public class TestLOFenetre extends JFrame {
 
 	
 
-	/*
+	/**
+	 * 
 	 * Simule un groupe de devices fictifs
+	 * 
 	 */
 	public static void simuleDevices()
 	{

@@ -27,7 +27,6 @@ public class TestLOSamples {
 	final static String SERVER = "tcp://liveobjects.orange-business.com:1883";
 	final static String DEVICE_URN_PREFIX = "urn:lo:nsid:sensor:TESTFLG"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";
 	final static String DEVICE_URN_PREFIX_OAB = "urn:lo:nsid:sensor:TESTFLGAPPOAB"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";
-	final static String DEVICE_URN_PUSH_AIRPARIF = "TESTFLG-PUSHAirParif"; 
 
 	final static String API_KEY_FILE = "cle.txt";
 	final static String API_LORA_KEY_FILE = "cleLora.txt";
@@ -87,6 +86,7 @@ public class TestLOSamples {
     static QueueTypes queueType = QueueTypes.FIFO;
     
     // Push AirParif values
+	final static String DEVICE_URN_PUSH_AIRPARIF = "TESTFLG-PUSHAirParif"; 
 	final static String DEFAULT_DEVICE_TOPIC_PUSH = "dev/data";
 	final static String DATA_MODEL_PUSH = "SampleAirParif03";
 	final static String DATA_TAG_PUSH = "SampleAirParif.03";

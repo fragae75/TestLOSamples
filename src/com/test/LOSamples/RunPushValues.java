@@ -35,13 +35,15 @@ public class RunPushValues implements Runnable {
 	private long lTempoPush;
 	private String sStreamIDPush;
 	private String sDeviceTopicPush;
-	private String sDeviceUrnPrefixPush;
+	private String sDeviceUrnPush;
 	private boolean bPublishPush;
 	private boolean bDeviceModePush;
 	private String sTown;
 	private JTextArea textPane;
 	
 	/**
+	 * 
+	 * Put parameters on private variables
 	 * 
 	 * @param sCSVFilePush : CSV file
 	 * @param lTempoPush : tempo (ms) to not overload the platform
@@ -67,7 +69,7 @@ public class RunPushValues implements Runnable {
 		this.lTempoPush = lTempoPush;
 		this.sStreamIDPush = sStreamIDPush;
 		this.sDeviceTopicPush = sDeviceTopicPush;
-		this.sDeviceUrnPrefixPush = sDeviceUrnPush;
+		this.sDeviceUrnPush = sDeviceUrnPush;
 		this.bDeviceModePush = bDeviceModePush;
 		this.bPublishPush = bPublish;
 		this.sTown = sTown;
@@ -92,7 +94,7 @@ public class RunPushValues implements Runnable {
 	
 	/**
 	 * 
-	 * (non-Javadoc)
+	 * Generate time stamped pollution values from Airparif csv files
 	 * @see java.lang.Runnable#run()
 	 */
 	public void run() {
@@ -111,7 +113,7 @@ public class RunPushValues implements Runnable {
 
         try {
         	// Paho MQTT client
-        	MqttClient sampleClient = new MqttClient(TestLOSamples.SERVER, sDeviceUrnPrefixPush, new MemoryPersistence());
+        	MqttClient sampleClient = new MqttClient(TestLOSamples.SERVER, sDeviceUrnPush, new MemoryPersistence());
             MqttConnectOptions connOpts = new MqttConnectOptions();
             
             // no simulation : really publish ! => connect the MQTT client
@@ -147,6 +149,7 @@ public class RunPushValues implements Runnable {
     					
     	                String sDate = nextLine[0];
     	                
+    	                // beware of isValidDate() not bullet proof !
     	                if (isValidDate(sDate) && nextLine.length == 7)
     	                {
         	                String [] sNumbers = sDate.split("/");
@@ -211,8 +214,8 @@ public class RunPushValues implements Runnable {
 	    	                if (bPublishPush)
 	    	                {
 	    			            // Publish data
-	    	                    System.out.println(" - Publishing message: " + sDeviceUrnPrefixPush + " - " + sDeviceTopicPush + " - " + sContent);
-	    	            		textPane.append(sTime + " - Pub msg: " + sDeviceUrnPrefixPush + " - " + sDeviceTopicPush + " - " + sContent + "\n");
+	    	                    System.out.println(" - Publishing message: " + sDeviceUrnPush + " - " + sDeviceTopicPush + " - " + sContent);
+	    	            		textPane.append(sTime + " - Pub msg: " + sDeviceUrnPush + " - " + sDeviceTopicPush + " - " + sContent + "\n");
 	    			            MqttMessage message = new MqttMessage(sContent.getBytes());
 	    			            message.setQos(0);
 	    			            sampleClient.publish(sDeviceTopicPush, message);
@@ -220,11 +223,11 @@ public class RunPushValues implements Runnable {
 	    	                }
 	    	                else
 	    	                {
-	    	                    System.out.println(" - Simulate Publishing message: " + sDeviceUrnPrefixPush  + sContent);
-	    	            		textPane.append(sTime + " - Simulate Pub msg: " + sDeviceUrnPrefixPush  + sContent + "\n");
+	    	                    System.out.println(" - Simulate Publishing message: " + sDeviceUrnPush  + sContent);
+	    	            		textPane.append(sTime + " - Simulate Pub msg: " + sDeviceUrnPush  + sContent + "\n");
 	    	                }
 	    	                
-	    	                // Temporisation entre 2 envois
+	    	                // delay between 2 push
 	    	                try {
 	    						Thread.sleep(lTempoPush);
 	    					} catch (InterruptedException e) {
@@ -247,90 +250,12 @@ public class RunPushValues implements Runnable {
     			e.printStackTrace();
     		}
 
-  /*  		
-            for (i=0; i<lNbEchantillons; i++)
-            {
-            	// engineOn à 66%
-            	bEngineOn = rand.nextBoolean() | rand.nextBoolean() ;
-            	// streamId
-                data.s = TestLOSamples.sStreamID;
-                // value: JSON object...
-                data.v = new HashMap<String, Object>();
-                // Engine off => speed ~ 0
-                if (bEngineOn)
-                {
-                	data.v.put("Speed", rand.nextInt(130));
-                	data.v.put("DoorOpen", false);
-            		data.v.put("DoorOpenDuration", 0);
-                } 
-                else
-                {
-                	data.v.put("Speed", 0);
-                	bDoorOpen = rand.nextBoolean() | rand.nextBoolean() | rand.nextBoolean();
-                	data.v.put("DoorOpen", bDoorOpen);
-                	if (bDoorOpen)
-                		data.v.put("DoorOpenDuration", 15 * (1+rand.nextInt(3)));
-                	else
-                		data.v.put("DoorOpenDuration", 0);
-                }
-                // 50 +/- 20
-                data.v.put("Hygrometry", 50 + rand.nextInt(20));
-                // double 
-                data.v.put("tempC", TestLOSamples.arrondi(20+(double)(rand.nextInt()%300)/100, 2));
-                data.v.put("engineOn", bEngineOn);
-                // location (lat/lon)
-                dLocNext[0] += (dLocStop[0] - dLocStart[0])/lNbEchantillons;
-                dLocNext[1] += (dLocStop[1] - dLocStart[1])/lNbEchantillons;
-                data.loc = dLocNext;
-//                data.loc = new Double[] { 45.759723, 4.84223 };
-                // model
-                data.m = TestLOSamples.DATA_MODEL;
-                // tags
-                data.t = Arrays.asList(TestLOSamples.DATA_TAG);
-                // encoding to JSON
-                // {"s":"test","m":"Sample02","v":{"Speed":0,"DoorOpen":true,"engineOn":false,"DoorOpenDuration":1,"Hygrometry":55,"tempC":19.19},"t":["sample.01"],"loc":[45.759723,4.84223]}
-                sContent = new Gson().toJson(data);
-
-
-        		// On met le curseur à la fin de la requête précédente
-        		textPane.setCaretPosition(textPane.getDocument().getLength());
-    	    	LocalDateTime now = LocalDateTime.now();
-    	    	String sTime = now.format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS ", Locale.FRENCH));
-        		
-                if (bPublish)
-                {
-		            // Publish data
-                    System.out.print(String.valueOf(i));
-                    System.out.println(" - Publishing message: " + sDeviceUrn + " - " + sTopic + " - " + sContent);
-            		textPane.append(sTime + String.valueOf(i) + " - Pub msg: " + sDeviceUrn + " - " + sTopic + " - " + sContent + "\n");
-		            MqttMessage message = new MqttMessage(sContent.getBytes());
-		            message.setQos(0);
-		            sampleClient.publish(sTopic, message);
-		            System.out.println("Message published "+ sTopic);
-                }
-                else
-                {
-                    System.out.print(String.valueOf(i));
-                    System.out.println(" - Simulate Publishing message: " + sDeviceUrn + sContent);
-            		textPane.append(sTime + String.valueOf(i) + " - Simulate Pub msg: " + sDeviceUrn + sContent + "\n");
-                }
-                
-                // Temporisation entre 2 envois
-                try {
-					Thread.sleep(lTempoEnvoi);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-            }
-*/
             if (bPublishPush)
             {
             	// Disconnection
 	            sampleClient.disconnect();
-	            System.out.println(sDeviceUrnPrefixPush + " - Disconnected");
+	            System.out.println(sDeviceUrnPush + " - Disconnected");
             }
-            //System.exit(0);
             
 
         } catch (MqttException me) {

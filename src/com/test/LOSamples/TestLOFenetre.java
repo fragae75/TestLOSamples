@@ -1,4 +1,10 @@
-  
+/**
+ *
+ * Build the GUI/launch the threads
+ * 
+ */
+
+
 package com.test.LOSamples;
  
 import java.awt.BorderLayout;

@@ -1,3 +1,9 @@
+/**
+ * 
+ * push time stamped Airparif pollution data
+ * 
+ */
+
 package com.test.LOSamples;
 
 import javax.swing.JTextArea;

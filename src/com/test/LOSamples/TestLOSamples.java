@@ -1,6 +1,6 @@
-/*
+/**
  * 
- * Main class
+ * Main class : TestLOSamples
  * 
  * 
  */

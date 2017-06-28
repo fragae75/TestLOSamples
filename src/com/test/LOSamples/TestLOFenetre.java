@@ -114,14 +114,18 @@ public class TestLOFenetre extends JFrame {
 	private static JTextField jtfStreamIDPush = new JTextField();
 	private JLabel jlbTopicPush = new JLabel("Topic : ");
 	private static JTextField jtfTopicPush = new JTextField();
-	private JLabel jlbDeviceUrnPrefixPush = new JLabel("Device URN prefix : ");
-	private static JTextField jtfDeviceUrnPrefixPush = new JTextField();
+	private JLabel jlbDeviceUrnPush = new JLabel("Device URN : ");
+	private static JTextField jtfDeviceUrnPush = new JTextField();
 	private JLabel jlbCSVFileToOpen = new JLabel("CSV File to open : ");
 	private static JTextField jtfCSVFile = new JTextField(TestLOSamples.sCSVFilePush);
 	private JLabel jlbPushPeriod = new JLabel("Push value period (ms) : ");
 	private static JTextField jtfPushPeriodValue = new JTextField(Long.toString(TestLOSamples.lTempoPush));
 	private JLabel jlbTown = new JLabel("Town : ");
 	private static JTextField jtfTown = new JTextField(TestLOSamples.sTown);
+	private JLabel jlbDataModelPush = new JLabel("Data Model : ");
+	private static JTextField jtfDataModelPush = new JTextField(TestLOSamples.sDataModelPush);
+	private JLabel jlbDataTagPush = new JLabel("Tag : ");
+	private static JTextField jtfDataTagPush = new JTextField(TestLOSamples.sDataTagPush);
 	public JButton boutonPush =  new JButton("Push !");
 	
 
@@ -258,7 +262,8 @@ public class TestLOFenetre extends JFrame {
 		 */
 		TestLOSamples.sStreamIDPush = jtfStreamIDPush.getText();
 		TestLOSamples.sDeviceTopicPush = jtfTopicPush.getText();
-		TestLOSamples.sDeviceUrnPush = jtfDeviceUrnPrefixPush.getText();
+		TestLOSamples.sDeviceUrnPush = jtfDeviceUrnPush.getText();
+		TestLOSamples.sCSVFilePush = jtfCSVFile.getText();
 		// Tempo Envoi : min of PUSH_MIN_PERIOD_VALUE
 		try {
 		    l = Long.parseLong(jtfPushPeriodValue.getText());
@@ -276,6 +281,8 @@ public class TestLOFenetre extends JFrame {
 	    	bGood = false;
 		}
 		TestLOSamples.sTown = jtfTown.getText();
+		TestLOSamples.sDataModelPush = jtfDataModelPush.getText();
+		TestLOSamples.sDataTagPush = jtfDataTagPush.getText();
 		
 		return bGood;
 	}
@@ -528,10 +535,10 @@ public class TestLOFenetre extends JFrame {
 	    JPanel jpDeviceUrnPrefixPush = new JPanel();
 	    jpDeviceUrnPrefixPush.setLayout(new BoxLayout(jpDeviceUrnPrefixPush, BoxLayout.LINE_AXIS));
 	    jpDeviceUrnPrefixPush.add(Box.createRigidArea(new Dimension(30, 0)));
-	    jpDeviceUrnPrefixPush.add(jlbDeviceUrnPrefixPush);
-	    jtfDeviceUrnPrefixPush.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfDeviceUrnPrefixPush.getMinimumSize().height));
-	    jpDeviceUrnPrefixPush.add(jtfDeviceUrnPrefixPush);
-	    jtfDeviceUrnPrefixPush.setText(TestLOSamples.sDeviceUrnPush);
+	    jpDeviceUrnPrefixPush.add(jlbDeviceUrnPush);
+	    jtfDeviceUrnPush.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfDeviceUrnPush.getMinimumSize().height));
+	    jpDeviceUrnPrefixPush.add(jtfDeviceUrnPush);
+	    jtfDeviceUrnPush.setText(TestLOSamples.sDeviceUrnPush);
 
 	    
 	    JPanel jpCSVFile = new JPanel();
@@ -558,6 +565,20 @@ public class TestLOFenetre extends JFrame {
 	    jpTown.add(jlbTown);
 	    jpTown.add(jtfTown);
 	    jtfTown.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfTown.getMinimumSize().height));
+	    
+	    JPanel jpDataModelPush = new JPanel();
+	    jpDataModelPush.setLayout(new BoxLayout(jpDataModelPush, BoxLayout.LINE_AXIS));
+	    jpDataModelPush.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpDataModelPush.add(jlbDataModelPush);
+	    jpDataModelPush.add(jtfDataModelPush);
+	    jtfDataModelPush.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfDataModelPush.getMinimumSize().height));
+
+	    JPanel jpDataTagPush = new JPanel();
+	    jpDataTagPush.setLayout(new BoxLayout(jpDataTagPush, BoxLayout.LINE_AXIS));
+	    jpDataTagPush.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpDataTagPush.add(jlbDataTagPush);
+	    jpDataTagPush.add(jtfDataTagPush);
+	    jtfDataTagPush.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfDataTagPush.getMinimumSize().height));
 	    
 	    /*
 	     * 
@@ -643,6 +664,10 @@ public class TestLOFenetre extends JFrame {
 	    panPushData.add(jpPushPeriod);
 	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panPushData.add(jpTown);
+	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panPushData.add(jpDataModelPush);
+	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panPushData.add(jpDataTagPush);
 	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panPushData.add(jpButtonPush);
 	    

@@ -100,6 +100,8 @@ public class TestLOSamples {
     static String sCSVFilePush = "20160601_20170616-PA04C_auto.csv";
     static long lTempoPush = PUSH_PERIOD_VALUE;
     static String sTown = "Paris Centre";
+    static String sDataModelPush = DATA_MODEL_PUSH;
+    static String sDataTagPush = DATA_TAG_PUSH;
     
 	public static double arrondi(double d, int digit)
 	{

@@ -97,6 +97,44 @@ public class RunPushValues implements Runnable {
 
 	    return bValid;
 	}
+
+	/**
+	 * check between ';' and ',' delimiter
+	 * @return
+	 */
+	private char getBestCSVDelimiterComaVsSemiColon(){
+		
+		// CSV Parser
+		CSVReader readerSemiColon = null;
+		CSVReader readerComa  = null;
+		String [] nextLineSemiColon;
+		String [] nextLineComa;
+		int iLengthSemiColon = 0;
+		int iLengthComa = 0;
+		
+		try {
+			readerSemiColon = new CSVReader(new FileReader(sCSVFilePush), ';');
+			readerComa = new CSVReader(new FileReader(sCSVFilePush), ',');
+			try{
+				if ( (nextLineSemiColon = readerSemiColon.readNext()) != null) {
+	                iLengthSemiColon = nextLineSemiColon.length;
+				}
+				if ( (nextLineComa = readerComa.readNext()) != null) {
+	                iLengthComa = nextLineComa.length;
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (iLengthSemiColon > iLengthComa)
+			return ';';
+		else
+			return ',';
+	}
 	
 	/**
 	 * 
@@ -105,6 +143,11 @@ public class RunPushValues implements Runnable {
 	 */
 	public void run() {
 		
+		char cDelimiter = getBestCSVDelimiterComaVsSemiColon();
+		String sColumn[] = new String[7];
+		int iColumnLength = 0;
+		
+		System.out.println("CSV delimiter : '" + cDelimiter + "'");
 		
         // *** data to push ***
         DeviceData data = new DeviceData();
@@ -143,9 +186,15 @@ public class RunPushValues implements Runnable {
             }
             
     		try {
-    			reader = new CSVReader(new FileReader(sCSVFilePush), ';');
+    			reader = new CSVReader(new FileReader(sCSVFilePush), cDelimiter);
     			String [] nextLine;
     			try {
+    				// Get the column names from the 1st line
+    				if ((nextLine = reader.readNext()) != null)
+    				{
+    					for (iColumnLength=0; iColumnLength<nextLine.length; iColumnLength++)
+    						sColumn[iColumnLength] = nextLine[iColumnLength];
+    				}
     				// Start parsing values
     				while ((nextLine = reader.readNext()) != null) {
     	            	// streamId
@@ -156,7 +205,8 @@ public class RunPushValues implements Runnable {
     	                String sDate = nextLine[0];
     	                
     	                // beware of isValidDate() not bullet proof !
-    	                if (isValidDate(sDate) && nextLine.length == 7)
+    	                int iLineLength = nextLine.length;
+    	                if (isValidDate(sDate) && iLineLength > 2)
     	                {
         	                String [] sNumbers = sDate.split("/");
     	                	String sHour = nextLine[1];
@@ -177,38 +227,53 @@ public class RunPushValues implements Runnable {
     	                	*/
     	                	data.v.put("Town", sTown);
     	                	try{
-    	                		data.v.put("PM25", Integer.valueOf(nextLine[2]));
+    	                		if (iLineLength >=3)
+    	                			data.v.put(sColumn[2], Integer.valueOf(nextLine[2]));
+//    	                			data.v.put("PM25", Integer.valueOf(nextLine[2]));
         	    			} catch (NumberFormatException e) {
-    	                		data.v.put("PM25", 0);
+    	                		data.v.put(sColumn[2], 0);
+//    	                		data.v.put("PM25", 0);
         	    			}
     	                	try{
-        	                	data.v.put("PM10", Integer.valueOf(nextLine[3]));
+    	                		if (iLineLength >=4)
+    	                			data.v.put(sColumn[3], Integer.valueOf(nextLine[3]));
+//	                			data.v.put("PM10", Integer.valueOf(nextLine[3]));
 	    	    			} catch (NumberFormatException e) {
-	    	                	data.v.put("PM10", 0);
+	    	                	data.v.put(sColumn[3], 0);
+//	    	                	data.v.put("PM10", 0);
 	    	    			}
     	                	try{
-        	                	data.v.put("O3", Integer.valueOf(nextLine[4]));
+    	                		if (iLineLength >=5)
+    	                			data.v.put(sColumn[4], Integer.valueOf(nextLine[4]));
+//	                			data.v.put("O3", Integer.valueOf(nextLine[4]));
 	    	    			} catch (NumberFormatException e) {
-	    	                	data.v.put("O3", 0);
+	    	                	data.v.put(sColumn[4], 0);
+//	    	                	data.v.put("O3", 0);
 	    	    			}
     	                	try{
-        	                	data.v.put("N02", Integer.valueOf(nextLine[5]));
+    	                		if (iLineLength >=6)
+    	                			data.v.put(sColumn[5], Integer.valueOf(nextLine[5]));
+//	                			data.v.put("N02", Integer.valueOf(nextLine[5]));
 	    	    			} catch (NumberFormatException e) {
-	    	                	data.v.put("N02", 0);
+	    	                	data.v.put(sColumn[5], 0);
+//	    	                	data.v.put("N02", 0);
 	    	    			}
     	                	try{
-        	                	data.v.put("CO", Integer.valueOf(nextLine[6]));
+    	                		if (iLineLength >=7)
+    	                			data.v.put(sColumn[6], Integer.valueOf(nextLine[6]));
+//	                			data.v.put("CO", Integer.valueOf(nextLine[6]));
 	    	    			} catch (NumberFormatException e) {
-	    	                	data.v.put("CO", 0);
+	    	                	data.v.put(sColumn[6], 0);
+//	    	                	data.v.put("CO", 0);
 	    	    			} 
     	                	
     	                	
 	    	                // model
-	    	                data.m = TestLOSamples.DATA_MODEL_PUSH;
+	    	                data.m = TestLOSamples.sDataModelPush;
 	    	                // tags
-	    	                data.t = Arrays.asList(TestLOSamples.DATA_TAG_PUSH);
+	    	                data.t = Arrays.asList(TestLOSamples.sDataTagPush);
 	    	                // encoding to JSON
-	    	                // {"s":"test","m":"Sample02","v":{"Speed":0,"DoorOpen":true,"engineOn":false,"DoorOpenDuration":1,"Hygrometry":55,"tempC":19.19},"t":["sample.01"],"loc":[45.759723,4.84223]}
+	    	                // ex : {"s":"test","m":"Sample02","v":{"Speed":0,"DoorOpen":true,"engineOn":false,"DoorOpenDuration":1,"Hygrometry":55,"tempC":19.19},"t":["sample.01"],"loc":[45.759723,4.84223]}
 	    	                sContent = new Gson().toJson(data);
 	
 	
@@ -243,7 +308,7 @@ public class RunPushValues implements Runnable {
 
     	                } // if
     	                
-    					System.out.println("");
+//    					System.out.println("");
     	                
     				} // While
     				

@@ -1,6 +1,6 @@
 # TestLOSamples
 
-Sample application for Datavenue Live Objects
+Sample application for Datavenue Live Objects.
 It simulates MQTT devices and Bussiness applications that uses Live Objects resources
 
 6 tabbed panes : 

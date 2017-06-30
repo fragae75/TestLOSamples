@@ -48,7 +48,6 @@ public class RunPushValues implements Runnable {
 	private String sTown;
 	private JTextArea textPane;
 	private JButton boutonPushPause; 
-    public static String sPushTitle = "";
 	 
 	
 	/**
@@ -307,7 +306,7 @@ public class RunPushValues implements Runnable {
     	                
 
     	                int iPauseDuration = 0;
-//    	                String sPushTitle = "";
+    	                String sPushTitle = "";
     	                while (TestLOSamples.bPushPause)
     	                {
     	                	

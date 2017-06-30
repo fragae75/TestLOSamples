@@ -922,7 +922,7 @@ public class TestLOFenetre extends JFrame {
 			
 	    	if (TestLOSamples.bPushPause){
 				TestLOSamples.bPushPause = false;
-				boutonPushPause.setText("Push");
+				boutonPushPause.setText("Pause");
 				gatherConfigValues();
 	    	}
 	    	else{
@@ -942,7 +942,7 @@ public class TestLOFenetre extends JFrame {
 			
 	    	if (TestLOSamples.bPushPause){
 				TestLOSamples.bPushPause = false;
-				boutonPushPause.setText("Push");
+				boutonPushPause.setText("Pause");
 	    	}
 
 	    	// Stop pushing Airparif CSV value file

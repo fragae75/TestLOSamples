@@ -93,7 +93,9 @@ public class TestLOSamples {
     final static int PUSH_MIN_PERIOD_VALUE = 100;
     final static int PUSH_PERIOD_VALUE = 1000; 
     
-	static boolean bDeviceModePush = true;
+	static boolean bPushStop = false;
+	static boolean bPushPause = false;
+    static boolean bDeviceModePush = true;
 	static String sDeviceTopicPush = DEFAULT_DEVICE_TOPIC_PUSH;
 	public static String sStreamIDPush = "StreamPushAirParif";
 	static String sDeviceUrnPush = DEVICE_URN_PUSH_AIRPARIF;

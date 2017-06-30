@@ -126,7 +126,9 @@ public class TestLOFenetre extends JFrame {
 	private static JTextField jtfDataModelPush = new JTextField(TestLOSamples.sDataModelPush);
 	private JLabel jlbDataTagPush = new JLabel("Tag : ");
 	private static JTextField jtfDataTagPush = new JTextField(TestLOSamples.sDataTagPush);
-	public JButton boutonPush =  new JButton("Push !");
+	public JButton boutonPushStart =  new JButton("Push !");
+	public JButton boutonPushStop =  new JButton("Stop");
+	public static JButton boutonPushPause =  new JButton("Pause");
 	
 
 	/**
@@ -554,10 +556,17 @@ public class TestLOFenetre extends JFrame {
 	    jpPushPeriod.add(jlbPushPeriod);
 	    jpPushPeriod.add(jtfPushPeriodValue);
 	    jtfPushPeriodValue.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfPushPeriodValue.getMinimumSize().height));
+
 	    JPanel jpButtonPush = new JPanel();
-	    boutonPush.addActionListener(new BoutonListenerPush()); 
+	    boutonPushStart.addActionListener(new BoutonListenerStartPush()); 
+	    boutonPushStop.addActionListener(new BoutonListenerStopPush()); 
+	    boutonPushPause.addActionListener(new BoutonListenerPausePush()); 
 	    jpButtonPush.setLayout(new BoxLayout(jpButtonPush, BoxLayout.LINE_AXIS));
-	    jpButtonPush.add(boutonPush);
+	    jpButtonPush.add(boutonPushStart);
+	    jpButtonPush.add(Box.createRigidArea(new Dimension(30, 30)));
+	    jpButtonPush.add(boutonPushStop);
+	    jpButtonPush.add(Box.createRigidArea(new Dimension(30, 30)));
+	    jpButtonPush.add(boutonPushPause);
 	    
 	    JPanel jpTown = new JPanel();
 	    jpTown.setLayout(new BoxLayout(jpTown, BoxLayout.LINE_AXIS));
@@ -580,6 +589,7 @@ public class TestLOFenetre extends JFrame {
 	    jpDataTagPush.add(jtfDataTagPush);
 	    jtfDataTagPush.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfDataTagPush.getMinimumSize().height));
 	    
+
 	    /*
 	     * 
 	     * Construction de la fenetre
@@ -780,7 +790,8 @@ public class TestLOFenetre extends JFrame {
     			   									TestLOSamples.bDeviceModePush,
     			   									TestLOSamples.bPublish, 
     			   									TestLOSamples.sTown,
-													TestLOSamples.fenetreTestLOSamples.textPaneReceive);
+													TestLOSamples.fenetreTestLOSamples.textPaneReceive,
+													boutonPushPause);
 
 		t = new Thread(pushValues);
 		t.start();
@@ -904,14 +915,55 @@ public class TestLOFenetre extends JFrame {
 	/*
 	 * Bouton push
 	 */
-	class BoutonListenerPush implements ActionListener{
+	class BoutonListenerStartPush implements ActionListener{
 
 		@Override
 		public void actionPerformed(ActionEvent arg0) {
 			
-	    	// Simuler l'appli Android OAB
-			if (gatherConfigValues())
-				doPushValues();
+	    	if (TestLOSamples.bPushPause){
+				TestLOSamples.bPushPause = false;
+				boutonPushPause.setText("Push");
+				gatherConfigValues();
+	    	}
+	    	else{
+				// Start pushing Airparif CSV value file
+				TestLOSamples.bPushStop = false;
+				TestLOSamples.bPushPause = false;
+				if (gatherConfigValues())
+					doPushValues();
+	    	}
 	    }
 	  }
+
+	class BoutonListenerStopPush implements ActionListener{
+	
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+	    	if (TestLOSamples.bPushPause){
+				TestLOSamples.bPushPause = false;
+				boutonPushPause.setText("Push");
+	    	}
+
+	    	// Stop pushing Airparif CSV value file
+			gatherConfigValues();
+			TestLOSamples.bPushStop = true;
+	    }
+	  }
+	
+	class BoutonListenerPausePush implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+	    	// Pause on pushing Airparif CSV value file
+			gatherConfigValues();
+			TestLOSamples.bPushPause = true;
+	    }
+	  }
+
 }
+	
+
+
+

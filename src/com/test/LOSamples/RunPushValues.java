@@ -6,6 +6,7 @@
 
 package com.test.LOSamples;
 
+import javax.swing.JButton;
 import javax.swing.JTextArea;
 
 import com.opencsv.CSVReader;
@@ -46,6 +47,9 @@ public class RunPushValues implements Runnable {
 	private boolean bDeviceModePush;
 	private String sTown;
 	private JTextArea textPane;
+	private JButton boutonPushPause; 
+    public static String sPushTitle = "";
+	 
 	
 	/**
 	 * 
@@ -60,6 +64,7 @@ public class RunPushValues implements Runnable {
 	 * @param bPublish : really publish or simulate
 	 * @param sTown : location measurement
 	 * @param textPaneReceive : windows edit panel
+	 * @param JButton boutonPushPause : for the Push pause button count down
 	 */
 	public RunPushValues (	String sCSVFilePush, 
 							long lTempoPush, 
@@ -69,7 +74,8 @@ public class RunPushValues implements Runnable {
 							boolean bDeviceModePush,
 							boolean bPublish,
 							String sTown,
-							JTextArea textPaneReceive)
+							JTextArea textPaneReceive,
+							JButton boutonPushPause )
 	{
 		this.sCSVFilePush = sCSVFilePush;
 		this.lTempoPush = lTempoPush;
@@ -80,6 +86,7 @@ public class RunPushValues implements Runnable {
 		this.bPublishPush = bPublish;
 		this.sTown = sTown;
 		this.textPane = textPaneReceive;
+		this.boutonPushPause = boutonPushPause;
 	}
 
 	/*
@@ -196,7 +203,7 @@ public class RunPushValues implements Runnable {
     						sColumn[iColumnLength] = nextLine[iColumnLength];
     				}
     				// Start parsing values
-    				while ((nextLine = reader.readNext()) != null) {
+    				while (!TestLOSamples.bPushStop && (nextLine = reader.readNext()) != null) {
     	            	// streamId
     	                data.s = sStreamIDPush;
     	                // value: JSON object...
@@ -229,42 +236,32 @@ public class RunPushValues implements Runnable {
     	                	try{
     	                		if (iLineLength >=3)
     	                			data.v.put(sColumn[2], Integer.valueOf(nextLine[2]));
-//    	                			data.v.put("PM25", Integer.valueOf(nextLine[2]));
         	    			} catch (NumberFormatException e) {
     	                		data.v.put(sColumn[2], 0);
-//    	                		data.v.put("PM25", 0);
         	    			}
     	                	try{
     	                		if (iLineLength >=4)
     	                			data.v.put(sColumn[3], Integer.valueOf(nextLine[3]));
-//	                			data.v.put("PM10", Integer.valueOf(nextLine[3]));
 	    	    			} catch (NumberFormatException e) {
 	    	                	data.v.put(sColumn[3], 0);
-//	    	                	data.v.put("PM10", 0);
 	    	    			}
     	                	try{
     	                		if (iLineLength >=5)
     	                			data.v.put(sColumn[4], Integer.valueOf(nextLine[4]));
-//	                			data.v.put("O3", Integer.valueOf(nextLine[4]));
 	    	    			} catch (NumberFormatException e) {
 	    	                	data.v.put(sColumn[4], 0);
-//	    	                	data.v.put("O3", 0);
 	    	    			}
     	                	try{
     	                		if (iLineLength >=6)
     	                			data.v.put(sColumn[5], Integer.valueOf(nextLine[5]));
-//	                			data.v.put("N02", Integer.valueOf(nextLine[5]));
 	    	    			} catch (NumberFormatException e) {
 	    	                	data.v.put(sColumn[5], 0);
-//	    	                	data.v.put("N02", 0);
 	    	    			}
     	                	try{
     	                		if (iLineLength >=7)
     	                			data.v.put(sColumn[6], Integer.valueOf(nextLine[6]));
-//	                			data.v.put("CO", Integer.valueOf(nextLine[6]));
 	    	    			} catch (NumberFormatException e) {
 	    	                	data.v.put(sColumn[6], 0);
-//	    	                	data.v.put("CO", 0);
 	    	    			} 
     	                	
     	                	
@@ -308,9 +305,31 @@ public class RunPushValues implements Runnable {
 
     	                } // if
     	                
-//    					System.out.println("");
+
+    	                int iPauseDuration = 0;
+//    	                String sPushTitle = "";
+    	                while (TestLOSamples.bPushPause)
+    	                {
+    	                	
+    	                	sPushTitle = String.format("Pause - %d sec", TestLOSamples.MQTT_KEEP_ALIVE-iPauseDuration);
+    	                	boutonPushPause.setText(sPushTitle);
+    	                	//boutonPushPause.
+    	                	try {
+	    						Thread.sleep(1000);
+	    					} catch (InterruptedException e) {
+	    						// TODO Auto-generated catch block
+	    						e.printStackTrace();
+	    					}
+	    	                iPauseDuration++;
+	    	                if (iPauseDuration >= TestLOSamples.MQTT_KEEP_ALIVE){
+	    	                	TestLOSamples.bPushPause = false;
+	    	                	TestLOSamples.bPushStop = true;
+	    	                	boutonPushPause.setText("Pause");
+	    	                }
+	    	                	
+    	                } // While bPushPause
     	                
-    				} // While
+    				} // While 
     				
     			} catch (IOException e) {
     				// TODO Auto-generated catch block

@@ -62,6 +62,7 @@ public class TestLOFenetre extends JFrame {
 	private JPanel panOABApp = new JPanel();
 	private JPanel panSubscribe = new JPanel();
 	private JPanel panPushData = new JPanel();
+	private JPanel panIFTTT = new JPanel();
 	// Config
 	private static JCheckBox jcbSimulation = new JCheckBox("Simulation (just logs)");
 	private JLabel jlbKey = new JLabel("Key : ");
@@ -129,6 +130,18 @@ public class TestLOFenetre extends JFrame {
 	public JButton boutonPushStart =  new JButton("Push !");
 	public JButton boutonPushStop =  new JButton("Stop");
 	public static JButton boutonPushPause =  new JButton("Pause");
+	// IFTTT
+	private JLabel jlbIFTTTFiringRule = new JLabel("Firing Rule : ");
+	private static JTextField jtfIFTTTFiringRule = new JTextField();
+	private JLabel jlbIFTTTKey = new JLabel("Key : ");
+	private static JTextField jtfIFTTTKey = new JTextField();
+	private JLabel jlbIFTTTEvent = new JLabel("Event : ");
+	private static JTextField jtfIFTTTEvent = new JTextField();
+	private JLabel jlbIFTTTURL = new JLabel("URL : ");
+	private static JTextField jtfIFTTTURL = new JTextField();
+	public static JTextArea textPaneIFTTT = new JTextArea();
+	private JScrollPane scrollIFTTT = new JScrollPane(textPaneIFTTT);
+	public JButton boutonIFTTTActivate =  new JButton("Activate");
 	
 
 	/**
@@ -286,6 +299,16 @@ public class TestLOFenetre extends JFrame {
 		TestLOSamples.sDataModelPush = jtfDataModelPush.getText();
 		TestLOSamples.sDataTagPush = jtfDataTagPush.getText();
 		
+		/*
+		 * IFTTT
+		 * 
+		 */
+		TestLOSamples.sIFTTTFiringRule = jtfIFTTTFiringRule.getText();
+		TestLOSamples.sIFTTTKey = jtfIFTTTKey.getText();
+		TestLOSamples.sIFTTTEvent = jtfIFTTTEvent.getText();
+		TestLOSamples.sIFTTTURL = TestLOSamples.sIFTTTURL1 + TestLOSamples.sIFTTTEvent + TestLOSamples.sIFTTTURL2 + TestLOSamples.sIFTTTKey;
+		jtfIFTTTURL.setText(TestLOSamples.sIFTTTURL);
+
 		return bGood;
 	}
 	
@@ -295,7 +318,7 @@ public class TestLOFenetre extends JFrame {
 	 */
 	public TestLOFenetre(){
 		this.setTitle("Generateur traffic Live Objects");
-		this.setSize(600, 500);
+		this.setSize(700, 500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 
@@ -507,7 +530,7 @@ public class TestLOFenetre extends JFrame {
 
 	    /*
 	     * 
-	     * Panel Push Data
+	     * Panel Push Data Airparif
 	     * 
 	     * 
 	     */
@@ -589,6 +612,46 @@ public class TestLOFenetre extends JFrame {
 	    jpDataTagPush.add(jtfDataTagPush);
 	    jtfDataTagPush.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfDataTagPush.getMinimumSize().height));
 	    
+	    /*
+	     * 
+	     * Panel IFTTT
+	     * 
+	     * 
+	     */
+	    JPanel jpIFTTTFiringRule = new JPanel();
+	    jpIFTTTFiringRule.setLayout(new BoxLayout(jpIFTTTFiringRule, BoxLayout.LINE_AXIS));
+	    jpIFTTTFiringRule.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpIFTTTFiringRule.add(jlbIFTTTFiringRule);
+	    jpIFTTTFiringRule.add(jtfIFTTTFiringRule);
+	    jtfIFTTTFiringRule.setText(TestLOSamples.sIFTTTFiringRule);
+	    jtfIFTTTFiringRule.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfIFTTTFiringRule.getMinimumSize().height));
+	    JPanel jpIFTTTKey = new JPanel();
+	    jpIFTTTKey.setLayout(new BoxLayout(jpIFTTTKey, BoxLayout.LINE_AXIS));
+	    jpIFTTTKey.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpIFTTTKey.add(jlbIFTTTKey);
+	    jpIFTTTKey.add(jtfIFTTTKey);
+	    jtfIFTTTKey.setText(TestLOSamples.sIFTTTKey);
+	    jtfIFTTTKey.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfIFTTTKey.getMinimumSize().height));
+	    JPanel jpIFTTTEvent = new JPanel();
+	    jpIFTTTEvent.setLayout(new BoxLayout(jpIFTTTEvent, BoxLayout.LINE_AXIS));
+	    jpIFTTTEvent.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpIFTTTEvent.add(jlbIFTTTEvent);
+	    jpIFTTTEvent.add(jtfIFTTTEvent);
+	    jtfIFTTTEvent.setText(TestLOSamples.sIFTTTEvent);
+	    jtfIFTTTEvent.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfIFTTTEvent.getMinimumSize().height));
+	    JPanel jpIFTTTURL = new JPanel();
+	    jpIFTTTURL.setLayout(new BoxLayout(jpIFTTTURL, BoxLayout.LINE_AXIS));
+	    jpIFTTTURL.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpIFTTTURL.add(jlbIFTTTURL);
+	    jpIFTTTURL.add(jtfIFTTTURL);
+	    jtfIFTTTURL.setText(TestLOSamples.sIFTTTURL);
+	    jtfIFTTTURL.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfIFTTTURL.getMinimumSize().height));
+	    // Ajout du bouton d'action
+	    JPanel jpIFTTTButtonActivate = new JPanel();
+	    boutonIFTTTActivate.addActionListener(new BoutonListenerIFTTTActivate()); 
+	    jpIFTTTButtonActivate.setLayout(new BoxLayout(jpIFTTTButtonActivate, BoxLayout.LINE_AXIS));
+	    jpIFTTTButtonActivate.add(boutonIFTTTActivate);
+	    
 
 	    /*
 	     * 
@@ -655,8 +718,9 @@ public class TestLOFenetre extends JFrame {
 	    panSubscribe.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panSubscribe.add(jplFifo);
 	    panSubscribe.add(Box.createRigidArea(new Dimension(0, 5)));
-	    panSubscribe.add(jpButtonSubscribe);
 	    panSubscribe.add(scrollSubscribe);
+	    panSubscribe.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panSubscribe.add(jpButtonSubscribe);
 	    
 	    // Paneau Push Data
 	    panPushData.setLayout(new BoxLayout(panPushData, BoxLayout.PAGE_AXIS));
@@ -680,13 +744,29 @@ public class TestLOFenetre extends JFrame {
 	    panPushData.add(jpDataTagPush);
 	    panPushData.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panPushData.add(jpButtonPush);
-	    
+
+	    // Panneau IFTTT
+	    panIFTTT.setLayout(new BoxLayout(panIFTTT, BoxLayout.PAGE_AXIS));
+	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 20)));
+	    panIFTTT.add(jpIFTTTFiringRule);
+	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panIFTTT.add(jpIFTTTKey);
+	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panIFTTT.add(jpIFTTTEvent);
+	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panIFTTT.add(jpIFTTTURL);
+	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panIFTTT.add(scrollIFTTT);
+	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panIFTTT.add(jpIFTTTButtonActivate);
+
 	    // Ajout des onglets 
 	    onglet.add("Configuration", panConfig);
 	    onglet.add("Multi Terminals", panMultiTerminal);
 	    onglet.add("OAB App", panOABApp);
 	    onglet.add("Push Air Parif", panPushData);
 	    onglet.add("Subscribe", panSubscribe);
+	    onglet.add("IFTTT", panIFTTT);
 	    onglet.add("Result", panOutput);
 	    
 	    //On passe ensuite les onglets au content pane
@@ -727,7 +807,10 @@ public class TestLOFenetre extends JFrame {
 	}
 	
 	/*
+	 * 
 	 * Simule l'application de démo OAB
+	 * 
+	 * 
 	 */
 	public static void simuleOABApp()
 	{
@@ -777,6 +860,7 @@ public class TestLOFenetre extends JFrame {
 	/*
 	 * 
 	 * doPushValues()
+	 * launch Airparif thread for pushing values
 	 * 
 	 */
 	public static void doPushValues()
@@ -797,6 +881,27 @@ public class TestLOFenetre extends JFrame {
 		t.start();
         System.out.println("Thread : PushValues");
 	}
+	
+	/*
+	 * 
+	 * doPushIFTTT()
+	 * Launch threads that push IFTTT events related to Live Objects events
+	 * 
+	 */
+/*	public static void doPushIFTTT()
+	{
+		Thread t;
+		RunPushIFTTT pushIFTTT = new RunPushIFTTT(
+				TestLOSamples.sIFTTTURL,
+				TestLOSamples.fenetreTestLOSamples.textPaneSend,
+				TestLOSamples.fenetreTestLOSamples.textPaneReceive,
+				textPaneIFTTT);
+
+		t = new Thread(pushIFTTT);
+		t.start();
+        System.out.println("Thread : pushIFTTT");
+	}
+*/
 		
 	/*
 	 * Checkbox Simulation
@@ -962,8 +1067,23 @@ public class TestLOFenetre extends JFrame {
 	    }
 	  }
 
-}
-	
+	class BoutonListenerIFTTTActivate implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+			
+			gatherConfigValues();
+			
+			// Add to the Firing rule list
+			TestLOSamples.lIFTTTEvents.add(TestLOSamples.sIFTTTFiringRule);
+//			doPushIFTTT();
+            System.out.println("Event activation on FiringRule : " + TestLOSamples.sIFTTTFiringRule);
+    		textPaneIFTTT.setCaretPosition(textPaneIFTTT.getDocument().getLength());
+    		textPaneIFTTT.append("Event activation on FiringRule : " + TestLOSamples.sIFTTTFiringRule + "\n");
 
+	    }
+	}
+
+}
 
 

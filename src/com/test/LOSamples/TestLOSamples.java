@@ -19,6 +19,8 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
 
 public class TestLOSamples {
@@ -59,6 +61,7 @@ public class TestLOSamples {
     final static String[] LISTE_ROUTERS = {
     		DEFAULT_ROUTER, 
     		"~event/v1/data/eventprocessing/fired", 
+    		"~event/v1/data/eventprocessing/statechange",
     		"~event/v1/data/new/urn/msisdn",
     		"~event/v1/log/new/mqtt"};
 //    		"~event/v2/assets/{ns}/{id}/connected",
@@ -105,6 +108,17 @@ public class TestLOSamples {
     static String sDataModelPush = DATA_MODEL_PUSH;
     static String sDataTagPush = DATA_TAG_PUSH;
     
+    // IFTTT Values
+	final static String IFTTT_API_KEY_FILE = "IFTTT.txt";
+	static String sIFTTTKey = "==>" + IFTTT_API_KEY_FILE; 
+	static String sIFTTTEvent = "test"; 
+	static String sIFTTTFiringRule = "0b4e0dcd-4634-4ef2-96ce-7ceefd95b584"; 
+	static String sIFTTTURL1 = "https://maker.ifttt.com/trigger/"; 
+	static String sIFTTTURL2 = "/with/key/"; 
+	static String sIFTTTURL = sIFTTTURL1 + sIFTTTEvent + sIFTTTURL2 + sIFTTTKey; 
+	static List<String> lIFTTTEvents = new LinkedList<String>();
+    
+    
 	public static double arrondi(double d, int digit)
 	{
 		double val = d;
@@ -130,10 +144,48 @@ public class TestLOSamples {
 
        // Récupération clé d'API
 		sAPIKey = CleLiveObjectsAPI.GetAPIKey(API_KEY_FILE);
-		System.out.println("Clé API : " + sAPIKey);
+		System.out.println("Live Objects API Key : " + sAPIKey);
 		sAPILoraKey = CleLiveObjectsAPI.GetAPIKey(API_LORA_KEY_FILE);
-		System.out.println("Clé API Lora : " + sAPILoraKey);
-       
+		System.out.println("Lora API key : " + sAPILoraKey);
+		sIFTTTKey = CleLiveObjectsAPI.GetAPIKey(IFTTT_API_KEY_FILE);
+		System.out.println("IFTTT API Key : " + sIFTTTKey);
+		sIFTTTURL = sIFTTTURL1 + sIFTTTEvent + sIFTTTURL2 + sIFTTTKey;
+    
+		// Tests : truc tempporaire en remplacement du parsing Json !!!
+/*		
+		int index;
+		char c;
+		int iTemperature;
+		String sFiringNumber = new String("");
+		String sTemperatureNumber = new String("");
+		String sTemperature = new String (",\"temperature\":");
+		String sFiringRules = new String("firingRule\":{\"id\":\"");
+		String sTmp = new String("{\"payload\": \"{\"tenantId\":\"56ab3a090cf2ff600fce9ad9\",\"timestamp\":\"2017-07-15T18:33:58.973Z\",\"firingRule\":{\"id\":\"0b4e0dcd-4634-4ef2-96ce-7ceefd95b584\",\"name\":\"testFR0StreamSample02-01\",\"enabled\":true,\"matchingRuleIds\":[\"e5ec7927-be87-48dd-be42-8c01d13004d0\"],\"aggregationKeys\":[\"metadata.source\"],\"firingType\":\"ALWAYS\"},\"matchingContext\":{\"tenantId\":\"56ab3a090cf2ff600fce9ad9\",\"timestamp\":\"2017-07-15T18:33:58.971Z\",\"matchingRule\":{\"id\":\"e5ec7927-be87-48dd-be42-8c01d13004d0\",\"name\":\"Test temperature > 20\",\"enabled\":true,\"dataPredicate\":{\">\":[{\"var\":\"value.temperature\"},20]}},\"data\":{\"streamId\":\"android357329073120059\",\"timestamp\":\"2017-07-15T18:33:58.962Z\",\"location\":{\"lat\":48.872015,\"lon\":2.348264},\"model\":\"ModelOABDemoApp00\",\"value\":{\"revmin\":6082,\"hygrometry\":6,\"temperature\":59},\"tags\":[\"OABDemoApp.00\"],\"metadata\":{\"source\":\"URN:LO:NSID:SENSOR:TESTFLGAPPOAB00000\",\"connector\":\"mqtt\"}}}}\"}");
+		//"{"tenantId":"56ab3a090cf2ff600fce9ad9","timestamp":"2017-07-15T18:33:58.973Z","firingRule":{"id":"0b4e0dcd-4634-4ef2-96ce-7ceefd95b584","name":"testFR0StreamSample02-01","enabled":true,"matchingRuleIds":["e5ec7927-be87-48dd-be42-8c01d13004d0"],"aggregationKeys":["metadata.source"],"firingType":"ALWAYS"},"matchingContext":{"tenantId":"56ab3a090cf2ff600fce9ad9","timestamp":"2017-07-15T18:33:58.971Z","matchingRule":{"id":"e5ec7927-be87-48dd-be42-8c01d13004d0","name":"Test temperature > 20","enabled":true,"dataPredicate":{">":[{"var":"value.temperature"},20]}},"data":{"streamId":"android357329073120059","timestamp":"2017-07-15T18:33:58.962Z","location":{"lat":48.872015,"lon":2.348264},"model":"ModelOABDemoApp00","value":{"revmin":6082,"hygrometry":6,"temperature":59},"tags":["OABDemoApp.00"],"metadata":{"source":"URN:LO:NSID:SENSOR:TESTFLGAPPOAB00000","connector":"mqtt"}}}}";
+//		sTmp.contains("firingRule\":{\"id\":\"");
+		// Firing Number
+		index = sTmp.indexOf(sFiringRules);
+		if (index != -1)
+		{
+			index += sFiringRules.length();
+			for (c=sTmp.charAt(index); c!=','; index++, c=sTmp.charAt(index))
+			{
+				sFiringNumber += sTmp.charAt(index);
+			}
+		}
+		// Temperature
+		iTemperature = 0;
+		index = sTmp.indexOf(sTemperature);
+		if (index != -1)
+		{
+			index += sTemperature.length();
+			for (c=sTmp.charAt(index); c!='}'; index++, c=sTmp.charAt(index))
+			{
+				sTemperatureNumber += sTmp.charAt(index);
+			}
+			iTemperature = (int)Integer.valueOf(sTemperatureNumber);
+		}
+*/
 		fenetreTestLOSamples = new TestLOFenetre();
 	}
 	

@@ -4,7 +4,7 @@ Sample application for Datavenue Live Objects.
 It simulates MQTT devices and Bussiness applications that uses Live Objects resources
 
 6 tabbed panes : 
-- Config
+- Config : display the API Keys, by default in simulation mode => check to simulate sendings to the console
 - Multi terminals : generate traffic of xx MQTT terminals
 - OABApp : same as Multi terminals with other fields 
 - Push Airparif : push time stamped values of airparif csv files
@@ -16,7 +16,7 @@ It simulates MQTT devices and Bussiness applications that uses Live Objects reso
 		- 20110124_20170624-OPERA_auto.csv : Paris Opera hour values from 2011 01 24th to 2017 06 24th
 		/!\ change the town field (default = paris centre)
 - Subscribe : subscribe to a route or a fifo. The fifo has to be configured in the Live Objects portal
-- IFTTT : partial implementation - need to get a IFTTT key, enter a Firing Rule and the name of the event, it should work
+- IFTTT : partial implementation - need to get a IFTTT key, enter a Firing Rule id (create it through the Live Objects Swagger) and the name of the event, it should work
 - result : what's generated & what's received on subscriptions
 
 Important : create an account on Live Objects, generate your API key and put it into "cle.txt" and cleLora.txt. This will permit the application to acces your resources account 

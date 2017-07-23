@@ -128,8 +128,23 @@ public class RunConsumeQueue implements Runnable {
 	        	String sLiveObjectsPayload;
 	        	JsonObject mqttPayload = gson.fromJson(new String(mqttMessage.getPayload()), JsonObject.class);
 	            sLiveObjectsPayload = mqttPayload.get("payload").getAsString();
-//	            sTenantId = mqttPayload.get("tenantId").getAsString();
-//	            sFiringRule = mqttPayload.get("firingRule").getAsString();
+	            // Test payload
+	            // Exemple de mqttMessage = {"payload": "{\"tenantId\":\"56ab3a090cf2ff600fce9ad9\",\"timestamp\":\"2017-07-22T09:12:36.931Z\",\"firingRule\":{\"id\":\"0b4e0dcd-4634-4ef2-96ce-7ceefd95b584\",\"name\":\"testFR0StreamSample02-01\",\"enabled\":true,\"matchingRuleIds\":[\"e5ec7927-be87-48dd-be42-8c01d13004d0\"],\"aggregationKeys\":[\"metadata.source\"],\"firingType\":\"ALWAYS\"},\"matchingContext\":{\"tenantId\":\"56ab3a090cf2ff600fce9ad9\",\"timestamp\":\"2017-07-22T09:12:36.908Z\",\"matchingRule\":{\"id\":\"e5ec7927-be87-48dd-be42-8c01d13004d0\",\"name\":\"Test temperature > 20\",\"enabled\":true,\"dataPredicate\":{\">\":[{\"var\":\"value.temperature\"},20]}},\"data\":{\"streamId\":\"android357329073120059\",\"timestamp\":\"2017-07-22T09:12:36.879Z\",\"location\":{\"lat\":48.872015,\"lon\":2.348264},\"model\":\"ModelOABDemoApp00\",\"value\":{\"revmin\":960,\"hygrometry\":37,\"temperature\":29},\"tags\":[\"OABDemoApp.00\"],\"metadata\":{\"source\":\"URN:LO:NSID:SENSOR:TESTFLGAPPOAB00000\",\"connector\":\"mqtt\"}}}}"}
+	            
+	            // Crash sur les essais ci-dessous....
+	            /*
+	            String sTenantId = mqttPayload.get("tenantId").getAsString();
+	            String sTimeStamp = mqttPayload.get("timestamp").getAsString();
+	            String sFiringRule = mqttPayload.get("firingRule").getAsString();
+	            String sFiringRuleId = mqttPayload.get("firingRule.id").getAsString();
+	            String sMatchingContext = mqttPayload.get("matchingContext").getAsString();
+	            sTenantId = mqttPayload.get("payload.tenantId").getAsString();
+	            sTimeStamp = mqttPayload.get("payload.timestamp").getAsString();
+	            sFiringRule = mqttPayload.get("payload.firingRule").getAsString();
+	            sFiringRuleId = mqttPayload.get("payload.firingRule.id").getAsString();
+	            sMatchingContext = mqttPayload.get("payload.matchingContext").getAsString();
+	            */
+	            
 	            System.out.println("Event : " + sLiveObjectsPayload); 
 	            checkEventForIFTTT(sLiveObjectsPayload);
 	        }

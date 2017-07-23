@@ -71,7 +71,7 @@ public class TestLOSamples {
     final static String[] LISTE_LORA_ROUTERS = {DEFAULT_LORA_ROUTER};
 
 	static TestLOFenetre fenetreTestLOSamples;
-    static boolean bPublish = false; 					// false => simulation sur la console
+    static boolean bPublish = true; 					// false => simulation sur la console
 	static String sAPIKey = "Empty => cle.txt"; 		// A récupérer dans la classe CleAPI
 	static String sAPILoraKey = "Empty => cleLora.txt"; // A récupérer dans la classe CleAPI
 	static String sServer = SERVER;

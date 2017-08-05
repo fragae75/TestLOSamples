@@ -21,11 +21,15 @@ public class RunPushIFTTT implements Runnable {
 	private JTextArea textPaneReceive;
 	private JTextArea textPaneIFTTT;
 	private String sIFTTTURL;
-	private String sFiringNumber;
+	private String sFiringRuleName;
+	private String sMatchingRuleName;
+	private String sValue;
 
-	public RunPushIFTTT (String sIFTTTURL, String sFiringNumber, JTextArea textPaneSend, JTextArea textPaneReceive, JTextArea textPaneIFTTT){
+	public RunPushIFTTT (String sIFTTTURL, String sFiringRuleName, String sMatchingRuleName, String sValue, JTextArea textPaneSend, JTextArea textPaneReceive, JTextArea textPaneIFTTT){
 		this.sIFTTTURL = sIFTTTURL;
-		this.sFiringNumber = sFiringNumber;
+		this.sFiringRuleName = sFiringRuleName;
+		this.sMatchingRuleName = sMatchingRuleName;
+		this.sValue = sValue;
 		this.textPaneSend = textPaneSend;
 		this.textPaneReceive = textPaneReceive;
 		this.textPaneIFTTT = textPaneIFTTT;
@@ -57,21 +61,10 @@ public class RunPushIFTTT implements Runnable {
 	@Override
 	public void run() {
 
+		
 		try {
-/*
-			while (true){
-                // Temporisation 1 sec
-                try {
-					Thread.sleep(1000L);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			}
-*/			
 //			String sPayload = "{ \"value1\" : \"1\", \"value2\" : \"2\", \"value3\" : \"3\" }";
-			String sPayload = "{ \"value1\" : \"" + sFiringNumber + "\", \"value2\" : \"2\", \"value3\" : \"3\" }";
+			String sPayload = "{ \"value1\" : \"" + sFiringRuleName + "\", \"value2\" : \"" + sMatchingRuleName + "\", \"value3\" : \""+ sValue +"\" }";
 			String sReturn = postCommand (sIFTTTURL, sPayload);
 			
 	        System.out.println("IFTTT : " + sIFTTTURL + " Payload : " + sPayload);

@@ -10,6 +10,12 @@ package com.test.LOSamples;
 
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -21,6 +27,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class TestLOSamples {
@@ -142,7 +149,7 @@ public class TestLOSamples {
 	
 	public static void main(String[] args) {
 
-       // Récupération clé d'API
+		// Récupération clé d'API
 		sAPIKey = CleLiveObjectsAPI.GetAPIKey(API_KEY_FILE);
 		System.out.println("Live Objects API Key : " + sAPIKey);
 		sAPILoraKey = CleLiveObjectsAPI.GetAPIKey(API_LORA_KEY_FILE);
@@ -152,40 +159,6 @@ public class TestLOSamples {
 		sIFTTTURL = sIFTTTURL1 + sIFTTTEvent + sIFTTTURL2 + sIFTTTKey;
     
 		// Tests : truc tempporaire en remplacement du parsing Json !!!
-/*		
-		int index;
-		char c;
-		int iTemperature;
-		String sFiringNumber = new String("");
-		String sTemperatureNumber = new String("");
-		String sTemperature = new String (",\"temperature\":");
-		String sFiringRules = new String("firingRule\":{\"id\":\"");
-		String sTmp = new String("{\"payload\": \"{\"tenantId\":\"56ab3a090cf2ff600fce9ad9\",\"timestamp\":\"2017-07-15T18:33:58.973Z\",\"firingRule\":{\"id\":\"0b4e0dcd-4634-4ef2-96ce-7ceefd95b584\",\"name\":\"testFR0StreamSample02-01\",\"enabled\":true,\"matchingRuleIds\":[\"e5ec7927-be87-48dd-be42-8c01d13004d0\"],\"aggregationKeys\":[\"metadata.source\"],\"firingType\":\"ALWAYS\"},\"matchingContext\":{\"tenantId\":\"56ab3a090cf2ff600fce9ad9\",\"timestamp\":\"2017-07-15T18:33:58.971Z\",\"matchingRule\":{\"id\":\"e5ec7927-be87-48dd-be42-8c01d13004d0\",\"name\":\"Test temperature > 20\",\"enabled\":true,\"dataPredicate\":{\">\":[{\"var\":\"value.temperature\"},20]}},\"data\":{\"streamId\":\"android357329073120059\",\"timestamp\":\"2017-07-15T18:33:58.962Z\",\"location\":{\"lat\":48.872015,\"lon\":2.348264},\"model\":\"ModelOABDemoApp00\",\"value\":{\"revmin\":6082,\"hygrometry\":6,\"temperature\":59},\"tags\":[\"OABDemoApp.00\"],\"metadata\":{\"source\":\"URN:LO:NSID:SENSOR:TESTFLGAPPOAB00000\",\"connector\":\"mqtt\"}}}}\"}");
-		//"{"tenantId":"56ab3a090cf2ff600fce9ad9","timestamp":"2017-07-15T18:33:58.973Z","firingRule":{"id":"0b4e0dcd-4634-4ef2-96ce-7ceefd95b584","name":"testFR0StreamSample02-01","enabled":true,"matchingRuleIds":["e5ec7927-be87-48dd-be42-8c01d13004d0"],"aggregationKeys":["metadata.source"],"firingType":"ALWAYS"},"matchingContext":{"tenantId":"56ab3a090cf2ff600fce9ad9","timestamp":"2017-07-15T18:33:58.971Z","matchingRule":{"id":"e5ec7927-be87-48dd-be42-8c01d13004d0","name":"Test temperature > 20","enabled":true,"dataPredicate":{">":[{"var":"value.temperature"},20]}},"data":{"streamId":"android357329073120059","timestamp":"2017-07-15T18:33:58.962Z","location":{"lat":48.872015,"lon":2.348264},"model":"ModelOABDemoApp00","value":{"revmin":6082,"hygrometry":6,"temperature":59},"tags":["OABDemoApp.00"],"metadata":{"source":"URN:LO:NSID:SENSOR:TESTFLGAPPOAB00000","connector":"mqtt"}}}}";
-//		sTmp.contains("firingRule\":{\"id\":\"");
-		// Firing Number
-		index = sTmp.indexOf(sFiringRules);
-		if (index != -1)
-		{
-			index += sFiringRules.length();
-			for (c=sTmp.charAt(index); c!=','; index++, c=sTmp.charAt(index))
-			{
-				sFiringNumber += sTmp.charAt(index);
-			}
-		}
-		// Temperature
-		iTemperature = 0;
-		index = sTmp.indexOf(sTemperature);
-		if (index != -1)
-		{
-			index += sTemperature.length();
-			for (c=sTmp.charAt(index); c!='}'; index++, c=sTmp.charAt(index))
-			{
-				sTemperatureNumber += sTmp.charAt(index);
-			}
-			iTemperature = (int)Integer.valueOf(sTemperatureNumber);
-		}
-*/
 		fenetreTestLOSamples = new TestLOFenetre();
 	}
 	

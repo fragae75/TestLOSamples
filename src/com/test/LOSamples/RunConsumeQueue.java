@@ -5,14 +5,17 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.test.LOSamples.TestLOSamples.QueueTypes;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ListIterator;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -129,21 +132,6 @@ public class RunConsumeQueue implements Runnable {
 	        	JsonObject mqttPayload = gson.fromJson(new String(mqttMessage.getPayload()), JsonObject.class);
 	            sLiveObjectsPayload = mqttPayload.get("payload").getAsString();
 	            // Test payload
-	            // Exemple de mqttMessage = {"payload": "{\"tenantId\":\"56ab3a090cf2ff600fce9ad9\",\"timestamp\":\"2017-07-22T09:12:36.931Z\",\"firingRule\":{\"id\":\"0b4e0dcd-4634-4ef2-96ce-7ceefd95b584\",\"name\":\"testFR0StreamSample02-01\",\"enabled\":true,\"matchingRuleIds\":[\"e5ec7927-be87-48dd-be42-8c01d13004d0\"],\"aggregationKeys\":[\"metadata.source\"],\"firingType\":\"ALWAYS\"},\"matchingContext\":{\"tenantId\":\"56ab3a090cf2ff600fce9ad9\",\"timestamp\":\"2017-07-22T09:12:36.908Z\",\"matchingRule\":{\"id\":\"e5ec7927-be87-48dd-be42-8c01d13004d0\",\"name\":\"Test temperature > 20\",\"enabled\":true,\"dataPredicate\":{\">\":[{\"var\":\"value.temperature\"},20]}},\"data\":{\"streamId\":\"android357329073120059\",\"timestamp\":\"2017-07-22T09:12:36.879Z\",\"location\":{\"lat\":48.872015,\"lon\":2.348264},\"model\":\"ModelOABDemoApp00\",\"value\":{\"revmin\":960,\"hygrometry\":37,\"temperature\":29},\"tags\":[\"OABDemoApp.00\"],\"metadata\":{\"source\":\"URN:LO:NSID:SENSOR:TESTFLGAPPOAB00000\",\"connector\":\"mqtt\"}}}}"}
-	            
-	            // Crash sur les essais ci-dessous....
-	            /*
-	            String sTenantId = mqttPayload.get("tenantId").getAsString();
-	            String sTimeStamp = mqttPayload.get("timestamp").getAsString();
-	            String sFiringRule = mqttPayload.get("firingRule").getAsString();
-	            String sFiringRuleId = mqttPayload.get("firingRule.id").getAsString();
-	            String sMatchingContext = mqttPayload.get("matchingContext").getAsString();
-	            sTenantId = mqttPayload.get("payload.tenantId").getAsString();
-	            sTimeStamp = mqttPayload.get("payload.timestamp").getAsString();
-	            sFiringRule = mqttPayload.get("payload.firingRule").getAsString();
-	            sFiringRuleId = mqttPayload.get("payload.firingRule.id").getAsString();
-	            sMatchingContext = mqttPayload.get("payload.matchingContext").getAsString();
-	            */
 	            
 	            System.out.println("Event : " + sLiveObjectsPayload); 
 	            checkEventForIFTTT(sLiveObjectsPayload);
@@ -223,13 +211,21 @@ public class RunConsumeQueue implements Runnable {
 	    }
 	} // Run
 
-	
-	public static void doPushIFTTT(String sFiringNumber)
+	/**
+	 * 3 parameters to sent to IFTTT - they will be pushed through the Webhooks
+	 * 
+	 * @param sFiringRuleName
+	 * @param sMatchingRuleName
+	 * @param sValue
+	 */
+	public static void doPushIFTTT(String sFiringRuleName, String sMatchingRuleName, String sValue)
 	{
 		Thread t;
 		RunPushIFTTT pushIFTTT = new RunPushIFTTT(
 				TestLOSamples.sIFTTTURL,
-				sFiringNumber,
+				sFiringRuleName, 
+				sMatchingRuleName, 
+				sValue,
 				TestLOSamples.fenetreTestLOSamples.textPaneSend,
 				TestLOSamples.fenetreTestLOSamples.textPaneReceive,
 				TestLOSamples.fenetreTestLOSamples.textPaneIFTTT);
@@ -242,12 +238,16 @@ public class RunConsumeQueue implements Runnable {
 
 	/**
 	 * 
-	 * Try to match the Firing rule event with the IFTTT Firing rule list
+	 * 
+	 * 	private void checkEventForIFTTT(String sLiveObjectsPayload )
+	 * @param sLiveObjectsPayload : the json payload
+	 * 
+	 *  Try to match the Firing rule event with the IFTTT Firing rule list, then build 3 Strings to push
+	 *  to IFTTT
+	 *  
+	 *  Below a sample of the json payload
 	 * 
 	 */
-	
-// Exemple of event payload
-	
 /* ==> Received message from queue - router/~event/v1/data/eventprocessing/fired : 
  * {"payload": 
  * 		"{
@@ -273,73 +273,154 @@ public class RunConsumeQueue implements Runnable {
  * 					\"enabled\":true,
  * 					\"dataPredicate\":
  * 					{
- * 						\">\":[{\"var\":\"value.temperature\"},20]}},
- * 						\"data\":
- * 						{
- * 							\"streamId\":\"android357329073120059\",
- * 							\"timestamp\":\"2017-07-15T10:56:27.106Z\",
- * 							\"location\":{\"lat\":48.872015,\"lon\":2.348264},
- * 							\"model\":\"ModelOABDemoApp00\",
- * 							\"value\":
- * 							{
- * 								\"revmin\":7505,
- * 								\"hygrometry\":98,
- * 								\"temperature\":92},
- * 								\"tags\":[\"OABDemoApp.00\"],
- * 								\"metadata\":
- * 								{
- * 									\"source\":\"URN:LO:NSID:SENSOR:TESTFLGAPPOAB00000\",
- * 									\"connector\":\"mqtt\"
- * 								}
- * 							}
+ * 						\">\":[{\"var\":\"value.temperature\"},20]
  * 					}
- * 			}"}
+ * 				},
+ * 				\"data\":
+ * 				{
+ * 					\"streamId\":\"android357329073120059\",
+ * 					\"timestamp\":\"2017-07-15T10:56:27.106Z\",
+ * 					\"location\":{\"lat\":48.872015,\"lon\":2.348264},
+ * 					\"model\":\"ModelOABDemoApp00\",
+ * 					\"value\":
+ * 					{
+ * 						\"revmin\":7505,
+ * 						\"hygrometry\":98,
+ * 						\"temperature\":92
+ * 					},
+ * 					\"tags\":[\"OABDemoApp.00\"],
+ * 					\"metadata\":
+ * 					{
+ * 						\"source\":\"URN:LO:NSID:SENSOR:TESTFLGAPPOAB00000\",
+ * 						\"connector\":\"mqtt\"
+ * 					}
+ * 				}
+ * 			}
+ * 		}"}
 */
-	private void checkEventForIFTTT(String sTmp){
-		
-		int index;
-		char c;
-		int iTemperature;
-		String sFiringNumber = new String("");
-		String sTemperatureNumber = new String("");
-		String sTemperature = new String (",\"temperature\":");
-		String sFiringRules = new String("firingRule\":{\"id\":\"");
-//		String sTmp = new String("{\"payload\": \"{\"tenantId\":\"56ab3a090cf2ff600fce9ad9\",\"timestamp\":\"2017-07-15T18:33:58.973Z\",\"firingRule\":{\"id\":\"0b4e0dcd-4634-4ef2-96ce-7ceefd95b584\",\"name\":\"testFR0StreamSample02-01\",\"enabled\":true,\"matchingRuleIds\":[\"e5ec7927-be87-48dd-be42-8c01d13004d0\"],\"aggregationKeys\":[\"metadata.source\"],\"firingType\":\"ALWAYS\"},\"matchingContext\":{\"tenantId\":\"56ab3a090cf2ff600fce9ad9\",\"timestamp\":\"2017-07-15T18:33:58.971Z\",\"matchingRule\":{\"id\":\"e5ec7927-be87-48dd-be42-8c01d13004d0\",\"name\":\"Test temperature > 20\",\"enabled\":true,\"dataPredicate\":{\">\":[{\"var\":\"value.temperature\"},20]}},\"data\":{\"streamId\":\"android357329073120059\",\"timestamp\":\"2017-07-15T18:33:58.962Z\",\"location\":{\"lat\":48.872015,\"lon\":2.348264},\"model\":\"ModelOABDemoApp00\",\"value\":{\"revmin\":6082,\"hygrometry\":6,\"temperature\":59},\"tags\":[\"OABDemoApp.00\"],\"metadata\":{\"source\":\"URN:LO:NSID:SENSOR:TESTFLGAPPOAB00000\",\"connector\":\"mqtt\"}}}}\"}");
-		//"{"tenantId":"56ab3a090cf2ff600fce9ad9","timestamp":"2017-07-15T18:33:58.973Z","firingRule":{"id":"0b4e0dcd-4634-4ef2-96ce-7ceefd95b584","name":"testFR0StreamSample02-01","enabled":true,"matchingRuleIds":["e5ec7927-be87-48dd-be42-8c01d13004d0"],"aggregationKeys":["metadata.source"],"firingType":"ALWAYS"},"matchingContext":{"tenantId":"56ab3a090cf2ff600fce9ad9","timestamp":"2017-07-15T18:33:58.971Z","matchingRule":{"id":"e5ec7927-be87-48dd-be42-8c01d13004d0","name":"Test temperature > 20","enabled":true,"dataPredicate":{">":[{"var":"value.temperature"},20]}},"data":{"streamId":"android357329073120059","timestamp":"2017-07-15T18:33:58.962Z","location":{"lat":48.872015,"lon":2.348264},"model":"ModelOABDemoApp00","value":{"revmin":6082,"hygrometry":6,"temperature":59},"tags":["OABDemoApp.00"],"metadata":{"source":"URN:LO:NSID:SENSOR:TESTFLGAPPOAB00000","connector":"mqtt"}}}}";
-//		sTmp.contains("firingRule\":{\"id\":\"");
-		// Firing Number
-		index = sTmp.indexOf(sFiringRules);
-		// Found Firing rule
-		if (index != -1)
+	private void checkEventForIFTTT(String sLiveObjectsPayload ){
+		Gson gson = new Gson();
+		JsonObject jsonPayload ;
+		JsonObject firingRule;
+		JsonObject matchingContext;
+		JsonObject matchingRule;
+		JsonObject dataPredicate, data, value;
+		String sTenantId ;
+		String sTimeStamp ;
+		String sFiringRule ;
+		String sFiringRuleId ;
+		String sTemperature;
+		String sFiringRuleName ;
+		String sMatchingRuleName ;
+		String sValue;
+
+
+		jsonPayload = gson.fromJson(sLiveObjectsPayload, JsonObject.class);
+
+		try
 		{
-			index += sFiringRules.length();
-			for (c=sTmp.charAt(index); c!='\"'; index++, c=sTmp.charAt(index))
-			{
-				sFiringNumber += sTmp.charAt(index);
+			firingRule = jsonPayload.getAsJsonObject("firingRule");
+			sFiringRuleId = firingRule.get("id").getAsString();
+			sFiringRuleName = firingRule.get("name").getAsString();
+			matchingContext = jsonPayload.getAsJsonObject("matchingContext");
+			matchingRule = matchingContext.getAsJsonObject("matchingRule");
+			sMatchingRuleName = matchingRule.get("name").getAsString();
+			data = matchingContext.getAsJsonObject("data");
+			value = data.getAsJsonObject("value");
+			sValue = "";
+			for(Map.Entry<String, JsonElement> entry : value.entrySet()) {
+				System.out.println(entry.getKey());
+				System.out.println(entry.getValue());
+				sValue += entry.getKey();
+		        sValue += " = ";
+		        sValue += entry.getValue();
+		        sValue += " ";
 			}
-			
+
 			ListIterator li = TestLOSamples.lIFTTTEvents.listIterator();
 			String str = new String();
 			while(li.hasNext()){
 		        str = (String)li.next();
-				if (Objects.equals(sFiringNumber, str)){
+				if (Objects.equals(sFiringRuleId, str)){
 		        	System.out.println(str);
-		        	doPushIFTTT(sFiringNumber);
+		        	doPushIFTTT(sFiringRuleName, sMatchingRuleName, sValue);
 		        }
 			}
 
 		}
-		// Temperature
-		iTemperature = 0;
-		index = sTmp.indexOf(sTemperature);
-		if (index != -1)
+		catch (JsonIOException | JsonSyntaxException | ClassCastException | IllegalStateException | NullPointerException e)
 		{
-			index += sTemperature.length();
-			for (c=sTmp.charAt(index); c!='}'; index++, c=sTmp.charAt(index))
-			{
-				sTemperatureNumber += sTmp.charAt(index);
-			}
-			iTemperature = (int)Integer.valueOf(sTemperatureNumber);
+			e.printStackTrace();
+			System.out.println(e.getMessage());             
+		} // try
+	} // checkEventForIFTTT
+		
+	
+	
+
+} // class
+
+
+
+
+
+
+/*
+ * 
+ * Backup
+ * 
+ * 
+ */
+/*
+private void checkEventForIFTTT(String sTmp){
+	
+	int index;
+	char c;
+	int iTemperature;
+	String sFiringNumber = new String("");
+	String sTemperatureNumber = new String("");
+	String sTemperature = new String (",\"temperature\":");
+	String sFiringRules = new String("firingRule\":{\"id\":\"");
+//	String sTmp = new String("{\"payload\": \"{\"tenantId\":\"56ab3a090cf2ff600fce9ad9\",\"timestamp\":\"2017-07-15T18:33:58.973Z\",\"firingRule\":{\"id\":\"0b4e0dcd-4634-4ef2-96ce-7ceefd95b584\",\"name\":\"testFR0StreamSample02-01\",\"enabled\":true,\"matchingRuleIds\":[\"e5ec7927-be87-48dd-be42-8c01d13004d0\"],\"aggregationKeys\":[\"metadata.source\"],\"firingType\":\"ALWAYS\"},\"matchingContext\":{\"tenantId\":\"56ab3a090cf2ff600fce9ad9\",\"timestamp\":\"2017-07-15T18:33:58.971Z\",\"matchingRule\":{\"id\":\"e5ec7927-be87-48dd-be42-8c01d13004d0\",\"name\":\"Test temperature > 20\",\"enabled\":true,\"dataPredicate\":{\">\":[{\"var\":\"value.temperature\"},20]}},\"data\":{\"streamId\":\"android357329073120059\",\"timestamp\":\"2017-07-15T18:33:58.962Z\",\"location\":{\"lat\":48.872015,\"lon\":2.348264},\"model\":\"ModelOABDemoApp00\",\"value\":{\"revmin\":6082,\"hygrometry\":6,\"temperature\":59},\"tags\":[\"OABDemoApp.00\"],\"metadata\":{\"source\":\"URN:LO:NSID:SENSOR:TESTFLGAPPOAB00000\",\"connector\":\"mqtt\"}}}}\"}");
+	//"{"tenantId":"56ab3a090cf2ff600fce9ad9","timestamp":"2017-07-15T18:33:58.973Z","firingRule":{"id":"0b4e0dcd-4634-4ef2-96ce-7ceefd95b584","name":"testFR0StreamSample02-01","enabled":true,"matchingRuleIds":["e5ec7927-be87-48dd-be42-8c01d13004d0"],"aggregationKeys":["metadata.source"],"firingType":"ALWAYS"},"matchingContext":{"tenantId":"56ab3a090cf2ff600fce9ad9","timestamp":"2017-07-15T18:33:58.971Z","matchingRule":{"id":"e5ec7927-be87-48dd-be42-8c01d13004d0","name":"Test temperature > 20","enabled":true,"dataPredicate":{">":[{"var":"value.temperature"},20]}},"data":{"streamId":"android357329073120059","timestamp":"2017-07-15T18:33:58.962Z","location":{"lat":48.872015,"lon":2.348264},"model":"ModelOABDemoApp00","value":{"revmin":6082,"hygrometry":6,"temperature":59},"tags":["OABDemoApp.00"],"metadata":{"source":"URN:LO:NSID:SENSOR:TESTFLGAPPOAB00000","connector":"mqtt"}}}}";
+//	sTmp.contains("firingRule\":{\"id\":\"");
+	// Firing Number
+	index = sTmp.indexOf(sFiringRules);
+	// Found Firing rule
+	if (index != -1)
+	{
+		index += sFiringRules.length();
+		for (c=sTmp.charAt(index); c!='\"'; index++, c=sTmp.charAt(index))
+		{
+			sFiringNumber += sTmp.charAt(index);
 		}
+		
+		ListIterator li = TestLOSamples.lIFTTTEvents.listIterator();
+		String str = new String();
+		while(li.hasNext()){
+	        str = (String)li.next();
+			if (Objects.equals(sFiringNumber, str)){
+	        	System.out.println(str);
+	        	doPushIFTTT(sFiringNumber);
+	        }
+		}
+
+	}
+	// Temperature
+	iTemperature = 0;
+	index = sTmp.indexOf(sTemperature);
+	if (index != -1)
+	{
+		index += sTemperature.length();
+		for (c=sTmp.charAt(index); c!='}'; index++, c=sTmp.charAt(index))
+		{
+			sTemperatureNumber += sTmp.charAt(index);
+		}
+		iTemperature = (int)Integer.valueOf(sTemperatureNumber);
 	}
 }
+
+*/
+
+
+

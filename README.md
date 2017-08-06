@@ -16,7 +16,24 @@ It simulates MQTT devices and Bussiness applications that uses Live Objects reso
 		- 20110124_20170624-OPERA_auto.csv : Paris Opera hour values from 2011 01 24th to 2017 06 24th
 		/!\ change the town field (default = paris centre)
 - Subscribe : subscribe to a route or a fifo. The fifo has to be configured in the Live Objects portal
-- IFTTT : partial implementation - need to get a IFTTT key, enter a Firing Rule id (create it through the Live Objects Swagger) and the name of the event, it should work
+
+- IFTTT : 
+		- IFTTT : get an IFTTT key, create an applet with webhooks
+		- Live Objects : assuming you have created an API key.
+			- Create a matching rule : (https://liveobjects.orange-business.com/api/v0/eventprocessing/matching-rule) ex :         "dataPredicate": {
+            ">": [
+                {
+                    "var": "value.temperature"
+                },
+                20
+    	        ]
+	        }
+			- create a firing rule binded to the matching rule (firingType = "ALWAYS") : https://liveobjects.orange-business.com/api/v0/eventprocessing/firing-rule
+			- Click on "Get matching rule" button to get the list of rules, copy the Id field to the "Matching rule" field
+			- enter 2 other fields : the IFTTT key, the IFTTT event name. The URL field will be automaticaly filled
+			- click on "Activate" button to create the binding between the Matching/firing rule and the IFTTT event.
+			- Subscribe tab : subscribe to the route "~event/v1/data/eventprocessing/fired"
+
 - result : what's generated & what's received on subscriptions
 
 Important : create an account on Live Objects, generate your API key and put it into "cle.txt" and cleLora.txt. This will permit the application to acces your resources account 

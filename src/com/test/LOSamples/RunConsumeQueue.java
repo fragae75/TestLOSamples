@@ -309,6 +309,7 @@ public class RunConsumeQueue implements Runnable {
 		String sTimeStamp ;
 		String sFiringRule ;
 		String sFiringRuleId ;
+		String sMatchingRuleId ;
 		String sTemperature;
 		String sFiringRuleName ;
 		String sMatchingRuleName ;
@@ -324,6 +325,7 @@ public class RunConsumeQueue implements Runnable {
 			sFiringRuleName = firingRule.get("name").getAsString();
 			matchingContext = jsonPayload.getAsJsonObject("matchingContext");
 			matchingRule = matchingContext.getAsJsonObject("matchingRule");
+			sMatchingRuleId = matchingRule.get("id").getAsString();
 			sMatchingRuleName = matchingRule.get("name").getAsString();
 			data = matchingContext.getAsJsonObject("data");
 			value = data.getAsJsonObject("value");
@@ -341,7 +343,7 @@ public class RunConsumeQueue implements Runnable {
 			String str = new String();
 			while(li.hasNext()){
 		        str = (String)li.next();
-				if (Objects.equals(sFiringRuleId, str)){
+				if (Objects.equals(sMatchingRuleId, str)){
 		        	System.out.println(str);
 		        	doPushIFTTT(sFiringRuleName, sMatchingRuleName, sValue);
 		        }

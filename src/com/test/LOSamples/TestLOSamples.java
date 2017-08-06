@@ -32,6 +32,7 @@ import java.util.Random;
 
 public class TestLOSamples {
 	
+	final static String URL_GET_MATCHING_RULE = "https://liveobjects.orange-business.com/api/v0/eventprocessing/matching-rule";
 
 	final static String SERVER = "tcp://liveobjects.orange-business.com:1883";
 	final static String DEVICE_URN_PREFIX = "urn:lo:nsid:sensor:TESTFLG"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";
@@ -119,7 +120,8 @@ public class TestLOSamples {
 	final static String IFTTT_API_KEY_FILE = "IFTTT.txt";
 	static String sIFTTTKey = "==>" + IFTTT_API_KEY_FILE; 
 	static String sIFTTTEvent = "test"; 
-	static String sIFTTTFiringRule = "0b4e0dcd-4634-4ef2-96ce-7ceefd95b584"; 
+//	static String sIFTTTFiringRule = "0b4e0dcd-4634-4ef2-96ce-7ceefd95b584"; 
+	static String sIFTTTDefaultMatchingRule = "e5ec7927-be87-48dd-be42-8c01d13004d0"; 
 	static String sIFTTTURL1 = "https://maker.ifttt.com/trigger/"; 
 	static String sIFTTTURL2 = "/with/key/"; 
 	static String sIFTTTURL = sIFTTTURL1 + sIFTTTEvent + sIFTTTURL2 + sIFTTTKey; 

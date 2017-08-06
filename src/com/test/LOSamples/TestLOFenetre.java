@@ -11,6 +11,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Random;
@@ -25,6 +27,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JRadioButtonMenuItem;
@@ -131,8 +134,8 @@ public class TestLOFenetre extends JFrame {
 	public JButton boutonPushStop =  new JButton("Stop");
 	public static JButton boutonPushPause =  new JButton("Pause");
 	// IFTTT
-	private JLabel jlbIFTTTFiringRule = new JLabel("Firing Rule : ");
-	private static JTextField jtfIFTTTFiringRule = new JTextField();
+	private JLabel jlbIFTTTMatchingRule = new JLabel("Matching Rule : ");
+	private static JTextField jtfIFTTTMatchingRule = new JTextField();
 	private JLabel jlbIFTTTKey = new JLabel("Key : ");
 	private static JTextField jtfIFTTTKey = new JTextField();
 	private JLabel jlbIFTTTEvent = new JLabel("Event : ");
@@ -142,6 +145,10 @@ public class TestLOFenetre extends JFrame {
 	public static JTextArea textPaneIFTTT = new JTextArea();
 	private JScrollPane scrollIFTTT = new JScrollPane(textPaneIFTTT);
 	public JButton boutonIFTTTActivate =  new JButton("Activate");
+	public JButton boutonIFTTTMatchingRules =  new JButton("Get Matching Rules");
+//	private JList<String> jlMatchingRules = new JList<>();
+	 
+
 	
 
 	/**
@@ -303,7 +310,7 @@ public class TestLOFenetre extends JFrame {
 		 * IFTTT
 		 * 
 		 */
-		TestLOSamples.sIFTTTFiringRule = jtfIFTTTFiringRule.getText();
+		TestLOSamples.sIFTTTDefaultMatchingRule = jtfIFTTTMatchingRule.getText();
 		TestLOSamples.sIFTTTKey = jtfIFTTTKey.getText();
 		TestLOSamples.sIFTTTEvent = jtfIFTTTEvent.getText();
 		TestLOSamples.sIFTTTURL = TestLOSamples.sIFTTTURL1 + TestLOSamples.sIFTTTEvent + TestLOSamples.sIFTTTURL2 + TestLOSamples.sIFTTTKey;
@@ -317,7 +324,7 @@ public class TestLOFenetre extends JFrame {
 	 * build the window elements
 	 */
 	public TestLOFenetre(){
-		this.setTitle("Generateur traffic Live Objects");
+		this.setTitle("Live Objects trafic generator & feature testing");
 		this.setSize(700, 500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
@@ -618,14 +625,21 @@ public class TestLOFenetre extends JFrame {
 	     * 
 	     * 
 	     */
-	    JPanel jpIFTTTFiringRule = new JPanel();
-	    jpIFTTTFiringRule.setLayout(new BoxLayout(jpIFTTTFiringRule, BoxLayout.LINE_AXIS));
-	    jpIFTTTFiringRule.add(Box.createRigidArea(new Dimension(30, 0)));
-	    jpIFTTTFiringRule.add(jlbIFTTTFiringRule);
-	    jpIFTTTFiringRule.add(jtfIFTTTFiringRule);
-	    jtfIFTTTFiringRule.setText(TestLOSamples.sIFTTTFiringRule);
-	    jtfIFTTTFiringRule.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfIFTTTFiringRule.getMinimumSize().height));
+	    JPanel jpIFTTTMatchingRule = new JPanel();
+	    jpIFTTTMatchingRule.setLayout(new BoxLayout(jpIFTTTMatchingRule, BoxLayout.LINE_AXIS));
+	    jpIFTTTMatchingRule.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpIFTTTMatchingRule.add(jlbIFTTTMatchingRule);
+	    jpIFTTTMatchingRule.add(jtfIFTTTMatchingRule);
+	    jtfIFTTTMatchingRule.setText(TestLOSamples.sIFTTTDefaultMatchingRule);
+	    jtfIFTTTMatchingRule.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfIFTTTMatchingRule.getMinimumSize().height));
 	    JPanel jpIFTTTKey = new JPanel();
+	    jtfIFTTTKey.addFocusListener(new FocusListener(){
+	        public void focusGained(FocusEvent e){
+	        }
+	        public void focusLost(FocusEvent e) {
+	          gatherConfigValues();
+	        }
+	    });
 	    jpIFTTTKey.setLayout(new BoxLayout(jpIFTTTKey, BoxLayout.LINE_AXIS));
 	    jpIFTTTKey.add(Box.createRigidArea(new Dimension(30, 0)));
 	    jpIFTTTKey.add(jlbIFTTTKey);
@@ -633,6 +647,13 @@ public class TestLOFenetre extends JFrame {
 	    jtfIFTTTKey.setText(TestLOSamples.sIFTTTKey);
 	    jtfIFTTTKey.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfIFTTTKey.getMinimumSize().height));
 	    JPanel jpIFTTTEvent = new JPanel();
+	    jtfIFTTTEvent.addFocusListener(new FocusListener(){
+	        public void focusGained(FocusEvent e){
+	        }
+	        public void focusLost(FocusEvent e) {
+	          gatherConfigValues();
+	        }
+	    });
 	    jpIFTTTEvent.setLayout(new BoxLayout(jpIFTTTEvent, BoxLayout.LINE_AXIS));
 	    jpIFTTTEvent.add(Box.createRigidArea(new Dimension(30, 0)));
 	    jpIFTTTEvent.add(jlbIFTTTEvent);
@@ -646,11 +667,19 @@ public class TestLOFenetre extends JFrame {
 	    jpIFTTTURL.add(jtfIFTTTURL);
 	    jtfIFTTTURL.setText(TestLOSamples.sIFTTTURL);
 	    jtfIFTTTURL.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfIFTTTURL.getMinimumSize().height));
+	    JPanel jpMatchingRulesList = new JPanel();
+	    jpMatchingRulesList.setLayout(new BoxLayout(jpMatchingRulesList, BoxLayout.LINE_AXIS));
+	    jpMatchingRulesList.add(Box.createRigidArea(new Dimension(30, 0)));
+//	    jpMatchingRulesList.add(jlMatchingRules);
+//	    jlMatchingRules.setMaximumSize(new Dimension(Integer.MAX_VALUE, jlMatchingRules.getMinimumSize().height));
 	    // Ajout du bouton d'action
 	    JPanel jpIFTTTButtonActivate = new JPanel();
 	    boutonIFTTTActivate.addActionListener(new BoutonListenerIFTTTActivate()); 
+	    boutonIFTTTMatchingRules.addActionListener(new BoutonListenerMatchingRules()); 
 	    jpIFTTTButtonActivate.setLayout(new BoxLayout(jpIFTTTButtonActivate, BoxLayout.LINE_AXIS));
 	    jpIFTTTButtonActivate.add(boutonIFTTTActivate);
+	    jpIFTTTButtonActivate.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpIFTTTButtonActivate.add(boutonIFTTTMatchingRules);
 	    
 
 	    /*
@@ -748,7 +777,7 @@ public class TestLOFenetre extends JFrame {
 	    // Panneau IFTTT
 	    panIFTTT.setLayout(new BoxLayout(panIFTTT, BoxLayout.PAGE_AXIS));
 	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 20)));
-	    panIFTTT.add(jpIFTTTFiringRule);
+	    panIFTTT.add(jpIFTTTMatchingRule);
 	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panIFTTT.add(jpIFTTTKey);
 	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -758,8 +787,10 @@ public class TestLOFenetre extends JFrame {
 	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panIFTTT.add(scrollIFTTT);
 	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panIFTTT.add(jpMatchingRulesList);
+	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panIFTTT.add(jpIFTTTButtonActivate);
-
+	    
 	    // Ajout des onglets 
 	    onglet.add("Configuration", panConfig);
 	    onglet.add("Multi Terminals", panMultiTerminal);
@@ -1074,13 +1105,26 @@ public class TestLOFenetre extends JFrame {
 			
 			gatherConfigValues();
 			
-			// Add to the Firing rule list
-			TestLOSamples.lIFTTTEvents.add(TestLOSamples.sIFTTTFiringRule);
-//			doPushIFTTT();
-            System.out.println("Event activation on FiringRule : " + TestLOSamples.sIFTTTFiringRule);
+			// Add to the Matching rule list
+			TestLOSamples.lIFTTTEvents.add(TestLOSamples.sIFTTTDefaultMatchingRule);
+            System.out.println("Event activation on MatchingRule : " + TestLOSamples.sIFTTTDefaultMatchingRule);
     		textPaneIFTTT.setCaretPosition(textPaneIFTTT.getDocument().getLength());
-    		textPaneIFTTT.append("Event activation on FiringRule : " + TestLOSamples.sIFTTTFiringRule + "\n");
+    		textPaneIFTTT.append("Event activation on MatchingRule : " + TestLOSamples.sIFTTTDefaultMatchingRule + "\n");
 
+	    }
+	}
+
+	class BoutonListenerMatchingRules implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+
+			Thread t;
+			RunGetMatchingRules matchingRules = new RunGetMatchingRules(TestLOSamples.fenetreTestLOSamples.textPaneIFTTT);
+
+			t = new Thread(matchingRules);
+			t.start();
+	        System.out.println("Thread : RunGetMatchingRules");
 	    }
 	}
 

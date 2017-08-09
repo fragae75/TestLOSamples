@@ -50,7 +50,7 @@ public class RunCheckFiringRules implements Runnable {
 		textPaneReceive.setCaretPosition(textPaneReceive.getDocument().getLength());
 		// Affichage de la requete
 		textPaneReceive.append("\n");
-		textPaneReceive.append(longueur + " Matching Firing rules :\n");
+		textPaneReceive.append("Checked " + longueur + " Firing rules :\n");
 
 		/*
 		 * {
@@ -91,14 +91,23 @@ public class RunCheckFiringRules implements Runnable {
 					sMatchingRuleId = matchingRuleArray.get(j).toString();
 					if (sMatchingRuleId.equals(sMatchingRuleToCheck)) {
 						bFound = true;
-						if (bEnabled)
+						if (bEnabled) {
 							textPaneReceive.append("Enabled Rule " + sName + "/" + 
-													sFiringRuleId + " contains Matching rule Id : " + 
-													sMatchingRuleId + "\n");
-						else
+									sFiringRuleId + " contains Matching rule Id : " + 
+									sMatchingRuleId + "\n");
+							System.out.println("Firing rule " + i + " ==> "+ "Enabled Rule " + sName + "/" + 
+									sFiringRuleId + " contains Matching rule Id : " + 
+									sMatchingRuleId + "\n");
+						}
+						else {
+							
 							textPaneReceive.append("Disable Rule " + sName + "/" + 
 									sFiringRuleId + " contains Matching rule Id : " + 
 									sMatchingRuleId + "\n");
+							System.out.println("Firing rule " + i + " ==> "+ "Disable Rule " + sName + "/" + 
+									sFiringRuleId + " contains Matching rule Id : " + 
+									sMatchingRuleId + "\n");
+						}
 					}
 				}
 

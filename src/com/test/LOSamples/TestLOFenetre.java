@@ -794,12 +794,12 @@ public class TestLOFenetre extends JFrame {
 	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panIFTTT.add(jpIFTTTButtonActivate);
 
-	    textPaneIFTTT.append("Subscribe to the route \"~event/v1/data/eventprocessing/fired\" to get events\n"
-	    		+ "Copy/paste an \"enabled\" matching rule Id into the \"Matching Rule\" field (use the \"Get Matching Rules\" button).\n "
-	    		+ "A firing rule has to be enabled with this Matching rule.\n"
-	    		+ "Get an IFTTT key and paste it into the \"Key\" field\n"
-	    		+ "Create an Event with Webhooks and paste it into the \"Event\" field "
-	    		+ "\n");
+	    textPaneIFTTT.append("1) Subscribe to the route \"~event/v1/data/eventprocessing/fired\" to get events\n"
+	    		+ "2) Copy/paste an \"enabled\" matching rule Id into the \"Matching Rule\" field (use the \"Get Matching Rules\" button).\n"
+	    		+ "3) A firing rule has to be enabled with this Matching rule : check it.\n"
+	    		+ "4) Get an IFTTT key and paste it into the \"Key\" field\n"
+	    		+ "5) Create an Event with Webhooks (that can automate Twitter or an email) and paste it into the \"Event\" field \n"
+	    		+ "6) It should work !\n");
 
 	    // Ajout des onglets 
 	    onglet.add("Configuration", panConfig);

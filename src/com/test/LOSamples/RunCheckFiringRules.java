@@ -1,11 +1,9 @@
 package com.test.LOSamples;
 
-import java.awt.Color;
 import java.awt.Font;
 import java.io.IOException;
 
 import javax.swing.JTextArea;
-import javax.swing.JTextPane;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Request;
@@ -13,26 +11,28 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
 
-
-public class RunGetMatchingRules implements Runnable {
+public class RunCheckFiringRules implements Runnable {
 
 	private JTextArea textPaneReceive;
+	private String sMatchingRuleToCheck;
 
 	
-	public RunGetMatchingRules (JTextArea textPaneReceive){
+	public RunCheckFiringRules (String sMatchingRule, JTextArea textPaneReceive){
 		this.textPaneReceive = textPaneReceive;
+		this.sMatchingRuleToCheck = sMatchingRule;
 	}
 
     public void getData() throws JSONException, ClientProtocolException, IOException {
     	
+		boolean bFound = false;
+		
     	System.out.println("Requete : "+ TestLOSamples.URL_GET_MATCHING_RULE);
 
     	//StringJSON est le résultat en String de la requête : elle contient les données
-    	String stringJSON = Request.Get(TestLOSamples.URL_GET_MATCHING_RULE)
+    	String stringJSON = Request.Get(TestLOSamples.URL_GET_FIRING_RULE) 
 				.addHeader("X-API-Key", TestLOSamples.sAPIKey)     				//ajout de la clé d'API Live Objects
 				.addHeader("Content-Type", "application/json")     				//content type
 				.connectTimeout(1000)
@@ -42,7 +42,6 @@ public class RunGetMatchingRules implements Runnable {
 		
 		//conversion de stringJSON en JSONArray
 		JSONArray dataArray = new JSONArray(stringJSON);
-//		JsonArray jsodataArray = new JsonArray(stringJSON);
 		
 		//parcours du la tableau pour récupérer chaque lot de données
 		int longueur = dataArray.length();
@@ -51,24 +50,20 @@ public class RunGetMatchingRules implements Runnable {
 		textPaneReceive.setCaretPosition(textPaneReceive.getDocument().getLength());
 		// Affichage de la requete
 		textPaneReceive.append("\n");
-		textPaneReceive.append(longueur + " Matching rules :\n");
+		textPaneReceive.append(longueur + " Matching Firing rules :\n");
 
 		/*
 		 * {
-		 * 		"dataPredicate":
-		 * 			{"and":
-		 * 				[
-		 * 					{
-		 * 						"<": [{"var":"value.hygrometry"},20]
-		 * 					},
-		 * 					{
-		 * 						">":[{"var":"value.temperature"},20]
-		 * 					}
-		 * 				]
-		 * 			},
-		 * 			"name":"Test hygro < 20 && temp > 20",
-		 * 			"id":"20373466-f52b-42ba-8d54-7ced856218f7",
-		 * 			"enabled":true
+			    {
+			        "id": "2924c2a8-0d32-475f-aac9-194bc5eca400",
+			        "name": "rule_2",
+			        "enabled": true,
+			        "matchingRuleIds": [
+			            "de9c06fc-4b2b-4f27-883d-489fb882652f"
+			        ],
+			        "firingType": "SLEEP",
+			        "sleepDuration": "PT10S"
+			    },
 		 * }
 		 * 
 		 */
@@ -77,27 +72,39 @@ public class RunGetMatchingRules implements Runnable {
 			
 			JSONObject dataJson = (JSONObject)dataArray.get(i); //dataJSON représente une valeurs de données dans le tableau
 			JSONObject jsoDataPredicate,jsoAnd;
-			String sMatchingRuleId, sName, sFormula;
+			String sMatchingRuleId,sFiringRuleId, sFiringType, sName, sFormula;
 			boolean bEnabled;
-			Font police;
-			
+			JSONArray matchingRuleArray = new JSONArray();
+
+
 			try
 			{
-				jsoDataPredicate = dataJson.getJSONObject("dataPredicate");
-				sFormula = jsoDataPredicate.toString();
-				sMatchingRuleId = dataJson.getString("id");
+//				jsoDataPredicate = dataJson.getJSONObject("dataPredicate");
+//				sFormula = jsoDataPredicate.toString();
+				sFiringRuleId = dataJson.getString("id");
 				sName = dataJson.getString("name");
 				bEnabled = dataJson.getBoolean("enabled");
+				sFiringType = dataJson.getString("firingType");
+				matchingRuleArray = dataJson.getJSONArray("matchingRuleIds");
 				
-				//Affichage de chaque élément du tableau JSON
-				System.out.println("Matching rule "+ i +" ==> "+ dataJson.toString());
-				if (bEnabled)
-					textPaneReceive.append("  " + i + " - \"" + sName + "\", Id = " + 
-										sMatchingRuleId + " : " + sFormula + "\n");
-				else
-					textPaneReceive.append("  " + i + " (Disabled !) - \"" + sName + "\", Id = " + 
-							sMatchingRuleId + " : " + sFormula + "\n");
+				for(int j = 0; j < matchingRuleArray.length() ; j++){
+					sMatchingRuleId = matchingRuleArray.get(j).toString();
+					if (sMatchingRuleId.equals(sMatchingRuleToCheck)) {
+						bFound = true;
+						if (bEnabled)
+							textPaneReceive.append("Enabled Rule " + sName + "/" + 
+													sFiringRuleId + " contains Matching rule Id : " + 
+													sMatchingRuleId + "\n");
+						else
+							textPaneReceive.append("Disable Rule " + sName + "/" + 
+									sFiringRuleId + " contains Matching rule Id : " + 
+									sMatchingRuleId + "\n");
+					}
+				}
 
+				//Affichage de chaque élément du tableau JSON
+				System.out.println("Firing rule "+ i +" ==> "+ dataJson.toString());
+				
 			}
 			catch (JsonIOException | JsonSyntaxException | ClassCastException | IllegalStateException | NullPointerException e)
 			{
@@ -105,7 +112,13 @@ public class RunGetMatchingRules implements Runnable {
 				System.out.println(e.getMessage());             
 			} // try
 			
-		}
+		} // for
+		
+		if (!bFound)
+			textPaneReceive.append("No Rule found \n");
+			
+		// On met le curseur � la fin de la requ�te pr�c�dente
+		textPaneReceive.setCaretPosition(textPaneReceive.getDocument().getLength());
 	}
 
 	@Override

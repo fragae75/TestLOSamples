@@ -147,6 +147,7 @@ public class TestLOFenetre extends JFrame {
 	private JScrollPane scrollIFTTT = new JScrollPane(textPaneIFTTT);
 	public JButton boutonIFTTTActivate =  new JButton("Activate");
 	public JButton boutonIFTTTMatchingRules =  new JButton("Get Matching Rules");
+	public JButton boutonIFTTTCheckFiringRules =  new JButton("Check Firing Rules");
 //	private JList<String> jlMatchingRules = new JList<>();
 	 
 
@@ -671,16 +672,17 @@ public class TestLOFenetre extends JFrame {
 	    JPanel jpMatchingRulesList = new JPanel();
 	    jpMatchingRulesList.setLayout(new BoxLayout(jpMatchingRulesList, BoxLayout.LINE_AXIS));
 	    jpMatchingRulesList.add(Box.createRigidArea(new Dimension(30, 0)));
-//	    jpMatchingRulesList.add(jlMatchingRules);
-//	    jlMatchingRules.setMaximumSize(new Dimension(Integer.MAX_VALUE, jlMatchingRules.getMinimumSize().height));
-	    // Ajout du bouton d'action
+	    // Ajout des boutons d'action
 	    JPanel jpIFTTTButtonActivate = new JPanel();
 	    boutonIFTTTActivate.addActionListener(new BoutonListenerIFTTTActivate()); 
 	    boutonIFTTTMatchingRules.addActionListener(new BoutonListenerMatchingRules()); 
+	    boutonIFTTTCheckFiringRules.addActionListener(new BoutonListenerCheckFiringRules()); 
 	    jpIFTTTButtonActivate.setLayout(new BoxLayout(jpIFTTTButtonActivate, BoxLayout.LINE_AXIS));
 	    jpIFTTTButtonActivate.add(boutonIFTTTActivate);
 	    jpIFTTTButtonActivate.add(Box.createRigidArea(new Dimension(30, 0)));
 	    jpIFTTTButtonActivate.add(boutonIFTTTMatchingRules);
+	    jpIFTTTButtonActivate.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpIFTTTButtonActivate.add(boutonIFTTTCheckFiringRules);
 	    
 
 	    /*
@@ -792,7 +794,8 @@ public class TestLOFenetre extends JFrame {
 	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panIFTTT.add(jpIFTTTButtonActivate);
 
-	    textPaneIFTTT.append("Copy/paste an \"enabled\" matching rule Id into the \"Matching Rule\" field.\n "
+	    textPaneIFTTT.append("Subscribe to the route \"~event/v1/data/eventprocessing/fired\" to get events\n"
+	    		+ "Copy/paste an \"enabled\" matching rule Id into the \"Matching Rule\" field (use the \"Get Matching Rules\" button).\n "
 	    		+ "A firing rule has to be enabled with this Matching rule.\n"
 	    		+ "Get an IFTTT key and paste it into the \"Key\" field\n"
 	    		+ "Create an Event with Webhooks and paste it into the \"Event\" field "
@@ -1135,6 +1138,24 @@ public class TestLOFenetre extends JFrame {
 	    }
 	}
 
+	class BoutonListenerCheckFiringRules implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+
+			Thread t;
+			
+			gatherConfigValues();
+			
+			RunCheckFiringRules checkFiringRules = new RunCheckFiringRules(TestLOSamples.sIFTTTDefaultMatchingRule, TestLOSamples.fenetreTestLOSamples.textPaneIFTTT);
+			
+			t = new Thread(checkFiringRules);
+			t.start();
+	        System.out.println("Thread : RunCheckFiringRules");
+	    }
+	}
+
+	
 }
 
 

@@ -33,6 +33,7 @@ import java.util.Random;
 public class TestLOSamples {
 	
 	final static String URL_GET_MATCHING_RULE = "https://liveobjects.orange-business.com/api/v0/eventprocessing/matching-rule";
+	final static String URL_GET_FIRING_RULE = "https://liveobjects.orange-business.com/api/v0/eventprocessing/firing-rule";
 
 	final static String SERVER = "tcp://liveobjects.orange-business.com:1883";
 	final static String DEVICE_URN_PREFIX = "urn:lo:nsid:sensor:TESTFLG"; // => "urn:lo:nsid:sensor:TESTFLGXXXXn";

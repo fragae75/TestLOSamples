@@ -34,6 +34,7 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTextPane;
 
 import com.test.LOSamples.TestLOSamples.QueueTypes;
 
@@ -790,7 +791,13 @@ public class TestLOFenetre extends JFrame {
 	    panIFTTT.add(jpMatchingRulesList);
 	    panIFTTT.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panIFTTT.add(jpIFTTTButtonActivate);
-	    
+
+	    textPaneIFTTT.append("Copy/paste an \"enabled\" matching rule Id into the \"Matching Rule\" field.\n "
+	    		+ "A firing rule has to be enabled with this Matching rule.\n"
+	    		+ "Get an IFTTT key and paste it into the \"Key\" field\n"
+	    		+ "Create an Event with Webhooks and paste it into the \"Event\" field "
+	    		+ "\n");
+
 	    // Ajout des onglets 
 	    onglet.add("Configuration", panConfig);
 	    onglet.add("Multi Terminals", panMultiTerminal);

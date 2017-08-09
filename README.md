@@ -17,8 +17,8 @@ It simulates MQTT devices and Bussiness applications that uses Live Objects reso
 		/!\ change the town field (default = paris centre)
 - Subscribe : subscribe to a route or a fifo. The fifo has to be configured in the Live Objects portal
 
-- IFTTT : 
-		- IFTTT : get an IFTTT key, create an applet with webhooks
+- IFTTT : the idea is to trigger an event to automate an IFTTT applet
+		- IFTTT : get an IFTTT key, create an applet with Webhooks
 		- Live Objects : assuming you have created an API key.
 			- Create a matching rule : (https://liveobjects.orange-business.com/api/v0/eventprocessing/matching-rule) ex :         "dataPredicate": {
             ">": [

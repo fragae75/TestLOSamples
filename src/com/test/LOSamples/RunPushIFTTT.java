@@ -7,6 +7,7 @@ package com.test.LOSamples;
 import java.io.IOException;
 
 import javax.swing.JTextArea;
+import javax.swing.JTextPane;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.ClientProtocolException;

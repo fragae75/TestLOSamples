@@ -19,7 +19,8 @@ It simulates MQTT devices and Bussiness applications that uses Live Objects reso
 
 - IFTTT : the idea is to trigger an event to automate an IFTTT applet
 	- IFTTT : get an IFTTT key, create an applet with Webhooks. Through Webhook you can automate mail/SMS/Twitter/facebook notifications...
-	- Live Objects : assuming you have created an API key.
+		- Live Objects : assuming you have created an API key.
+get events
 			- Create a matching rule : (https://liveobjects.orange-business.com/api/v0/eventprocessing/matching-rule) ex :         "dataPredicate": {
             ">": [
                 {
@@ -29,10 +30,13 @@ It simulates MQTT devices and Bussiness applications that uses Live Objects reso
     	        ]
 	        }
 			- create a firing rule binded to the matching rule (firingType = "ALWAYS") : https://liveobjects.orange-business.com/api/v0/eventprocessing/firing-rule
-			- Click on "Get matching rule" button to get the list of rules, copy the Id field to the "Matching rule" field
-			- enter 2 other fields : the IFTTT key, the IFTTT event name. The URL field will be automaticaly filled
+	- On the application
+		- "Subscribe tab" : Subscribe to the route "~event/v1/data/eventprocessing/fired" to
+		- "IFTTT tab"
+		 	- Click on "Get matching rule" button to get the list of rules. Copy/paste the "enabled" matching rule Id into the "Matching Rule" field (use the \"Get Matching Rules\" button).
+			- Click on "Check Firing Rules" to check whether the Firing rule is enabled
+			- Fill the 2 other fields : the IFTTT key, the IFTTT event name. The URL field will be automaticaly filled
 			- click on "Activate" button to create the binding between the Matching/firing rule and the IFTTT event.
-			- Subscribe tab : subscribe to the route "~event/v1/data/eventprocessing/fired"
 
 - result : what's generated & what's received on subscriptions
 

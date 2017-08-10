@@ -799,7 +799,8 @@ public class TestLOFenetre extends JFrame {
 	    		+ "3) A firing rule has to be enabled with this Matching rule : check it.\n"
 	    		+ "4) Get an IFTTT key and paste it into the \"Key\" field\n"
 	    		+ "5) Create an Event with Webhooks (that can automate Twitter or an email) and paste it into the \"Event\" field \n"
-	    		+ "6) It should work !\n");
+	    		+ "6) To trigger an event : use the \"OAB App\" tab and publish data. In the case of a matching rule of temperature > 20, it will trigger when the published data will match.\n"
+	    		);
 
 	    // Ajout des onglets 
 	    onglet.add("Configuration", panConfig);

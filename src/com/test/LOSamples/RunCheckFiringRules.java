@@ -92,21 +92,25 @@ public class RunCheckFiringRules implements Runnable {
 					if (sMatchingRuleId.equals(sMatchingRuleToCheck)) {
 						bFound = true;
 						if (bEnabled) {
-							textPaneReceive.append("Enabled Rule " + sName + "/" + 
-									sFiringRuleId + " contains Matching rule Id : " + 
-									sMatchingRuleId + "\n");
-							System.out.println("Firing rule " + i + " ==> "+ "Enabled Rule " + sName + "/" + 
-									sFiringRuleId + " contains Matching rule Id : " + 
-									sMatchingRuleId + "\n");
+							textPaneReceive.append("Enabled Rule " + sName + 
+									", Firing type : " + sFiringType + 
+									", Id : " + sFiringRuleId + 
+									", contains Matching rule Id : " + sMatchingRuleId + "\n");
+							System.out.println("Enabled Rule " + sName + 
+									", Firing type : " + sFiringType + 
+									", Id : " + sFiringRuleId + 
+									", contains Matching rule Id : " + sMatchingRuleId + "\n");
 						}
 						else {
 							
-							textPaneReceive.append("Disable Rule " + sName + "/" + 
-									sFiringRuleId + " contains Matching rule Id : " + 
-									sMatchingRuleId + "\n");
-							System.out.println("Firing rule " + i + " ==> "+ "Disable Rule " + sName + "/" + 
-									sFiringRuleId + " contains Matching rule Id : " + 
-									sMatchingRuleId + "\n");
+							textPaneReceive.append("Disable Rule " + sName + 
+									", Firing type : " + sFiringType + 
+									", Id : " + sFiringRuleId + 
+									", contains Matching rule Id : " + sMatchingRuleId + "\n");
+							System.out.println("Disable Rule " + sName + 
+									", Firing type : " + sFiringType + 
+									", Id : " + sFiringRuleId + 
+									", contains Matching rule Id : " + sMatchingRuleId + "\n");
 						}
 					}
 				}

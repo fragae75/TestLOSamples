@@ -92,10 +92,10 @@ public class RunGetMatchingRules implements Runnable {
 				//Affichage de chaque élément du tableau JSON
 				System.out.println("Matching rule "+ i +" ==> "+ dataJson.toString());
 				if (bEnabled)
-					textPaneReceive.append("  " + i + " - \"" + sName + "\", Id = " + 
+					textPaneReceive.append("  " + (i+1) + " - \"" + sName + "\", Id = " + 
 										sMatchingRuleId + " : " + sFormula + "\n");
 				else
-					textPaneReceive.append("  " + i + " (Disabled !) - \"" + sName + "\", Id = " + 
+					textPaneReceive.append("  " + (i+1) + " - (Disabled !) - \"" + sName + "\", Id = " + 
 							sMatchingRuleId + " : " + sFormula + "\n");
 
 			}

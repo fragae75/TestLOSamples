@@ -128,7 +128,7 @@ public class TestLOSamples {
 	static String sIFTTTURL = sIFTTTURL1 + sIFTTTEvent + sIFTTTURL2 + sIFTTTKey; 
 	static List<String> lIFTTTEvents = new LinkedList<String>();
     
-    
+/*    
 	public static double arrondi(double d, int digit)
 	{
 		double val = d;
@@ -139,7 +139,7 @@ public class TestLOSamples {
 		
 		return val;
 	}
-
+*/
 	public enum QueueTypes{
 		PUBSUB,
 		FIFO,

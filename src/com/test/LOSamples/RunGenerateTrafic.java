@@ -132,8 +132,9 @@ public class RunGenerateTrafic implements Runnable {
                 }
                 // 50 +/- 20
                 data.v.put("Hygrometry", 50 + rand.nextInt(20));
-                // double 
-                data.v.put("tempC", TestLOSamples.arrondi(20+(double)(rand.nextInt()%300)/100, 2));
+                // Temperature +/- 3° 
+//                data.v.put("tempC", TestLOSamples.arrondi(20+(double)(rand.nextInt()%300)/100, 2));
+                data.v.put("tempC", Math.round(20.0 + (double)(rand.nextInt() % 3)) );
                 data.v.put("engineOn", bEngineOn);
                 // location (lat/lon)
                 dLocNext[0] += (dLocStop[0] - dLocStart[0])/lNbEchantillons;

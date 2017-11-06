@@ -127,7 +127,17 @@ public class TestLOSamples {
 	static String sIFTTTURL2 = "/with/key/"; 
 	static String sIFTTTURL = sIFTTTURL1 + sIFTTTEvent + sIFTTTURL2 + sIFTTTKey; 
 	static List<String> lIFTTTEvents = new LinkedList<String>();
-    
+
+	// UDP To MQTT
+	static short iUDPPort = 2345;
+    static String sDataModelUDPToMQTT = "ModelUDPToMQTT";
+    static String sDataTagUDPToMQTT = "UDPData";
+    static Boolean bDeviceModeUDPToMQTT = true;
+    static Boolean bPublishUDPToMQTT = false;
+    static String sDeviceUrnUDPToMQTT = "urn:lo:nsid:sensor:UDPTest";
+    static String sStreamIDUDPToMQTT = "UDPTestStream";
+    static String sTopicUDPToMQTT = DEFAULT_DEVICE_TOPIC;
+
 /*    
 	public static double arrondi(double d, int digit)
 	{

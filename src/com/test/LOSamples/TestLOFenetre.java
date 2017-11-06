@@ -67,6 +67,7 @@ public class TestLOFenetre extends JFrame {
 	private JPanel panSubscribe = new JPanel();
 	private JPanel panPushData = new JPanel();
 	private JPanel panIFTTT = new JPanel();
+	private JPanel panConvertUDPToMQTT = new JPanel();
 	// Config
 	private static JCheckBox jcbSimulation = new JCheckBox("Simulation (just logs)");
 	private JLabel jlbKey = new JLabel("Key : ");
@@ -149,6 +150,14 @@ public class TestLOFenetre extends JFrame {
 	public JButton boutonIFTTTMatchingRules =  new JButton("Get Matching Rules");
 	public JButton boutonIFTTTCheckFiringRules =  new JButton("Check Firing Rules");
 //	private JList<String> jlMatchingRules = new JList<>();
+	// UDPToMQTT
+	private JLabel jlbListenPortUDP = new JLabel("Listening Port : ");
+	private static JTextField jtfListenPortUDP = new JTextField();
+	public JButton boutonUDPToMQTTStart =  new JButton("Start");
+	private JLabel jlbDataModelUDPToMQTT = new JLabel("Data Model : ");
+	private static JTextField jtfDataModelUDPToMQTT = new JTextField(TestLOSamples.sDataModelUDPToMQTT);
+	private JLabel jlbDataTagUDPToMQTT = new JLabel("Tag : ");
+	private static JTextField jtfDataTagUDPToMQTT = new JTextField(TestLOSamples.sDataTagUDPToMQTT);
 	 
 
 	
@@ -318,6 +327,23 @@ public class TestLOFenetre extends JFrame {
 		TestLOSamples.sIFTTTURL = TestLOSamples.sIFTTTURL1 + TestLOSamples.sIFTTTEvent + TestLOSamples.sIFTTTURL2 + TestLOSamples.sIFTTTKey;
 		jtfIFTTTURL.setText(TestLOSamples.sIFTTTURL);
 
+		/*
+		 * UDP To MQTT
+		 * 
+		 */
+	    l = Long.parseLong(jtfListenPortUDP.getText());
+	    if (l > 0 && l < 65535)
+	    {
+	    	TestLOSamples.iUDPPort = (short)l;
+	    }
+	    else 
+	    {
+	    	bGood = false;
+	    	jtfListenPortUDP.setText(Integer.toString(TestLOSamples.iUDPPort));
+	    }
+		TestLOSamples.sDataModelUDPToMQTT = jtfDataModelUDPToMQTT.getText();
+		TestLOSamples.sDataTagUDPToMQTT = jtfDataTagUDPToMQTT.getText();
+	    
 		return bGood;
 	}
 	
@@ -327,7 +353,7 @@ public class TestLOFenetre extends JFrame {
 	 */
 	public TestLOFenetre(){
 		this.setTitle("Live Objects trafic generator & feature testing");
-		this.setSize(700, 500);
+		this.setSize(800, 500);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 
@@ -684,7 +710,39 @@ public class TestLOFenetre extends JFrame {
 	    jpIFTTTButtonActivate.add(Box.createRigidArea(new Dimension(30, 0)));
 	    jpIFTTTButtonActivate.add(boutonIFTTTCheckFiringRules);
 	    
+	    
+	    /*
+	     * 
+	     * Panel ConvertUDP_MQTT
+	     * 
+	     * 
+	     */
+	    // UDP Port
+	    JPanel jpUDPPort = new JPanel();
+	    jpUDPPort.setLayout(new BoxLayout(jpUDPPort, BoxLayout.LINE_AXIS));
+	    jpUDPPort.add(jlbListenPortUDP);
+		jpUDPPort.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpUDPPort.add(jtfListenPortUDP);
+	    jtfListenPortUDP.setMaximumSize(new Dimension(100, jtfListenPortUDP.getMinimumSize().height));
+	    jtfListenPortUDP.setText(Integer.toString(TestLOSamples.iUDPPort));
+	    boutonUDPToMQTTStart.addActionListener(new BoutonListenerUDPToMQTTStart()); 
 
+	    // Data model
+	    JPanel jpDataModelUDPToMQTT = new JPanel();
+	    jpDataModelUDPToMQTT.setLayout(new BoxLayout(jpDataModelUDPToMQTT, BoxLayout.LINE_AXIS));
+	    jpDataModelUDPToMQTT.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpDataModelUDPToMQTT.add(jlbDataModelUDPToMQTT);
+	    jpDataModelUDPToMQTT.add(jtfDataModelUDPToMQTT);
+	    jtfDataModelUDPToMQTT.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfDataModelUDPToMQTT.getMinimumSize().height));
+
+	    // Tag
+	    JPanel jpDataTagUDPToMQTT = new JPanel();
+	    jpDataTagUDPToMQTT.setLayout(new BoxLayout(jpDataTagUDPToMQTT, BoxLayout.LINE_AXIS));
+	    jpDataTagUDPToMQTT.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpDataTagUDPToMQTT.add(jlbDataTagUDPToMQTT);
+	    jpDataTagUDPToMQTT.add(jtfDataTagUDPToMQTT);
+	    jtfDataTagUDPToMQTT.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfDataTagUDPToMQTT.getMinimumSize().height));
+	    
 	    /*
 	     * 
 	     * Construction de la fenetre
@@ -802,6 +860,18 @@ public class TestLOFenetre extends JFrame {
 	    		+ "6) To trigger an event : use the \"OAB App\" tab and publish data. In the case of a matching rule of temperature > 20, it will trigger when the published data will match.\n"
 	    		);
 
+	    // Panneau UDP To MQTT
+	    panConvertUDPToMQTT.setLayout(new BoxLayout(panConvertUDPToMQTT, BoxLayout.PAGE_AXIS));
+	    panConvertUDPToMQTT.add(Box.createRigidArea(new Dimension(0, 20)));
+	    panConvertUDPToMQTT.add(jpUDPPort);
+	    panConvertUDPToMQTT.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panConvertUDPToMQTT.add(jpDataModelUDPToMQTT);
+	    panConvertUDPToMQTT.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panConvertUDPToMQTT.add(jpDataTagUDPToMQTT);
+	    panConvertUDPToMQTT.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panConvertUDPToMQTT.add(boutonUDPToMQTTStart);
+	    
+	    
 	    // Ajout des onglets 
 	    onglet.add("Configuration", panConfig);
 	    onglet.add("Multi Terminals", panMultiTerminal);
@@ -809,6 +879,7 @@ public class TestLOFenetre extends JFrame {
 	    onglet.add("Push Air Parif", panPushData);
 	    onglet.add("Subscribe", panSubscribe);
 	    onglet.add("IFTTT", panIFTTT);
+	    onglet.add("Convert UDP To MQTT", panConvertUDPToMQTT);
 	    onglet.add("Result", panOutput);
 	    
 	    //On passe ensuite les onglets au content pane
@@ -1153,6 +1224,38 @@ public class TestLOFenetre extends JFrame {
 			t = new Thread(checkFiringRules);
 			t.start();
 	        System.out.println("Thread : RunCheckFiringRules");
+	    }
+	}
+
+	/*
+	 * 
+	 * Bouton UDP To MQTT
+	 * 
+	 */
+	class BoutonListenerUDPToMQTTStart implements ActionListener{
+		
+		@Override
+		public void actionPerformed(ActionEvent arg0) {
+
+			Boolean bRetour = gatherConfigValues();
+			Thread t;
+			RunUDPToMQTT UDPToMQTT = new RunUDPToMQTT(	
+					TestLOSamples.bPublishUDPToMQTT,
+					TestLOSamples.bDeviceModeUDPToMQTT,
+					TestLOSamples.sDeviceUrnUDPToMQTT,
+					TestLOSamples.sStreamIDUDPToMQTT,
+					TestLOSamples.sTopicUDPToMQTT,
+					TestLOSamples.iUDPPort,
+					TestLOSamples.sDataModelUDPToMQTT,
+					TestLOSamples.sDataTagUDPToMQTT,
+					TestLOSamples.fenetreTestLOSamples.textPaneSend,
+					TestLOSamples.fenetreTestLOSamples.textPaneReceive);
+	
+			
+			t = new Thread(UDPToMQTT);
+			t.start();
+			
+	        System.out.println("Thread : RunUDPToMQTT");
 	    }
 	}
 

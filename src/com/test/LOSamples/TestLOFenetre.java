@@ -155,9 +155,13 @@ public class TestLOFenetre extends JFrame {
 	private static JTextField jtfListenPortUDP = new JTextField();
 	public JButton boutonUDPToMQTTStart =  new JButton("Start");
 	private JLabel jlbDataModelUDPToMQTT = new JLabel("Data Model : ");
+	private JLabel jlbStreamIDUDPToMQTT = new JLabel("StreamID : ");
+	private static JTextField jtfStreamIDUDPToMQTT = new JTextField();
 	private static JTextField jtfDataModelUDPToMQTT = new JTextField(TestLOSamples.sDataModelUDPToMQTT);
 	private JLabel jlbDataTagUDPToMQTT = new JLabel("Tag : ");
 	private static JTextField jtfDataTagUDPToMQTT = new JTextField(TestLOSamples.sDataTagUDPToMQTT);
+	private JLabel jlbDeviceUrnUDPToMQTT = new JLabel("Device URN : ");
+	private static JTextField jtfDeviceUrnUDPToMQTT = new JTextField();
 	 
 
 	
@@ -341,6 +345,8 @@ public class TestLOFenetre extends JFrame {
 	    	bGood = false;
 	    	jtfListenPortUDP.setText(Integer.toString(TestLOSamples.iUDPPort));
 	    }
+		TestLOSamples.sStreamIDUDPToMQTT = jtfStreamIDUDPToMQTT.getText();
+		TestLOSamples.sDeviceUrnUDPToMQTT = jtfDeviceUrnUDPToMQTT.getText();
 		TestLOSamples.sDataModelUDPToMQTT = jtfDataModelUDPToMQTT.getText();
 		TestLOSamples.sDataTagUDPToMQTT = jtfDataTagUDPToMQTT.getText();
 	    
@@ -727,6 +733,24 @@ public class TestLOFenetre extends JFrame {
 	    jtfListenPortUDP.setText(Integer.toString(TestLOSamples.iUDPPort));
 	    boutonUDPToMQTTStart.addActionListener(new BoutonListenerUDPToMQTTStart()); 
 
+	    // Stream ID
+	    JPanel jpStreamIDUDPToMQTT = new JPanel();
+	    jpStreamIDUDPToMQTT.setLayout(new BoxLayout(jpStreamIDUDPToMQTT, BoxLayout.LINE_AXIS));
+	    jpStreamIDUDPToMQTT.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpStreamIDUDPToMQTT.add(jlbStreamIDUDPToMQTT);
+	    jpStreamIDUDPToMQTT.setMaximumSize(new Dimension(Integer.MAX_VALUE, jpStreamIDUDPToMQTT.getMinimumSize().height));
+	    jpStreamIDUDPToMQTT.add(jtfStreamIDUDPToMQTT);
+	    jtfStreamIDUDPToMQTT.setText(TestLOSamples.sStreamIDUDPToMQTT);
+
+	    // Device Urn Prefix
+	    JPanel jpDeviceUrnUDPToMQTT = new JPanel();
+	    jpDeviceUrnUDPToMQTT.setLayout(new BoxLayout(jpDeviceUrnUDPToMQTT, BoxLayout.LINE_AXIS));
+	    jpDeviceUrnUDPToMQTT.add(Box.createRigidArea(new Dimension(30, 0)));
+	    jpDeviceUrnUDPToMQTT.add(jlbDeviceUrnUDPToMQTT);
+	    jtfDeviceUrnUDPToMQTT.setMaximumSize(new Dimension(Integer.MAX_VALUE, jtfDeviceUrnUDPToMQTT.getMinimumSize().height));
+	    jpDeviceUrnUDPToMQTT.add(jtfDeviceUrnUDPToMQTT);
+	    jtfDeviceUrnUDPToMQTT.setText(TestLOSamples.sDeviceUrnUDPToMQTT);
+
 	    // Data model
 	    JPanel jpDataModelUDPToMQTT = new JPanel();
 	    jpDataModelUDPToMQTT.setLayout(new BoxLayout(jpDataModelUDPToMQTT, BoxLayout.LINE_AXIS));
@@ -864,6 +888,10 @@ public class TestLOFenetre extends JFrame {
 	    panConvertUDPToMQTT.setLayout(new BoxLayout(panConvertUDPToMQTT, BoxLayout.PAGE_AXIS));
 	    panConvertUDPToMQTT.add(Box.createRigidArea(new Dimension(0, 20)));
 	    panConvertUDPToMQTT.add(jpUDPPort);
+	    panConvertUDPToMQTT.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panConvertUDPToMQTT.add(jpDeviceUrnUDPToMQTT);
+	    panConvertUDPToMQTT.add(Box.createRigidArea(new Dimension(0, 5)));
+	    panConvertUDPToMQTT.add(jpStreamIDUDPToMQTT);
 	    panConvertUDPToMQTT.add(Box.createRigidArea(new Dimension(0, 5)));
 	    panConvertUDPToMQTT.add(jpDataModelUDPToMQTT);
 	    panConvertUDPToMQTT.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -1239,23 +1267,45 @@ public class TestLOFenetre extends JFrame {
 
 			Boolean bRetour = gatherConfigValues();
 			Thread t;
-			RunUDPToMQTT UDPToMQTT = new RunUDPToMQTT(	
-					TestLOSamples.bPublishUDPToMQTT,
-					TestLOSamples.bDeviceModeUDPToMQTT,
-					TestLOSamples.sDeviceUrnUDPToMQTT,
-					TestLOSamples.sStreamIDUDPToMQTT,
-					TestLOSamples.sTopicUDPToMQTT,
-					TestLOSamples.iUDPPort,
-					TestLOSamples.sDataModelUDPToMQTT,
-					TestLOSamples.sDataTagUDPToMQTT,
-					TestLOSamples.fenetreTestLOSamples.textPaneSend,
-					TestLOSamples.fenetreTestLOSamples.textPaneReceive);
-	
 			
-			t = new Thread(UDPToMQTT);
-			t.start();
-			
-	        System.out.println("Thread : RunUDPToMQTT");
+			if (!TestLOSamples.bUDPStart)
+			{
+				RunUDPToMQTT UDPToMQTT = new RunUDPToMQTT(	
+//						TestLOSamples.bPublish,
+						TestLOSamples.bDeviceModeUDPToMQTT,
+						TestLOSamples.sDeviceUrnUDPToMQTT,
+						TestLOSamples.sStreamIDUDPToMQTT,
+						TestLOSamples.sTopicUDPToMQTT,
+						TestLOSamples.iUDPPort,
+						TestLOSamples.sDataModelUDPToMQTT,
+						TestLOSamples.sDataTagUDPToMQTT,
+						TestLOSamples.fenetreTestLOSamples.textPaneSend,
+						TestLOSamples.fenetreTestLOSamples.textPaneReceive);
+		
+				
+				t = new Thread(UDPToMQTT);
+				t.start();
+				
+		        System.out.println("Thread : RunUDPToMQTT");
+		        boutonUDPToMQTTStart.setText("Pause");
+		        TestLOSamples.bUDPStart = true;
+		        TestLOSamples.bUDPPause = false;
+			}
+			else
+			{
+		        // Pause => Resume
+				if (TestLOSamples.bUDPPause)
+		        {
+			        TestLOSamples.bUDPPause = false;
+			        boutonUDPToMQTTStart.setText("Pause");
+		        }else 
+		        // Activity => Pause
+		        {
+			        TestLOSamples.bUDPPause = true;
+			        boutonUDPToMQTTStart.setText("Resume");
+		        }
+				
+			}
 	    }
 	}
 

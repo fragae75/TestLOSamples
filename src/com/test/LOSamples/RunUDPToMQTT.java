@@ -22,13 +22,29 @@ import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 import com.google.gson.Gson;
 
 
+/**
+ * @author franc
+ *
+ */
+/**
+ * @author franc
+ *
+ */
+/**
+ * @author franc
+ *
+ */
+/**
+ * @author franc
+ *
+ */
 public class RunUDPToMQTT implements Runnable {
 
 	private short iUDPPort;
 	private String sDataModel; 
 	private String sDataTag;
 	private Boolean bDeviceMode;
-	private Boolean bPublish;
+//	private Boolean bPublish;
 	private String sDeviceUrn;
 	private String sStreamID;
 	private String sTopic;
@@ -37,7 +53,7 @@ public class RunUDPToMQTT implements Runnable {
 
 
 	public RunUDPToMQTT  (
-			Boolean bPublish,
+//			Boolean bPublish,
 			Boolean bDeviceMode,
 			String sDeviceUrn,
 			String sStreamID,
@@ -48,7 +64,7 @@ public class RunUDPToMQTT implements Runnable {
 			JTextArea textPaneSend,
 			JTextArea textPaneReceive)
 	{
-		this.bPublish= bPublish;
+//		this.bPublish= bPublish;
 		this.bDeviceMode = bDeviceMode;
 		this.sDeviceUrn = sDeviceUrn;
 		this.sStreamID = sStreamID;
@@ -57,23 +73,19 @@ public class RunUDPToMQTT implements Runnable {
 		this.sDataModel = sDataModelUDPToMQTT; 
 		this.sDataTag = sDataTagUDPToMQTT;
 		this.bDeviceMode = bDeviceMode;
-		this.bPublish = bPublish;
+//		this.bPublish = bPublish;
 		this.sDeviceUrn = sDeviceUrn;
 		this.sStreamID = sStreamID;
 		this.textPaneSend = textPaneSend;
 		this.textPaneReceive = textPaneReceive;
 	}
-
-	   
-	public static synchronized void print(String str){
-		System.out.print(str);
-	}
-	public static synchronized void println(String str){
-		System.err.println(str);
-	}
-	   
 	
 	private final static char[] hexArray = "0123456789ABCDEF".toCharArray();
+	/**
+	 * Convert an array of Bytes to an hex string
+	 * @param bytes
+	 * @return Hex string
+	 */
 	public static String bytesToHex(byte[] bytes) {
 	    char[] hexChars = new char[bytes.length * 2];
 	    for ( int j = 0; j < bytes.length; j++ ) {
@@ -84,6 +96,17 @@ public class RunUDPToMQTT implements Runnable {
 	    return new String(hexChars);
 	}
 	
+	public static String byteToHex(byte bByte) {
+	    char[] hexChars = new char[2];
+	    int v = bByte & 0xFF;
+        hexChars[0] = hexArray[v >>> 4];
+        hexChars[1] = hexArray[v & 0x0F];
+	    return new String(hexChars);
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Runnable#run()
+	 */
 	@Override
 	public void run() {
 
@@ -96,7 +119,18 @@ public class RunUDPToMQTT implements Runnable {
             DatagramSocket server = new DatagramSocket(iUDPPort);
             
             while(true){
-               
+
+				// Pause mode
+            	while (TestLOSamples.bUDPPause)
+				{
+					try {
+						Thread.sleep(500);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				} // While bPushPause
+            	
                //On s'occupe maintenant de l'objet paquet
                byte[] buffer = new byte[8192];
                DatagramPacket packet = new DatagramPacket(buffer, buffer.length);
@@ -106,19 +140,29 @@ public class RunUDPToMQTT implements Runnable {
                server.receive(packet);
                
                //nous récupérons le contenu de celui-ci et nous l'affichons
+               String sExtraAllowedCharacters = new String("1234567890 &-_()*$=+!:;,?./§<>");
                String sReceivedStr = new String(packet.getData());
-
-//               byte[] receivedBuffer = new byte[packet.getLength()];
-               char[] receivedBuffer = new char[packet.getLength()];
-               int xx = packet.getLength();
+               String[] sArrayReceivedStr = sReceivedStr.split("\u0000");
+               String sReceivedStrToEncode = new String("");
                
-               for (int i=0; i<packet.getLength(); i++)
+               for (int i=0; i<sArrayReceivedStr[0].length(); i++)
                {
-            	   receivedBuffer[i] = sReceivedStr.charAt(i);
+            	   char c;
+            	   c = sArrayReceivedStr[0].charAt(i);
+            	   if ((c >= 'a' && c<='z') || (c >= 'A' && c<='Z') || sExtraAllowedCharacters.lastIndexOf((int)c)!=-1 ) 
+            	   {
+            		   sReceivedStrToEncode += Character.toString(c);
+            	   }
+            	   else
+            	   {
+            		   sReceivedStrToEncode += "0x";
+            		   sReceivedStrToEncode += byteToHex((byte)c);
+            	   }
+            	   
                }
 
-               print("Reçu de la part de " + packet.getAddress() + " depuis le port " + packet.getPort() + " : ");
-               println(sReceivedStr);
+               System.out.print("Reçu de la part de " + packet.getAddress() + " depuis le port " + packet.getPort() + " : ");
+               System.out.println(sReceivedStr);
                textPaneReceive.setCaretPosition(textPaneReceive.getDocument().getLength());
                textPaneReceive.append("Reçu de la part de " + packet.getAddress() + 
             		   " depuis le port " + packet.getPort() + " : " + sReceivedStr + "\n");
@@ -131,7 +175,7 @@ public class RunUDPToMQTT implements Runnable {
 	           try {
 	        	   MqttClient sampleClient = new MqttClient(TestLOSamples.SERVER, sDeviceUrn, new MemoryPersistence());
 	               MqttConnectOptions connOpts = new MqttConnectOptions();
-	               if (bPublish)
+	               if (TestLOSamples.bPublish)
 	               {            	
 	                	if (bDeviceMode)
 	                		connOpts.setUserName("json+device"); // selecting mode "Device"
@@ -158,8 +202,8 @@ public class RunUDPToMQTT implements Runnable {
 	               // value: JSON object...
 	               data.v = new HashMap<String, Object>();
 	               // Raw data received from UDP
-//	               data.v.put("UDPData", sReceivedStr);
-	               data.v.put("UDPData", receivedBuffer);
+	               data.v.put("UDPData", sReceivedStrToEncode);
+//	               data.v.put("UDPData", receivedBuffer);
 	               // location (lat/lon)
 	               data.loc = dLoc;
 	               // model
@@ -176,7 +220,7 @@ public class RunUDPToMQTT implements Runnable {
 	               LocalDateTime now = LocalDateTime.now();
 	               String sTime = now.format(DateTimeFormatter.ofPattern("HH:mm:ss:SSS ", Locale.FRENCH));
 	       		
-	               if (bPublish)
+	               if (TestLOSamples.bPublish)
 	               {
 			            // Publish data
 	                   System.out.println("MQTT message: " + sDeviceUrn + " - " + sTopic + " - " + sContent);
@@ -185,6 +229,9 @@ public class RunUDPToMQTT implements Runnable {
 	                   message.setQos(0);
 	                   sampleClient.publish(sTopic, message);
 	                   System.out.println("Message published "+ sTopic);
+	                   // Disconnection
+	                   sampleClient.disconnect();
+	                   System.out.println("Disconnected");
 	               }
 	               else
 	               {

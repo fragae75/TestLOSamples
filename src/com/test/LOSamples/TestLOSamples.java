@@ -133,10 +133,11 @@ public class TestLOSamples {
     static String sDataModelUDPToMQTT = "ModelUDPToMQTT";
     static String sDataTagUDPToMQTT = "UDPData";
     static Boolean bDeviceModeUDPToMQTT = true;
-    static Boolean bPublishUDPToMQTT = false;
     static String sDeviceUrnUDPToMQTT = "urn:lo:nsid:sensor:UDPTest";
     static String sStreamIDUDPToMQTT = "UDPTestStream";
     static String sTopicUDPToMQTT = DEFAULT_DEVICE_TOPIC;
+    static boolean bUDPStart = false;
+    static boolean bUDPPause = false;
 
 /*    
 	public static double arrondi(double d, int digit)

@@ -144,7 +144,9 @@ public class RunUDPToMQTT implements Runnable {
                String sReceivedStr = new String(packet.getData());
                String[] sArrayReceivedStr = sReceivedStr.split("\u0000");
                String sReceivedStrToEncode = new String("");
-               
+               String sReceivedStrToEncodeHex = new String("");
+
+               // Encode as a string + 0xXX hexa for unallowed char
                for (int i=0; i<sArrayReceivedStr[0].length(); i++)
                {
             	   char c;
@@ -160,12 +162,24 @@ public class RunUDPToMQTT implements Runnable {
             	   }
             	   
                }
+               
+               // Encode as an hex payload
+               for (int i=0; i<sArrayReceivedStr[0].length(); i++)
+               {
+            	   char c;
+            	   c = sArrayReceivedStr[0].charAt(i);
+        		   sReceivedStrToEncodeHex += byteToHex((byte)c);
+               }
 
                System.out.print("Reçu de la part de " + packet.getAddress() + " depuis le port " + packet.getPort() + " : ");
-               System.out.println(sReceivedStr);
+               System.out.println("Received : "+sReceivedStr);
+               System.out.println("Str : "+sReceivedStrToEncode);
+               System.out.println("Hex : "+sReceivedStrToEncodeHex);
                textPaneReceive.setCaretPosition(textPaneReceive.getDocument().getLength());
                textPaneReceive.append("Reçu de la part de " + packet.getAddress() + 
             		   " depuis le port " + packet.getPort() + " : " + sReceivedStr + "\n");
+               textPaneReceive.setCaretPosition(textPaneReceive.getDocument().getLength());
+               textPaneReceive.append("Str : " + sReceivedStrToEncode + " - Hex : " + sReceivedStrToEncodeHex + "\n" );
                
                //On réinitialise la taille du datagramme, pour les futures réceptions
                packet.setLength(buffer.length);
@@ -202,7 +216,8 @@ public class RunUDPToMQTT implements Runnable {
 	               // value: JSON object...
 	               data.v = new HashMap<String, Object>();
 	               // Raw data received from UDP
-	               data.v.put("UDPData", sReceivedStrToEncode);
+	               data.v.put("UDPDataStr", sReceivedStrToEncode);
+	               data.v.put("UDPDataHex", sReceivedStrToEncodeHex);
 //	               data.v.put("UDPData", receivedBuffer);
 	               // location (lat/lon)
 	               data.loc = dLoc;
@@ -235,7 +250,7 @@ public class RunUDPToMQTT implements Runnable {
 	               }
 	               else
 	               {
-	                   System.out.println("MQTT message: " + sDeviceUrn + " - " + sTopic + " - " + sContent);
+	                   System.out.println("Simul MQTT message: " + sDeviceUrn + " - " + sTopic + " - " + sContent);
 	                   textPaneSend.append(sTime + " - Simulate Pub msg: " + sDeviceUrn + " - " + sTopic + " - " + sContent + "\n");
 	               }
                
